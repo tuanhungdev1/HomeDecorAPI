@@ -1,0 +1,6 @@
+@HomeDecorAPI_HostAddress = http://localhost:5022
+
+GET {{HomeDecorAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
