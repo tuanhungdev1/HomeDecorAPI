@@ -14,4 +14,10 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeDecorAPI.Application\HomeDecorAPI.Application.csproj" />
+    <ProjectReference Include="..\HomeDecorAPI.Domain\HomeDecorAPI.Domain.csproj" />
+    <ProjectReference Include="..\HomeDecorAPI.Infrastructure.SQLServer\HomeDecorAPI.Infrastructure.SQLServer.csproj" />
+  </ItemGroup>
+
 </Project>

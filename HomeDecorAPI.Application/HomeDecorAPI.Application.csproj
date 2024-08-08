@@ -12,12 +12,13 @@
     <Folder Include="Persistence\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Contracts\" />
-    <Folder Include="MappingProfile\" />
     <Folder Include="UnitOfWork\" />
     <Folder Include="Shared\DTOs\" />
     <Folder Include="Services\" />
-    <Folder Include="Shared\ErrorModel\" />
-    <Folder Include="Shared\RequestFeatures\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
   </ItemGroup>
 
 </Project>
