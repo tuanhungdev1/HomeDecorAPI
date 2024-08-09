@@ -17,8 +17,13 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureSQLServerContext(builder.Configuration);
+builder.Services.ConfigureRepositoryManager();
+builder.Services.ConfigureServiceManager();
 
 var app = builder.Build();
+
+// Extensions
+app.ConfigureExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {

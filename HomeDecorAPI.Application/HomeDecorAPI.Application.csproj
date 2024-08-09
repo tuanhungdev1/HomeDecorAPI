@@ -9,16 +9,14 @@
   <ItemGroup>
     <Folder Include="Shared\Constants\" />
     <Folder Include="Shared\Utilities\" />
-    <Folder Include="Persistence\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Contracts\" />
-    <Folder Include="UnitOfWork\" />
-    <Folder Include="Shared\DTOs\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeDecorAPI.Domain\HomeDecorAPI.Domain.csproj" />
   </ItemGroup>
 
 </Project>

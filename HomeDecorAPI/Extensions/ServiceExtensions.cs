@@ -1,5 +1,9 @@
-﻿using HomeDecorAPI.Domain.Entities;
+﻿using HomeDecorAPI.Application.Contracts;
+using HomeDecorAPI.Application.Interfaces;
+using HomeDecorAPI.Application.Services;
+using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
+using HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,5 +45,10 @@ namespace HomeDecorAPI.Presentation.Extensions {
              .AddDefaultTokenProviders();
         }
 
+        //Repository Manager
+        public static void ConfigureRepositoryManager(this IServiceCollection services) => services.AddScoped<IRepositoryManager, RepositoryManager>();
+
+        //Service Manager
+        public static void ConfigureServiceManager(this IServiceCollection services) => services.AddScoped<IServiceManager, ServiceManager>();
     }
 }
