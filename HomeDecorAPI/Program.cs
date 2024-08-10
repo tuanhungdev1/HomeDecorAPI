@@ -1,4 +1,5 @@
 using HomeDecorAPI.Application.MappingProfile;
+using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Presentation.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,10 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureSQLServerContext(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
+
+//Action Filters
+builder.Services.AddScoped<ValidationFilterAttribute>();
+
 
 var app = builder.Build();
 

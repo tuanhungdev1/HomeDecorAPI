@@ -1,4 +1,5 @@
 ﻿using HomeDecorAPI.Application.Contracts;
+using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace HomeDecorAPI.Presentation.Controllers {
 
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistrationDto) {
             var result = await _service.AuthenticationService.RegisterUser(userForRegistrationDto);
 
