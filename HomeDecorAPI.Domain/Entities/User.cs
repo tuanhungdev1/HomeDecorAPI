@@ -22,6 +22,7 @@ namespace HomeDecorAPI.Domain.Entities {
         public string? ProfilePicture { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
-
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

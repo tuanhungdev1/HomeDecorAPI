@@ -15,7 +15,8 @@ namespace HomeDecorAPI.Application.MappingProfile {
         public MappingProfile() {
             // USER
             CreateMap<UserForRegistrationDto, User>();
-
+            CreateMap<User, UserDto>();
+            CreateMap<UserForLoginDto, User>();
 
             // USER
 
