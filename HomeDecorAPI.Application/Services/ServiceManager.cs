@@ -15,10 +15,9 @@ namespace HomeDecorAPI.Application.Services {
 
         private readonly Lazy<IAuthenticationService> _authenticationService;
 
-        public ServiceManager(IMapper mapper, UserManager<User> userManager, IConfiguration configuration) {
+        public ServiceManager(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration) {
             _authenticationService = new Lazy<IAuthenticationService>(() =>
-             new AuthenticationService(mapper, userManager,
-          configuration));
+             new AuthenticationService(mapper, userManager, signInManager, configuration));
         }
         public IAuthenticationService AuthenticationService =>
        _authenticationService.Value;

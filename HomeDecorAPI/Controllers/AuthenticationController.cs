@@ -17,7 +17,7 @@ namespace HomeDecorAPI.Presentation.Controllers {
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistrationDto) {
             var result = await _service.AuthenticationService.RegisterUserAsync(userForRegistrationDto);

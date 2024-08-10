@@ -52,8 +52,8 @@ namespace HomeDecorAPI.Application.Services {
             if (user == null) {
                 return null;
             }
-
-            var result = await _signInManager.PasswordSignInAsync(user.Email, userForLoginDto.Password, userForLoginDto.RememberMe, lockoutOnFailure: false);
+            _user = user;
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, userForLoginDto.Password, userForLoginDto.RememberMe, lockoutOnFailure: false);
             return result.Succeeded ? user : null;
         }
 
