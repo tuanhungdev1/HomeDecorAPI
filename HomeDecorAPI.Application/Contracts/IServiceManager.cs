@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.Contracts {
     public interface IServiceManager {
         IAuthenticationService AuthenticationService { get; }
+        IUserService UserService { get; }
     }
 }

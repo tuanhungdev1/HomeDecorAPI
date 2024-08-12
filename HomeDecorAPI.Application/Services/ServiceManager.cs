@@ -14,12 +14,17 @@ namespace HomeDecorAPI.Application.Services {
     public sealed class ServiceManager : IServiceManager {
 
         private readonly Lazy<IAuthenticationService> _authenticationService;
+        private readonly Lazy<IUserService> _userService;
 
         public ServiceManager(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration) {
             _authenticationService = new Lazy<IAuthenticationService>(() =>
              new AuthenticationService(mapper, userManager, signInManager, configuration));
+
+            _userService = new Lazy<IUserService>(() => new UserService(userManager, mapper));
         }
         public IAuthenticationService AuthenticationService =>
        _authenticationService.Value;
+
+        public IUserService UserService => _userService.Value;
     }
 }
