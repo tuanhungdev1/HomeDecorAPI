@@ -5,6 +5,7 @@ using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
+using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -160,6 +161,48 @@ namespace HomeDecorAPI.Application.Services {
                 throw new RefreshTokenBadRequest();
             _user = user;
             return await CreateToken(populateExp: false);
+        }
+
+        public async Task<IdentityResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto) {
+
+            if (changePasswordDto.CurrentPassword == changePasswordDto.NewPassword) {
+                return IdentityResult.Failed(new IdentityError { Description = "New password must be different from the current password." });
+            }
+            var user = await _userManager.FindByNameAsync(changePasswordDto.Username);
+
+            if(user == null) {
+                throw new UserNotFoundException($"Username {changePasswordDto.Username} not found in the system.");
+            }
+
+            if (changePasswordDto.Email != user.Email) {
+                throw new InvalidOperationException("The provided email does not match the user's email.");
+            }
+
+            var isCurrentPassword = await _userManager.CheckPasswordAsync(user, changePasswordDto.CurrentPassword);
+
+            if (!isCurrentPassword) {
+                return IdentityResult.Failed(new IdentityError { Description = "Current password is incorrect." });
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+
+            return changePasswordResult;
+        }
+
+        public async Task LogoutUserAsync() {
+            if(_user == null ) {
+                throw new InvalidOperationException("No user is currently logged in.");
+            }
+
+            _user.RefreshToken = null;
+
+            var result = await _userManager.UpdateAsync(_user);
+
+            if (!result.Succeeded) {
+                throw new InvalidOperationException("Unable to update user information during logout.");
+            }
+
+           
         }
     }
 }

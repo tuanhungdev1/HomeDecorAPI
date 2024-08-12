@@ -14,5 +14,7 @@ namespace HomeDecorAPI.Application.Contracts {
         Task<IdentityResult> RegisterUserAsync(UserForRegistrationDto userForRegistration);
         Task<User?> LoginAsync(UserForLoginDto userForLoginDto);
         Task<TokenDto> CreateToken(bool populateExp);
+        Task<IdentityResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto);
+        Task LogoutUserAsync();  
     }
 }

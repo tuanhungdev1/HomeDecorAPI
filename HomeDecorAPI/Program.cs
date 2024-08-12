@@ -21,6 +21,7 @@ builder.Services.ConfigureSQLServerContext(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.ConfigureJsonSerializerSettings();
 
 //Action Filters
 builder.Services.AddScoped<ValidationFilterAttribute>();

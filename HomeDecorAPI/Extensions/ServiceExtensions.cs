@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace HomeDecorAPI.Presentation.Extensions {
@@ -78,6 +79,13 @@ configuration) {
    SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
             });
+        }
+
+        public static void ConfigureJsonSerializerSettings(this IServiceCollection services) {
+            services.AddControllers()
+                .AddNewtonsoftJson(options => {
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                });
         }
     }
 }

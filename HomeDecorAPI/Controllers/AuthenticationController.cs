@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Shared.ActionFilters;
+using HomeDecorAPI.Application.Shared.DTOs.TokenDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
-using HomeDecorAPI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeDecorAPI.Presentation.Controllers {
@@ -24,27 +24,18 @@ namespace HomeDecorAPI.Presentation.Controllers {
 
             if (!result.Succeeded) {
                 var errors = result.Errors.Select(error => error.Description).ToList();
-                var errorResponse = new ApiResponse<object> {
-                    IsSuccess = false,
-                    Message = "User registration failed.",
-                    Data = null,
-                    Errors = errors,
-                    
-                };
-
-                return BadRequest(errorResponse);
+                return BadRequest(new ApiResponse<object>(
+                    isSuccess: false,
+                    message: "User registration failed.",
+                    errors: errors
+                ));
             }
 
-            var response = new ApiResponse<object> {
-                IsSuccess = true,
-                Message = "User registered successfully.",
-                Data = null,
-                Errors = null
-            };
-
-            return StatusCode(201, response);
+            return StatusCode(201, new ApiResponse<object>(
+                isSuccess: true,
+                message: "User registered successfully."
+            ));
         }
-
 
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -53,40 +44,61 @@ namespace HomeDecorAPI.Presentation.Controllers {
 
             if (user == null) {
 
-                var errorResponse = new ApiResponse<object>(
+               
+                return BadRequest(new ApiResponse<object>(
                     isSuccess: false,
                     message: "User login failed.",
-                    data: null,
                     errors: new List<string> { "Invalid login attempt." }
-                );
-
-                return BadRequest(errorResponse);
+                ));
             }
 
             var tokenDto = await _service.AuthenticationService.CreateToken(true);
             if (tokenDto == null) {
-                var errorResponse = new ApiResponse<object> {
-                    IsSuccess = false,
-                    Message = "Token generation failed.",
-                    Data = null,
-                    Errors = new List<string> { "Unable to generate token." }
-                };
-
-                return StatusCode(500, errorResponse);
+                return StatusCode(500, new ApiResponse<object>(
+                    isSuccess: false,
+                    message: "Token generation failed.",
+                    errors: new List<string> { "Unable to generate token." }
+                ));
             }
 
-            var response = new AuthResponse<UserDto>(
+       
+            return Ok(new AuthResponse<UserDto>(
                 isSuccess: true,
                 message: "User login successful.",
                 data: _mapper.Map<UserDto>(user),
                 token: tokenDto.AccessToken,
-                refreshToken: tokenDto.RefreshToken,
-                errors: null
-            );
-
-            return Ok(response);
+                refreshToken: tokenDto.RefreshToken
+            ));
         }
 
-    }
+        [HttpPost("forgot-password")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto changePasswordDto) {
+            var result = await _service.AuthenticationService.ChangePasswordAsync(changePasswordDto);
 
+            if (!result.Succeeded) {
+                var errors = result.Errors.Select(error => error.Description).ToList();
+                return BadRequest(new ApiResponse<object>(
+                    isSuccess: false,
+                    message: "User change password failed.",
+                    errors: errors
+                ));
+            }
+
+            return Ok(new ApiResponse<object>(
+                isSuccess: true,
+                message: "The user has successfully changed the password."
+            ));
+        }
+
+        [HttpPost("logout")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Logout() {
+            await _service.AuthenticationService.LogoutUserAsync();
+            return Ok(new ApiResponse<object>(
+                isSuccess: true,
+                message: "User logged out successfully."
+            ));
+        }
+    }
 }
