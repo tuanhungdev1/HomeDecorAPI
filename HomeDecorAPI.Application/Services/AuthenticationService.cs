@@ -93,7 +93,7 @@ namespace HomeDecorAPI.Application.Services {
                 new Claim(ClaimTypes.NameIdentifier, _user.Id)
             };
 
-            claims.Add(new Claim("FullName", _user.FullName));
+            claims.Add(new Claim("DisplayName", _user.DisplayName));
 
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles) {

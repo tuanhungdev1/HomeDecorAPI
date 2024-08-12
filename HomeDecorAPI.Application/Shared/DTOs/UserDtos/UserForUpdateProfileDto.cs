@@ -1,31 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Domain.Entities {
-    public class User : IdentityUser {
+namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
+    public class UserForUpdateProfileDto {
         [StringLength(100)]
         public string? FirstName { get; set; }
         [StringLength(100)]
         public string? LastName { get; set; }
-
         [StringLength(100)]
-        public required string DisplayName { get; set; }
-
+        public string? DisplayName { get; set; }
+        [EmailAddress]
+        public string? Email { get; set; }
         [DataType(DataType.ImageUrl)]
         public string? ProfilePicture { get; set; }
-
         public DateTime? DateOfBirth { get; set; }
-
-        public string? RefreshToken { get; set; }
-
-        public DateTime? RefreshTokenExpiryTime { get; set; }
-
-        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
     }
 }

@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\Constants\" />
     <Folder Include="Shared\Utilities\" />
   </ItemGroup>
 
