@@ -54,5 +54,19 @@ namespace HomeDecorAPI.Application.Services {
 
             return _mapper.Map<IEnumerable<AddressDto>>(addressList);
         }
+
+        public async Task<IdentityResult> UploadAvatarUserAsync(string userId, string avatarUrl) {
+            var user = await _userService.FindByIdAsync(userId);
+
+            if (user == null) {
+                throw new UserNotFoundException($"UserId {userId} not found in the system.");
+            }
+
+            user.ProfilePicture = avatarUrl;
+
+            var result = await _userService.UpdateAsync(user);
+
+            return result;
+        }
     }
 }

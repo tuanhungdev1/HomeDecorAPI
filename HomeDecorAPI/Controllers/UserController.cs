@@ -13,10 +13,12 @@ namespace HomeDecorAPI.Presentation.Controllers {
     public class UserController : ControllerBase {
         private readonly IServiceManager _service;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _enviroment;
 
-        public UserController(IServiceManager service, IMapper mapper) {
+        public UserController(IServiceManager service, IMapper mapper, IWebHostEnvironment environment) {
             _mapper = mapper;
             _service = service;
+            _enviroment = environment;
         }
 
         [HttpGet("{userId}")]
@@ -80,5 +82,37 @@ namespace HomeDecorAPI.Presentation.Controllers {
             ));
         }
 
+        [HttpPost("{userId}/upload-avatar")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> UploadAvarUserAsync(string userId, IFormFile file) {
+            string uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
+
+            if (!Directory.Exists(uploadsFolder)) {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create)) {
+                await file.CopyToAsync(fileStream);
+            }
+
+            var result = await _service.UserService.UploadAvatarUserAsync(userId, uniqueFileName);
+
+            if (!result.Succeeded) {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return StatusCode(400, new ApiResponse<object>(
+                    isSuccess: false,
+                    message: "Failed to update avatar user profile.",
+                    errors: errors
+                ));
+            }
+
+            return Ok(new ApiResponse<object>(
+                isSuccess: true,
+                message: "User avatar profile updated successfully."
+            ));
+        }
     }
 }
