@@ -10,10 +10,14 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories {
     public sealed class RepositoryManager : IRepositoryManager {
         private readonly ApplicationDbContext _applicationContext;
 
-        public RepositoryManager(ApplicationDbContext applicationContext) {
+        private readonly Lazy<IAddressRepository> _addressRepository;
+
+        public RepositoryManager(ApplicationDbContext applicationContext, IAddressRepository addressRepository) {
             _applicationContext = applicationContext;   
+            _addressRepository = new Lazy<IAddressRepository>(() => new AddressRepository(applicationContext));
         }
 
         public async Task SaveAsync() => await _applicationContext.SaveChangesAsync();
+        public IAddressRepository AddressRepository => _addressRepository.Value;
     }
 }

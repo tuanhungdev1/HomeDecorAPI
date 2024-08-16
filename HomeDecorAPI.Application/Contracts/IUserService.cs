@@ -1,6 +1,7 @@
 ﻿using HomeDecorAPI.Application.Shared.DTOs.AddressDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,5 @@ namespace HomeDecorAPI.Application.Contracts {
         Task<IdentityResult> UpdateUserProfileAsync(string userId, UserForUpdateProfileDto userForUpdateProfileDto);
         Task<IEnumerable<AddressDto>> GetAllUserAddressAsync(string userId);
         Task<IdentityResult> UploadAvatarUserAsync(string userId, string avatarUrl);
-       
     }
 }

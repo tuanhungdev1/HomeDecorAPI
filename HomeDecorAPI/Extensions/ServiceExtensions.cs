@@ -1,6 +1,7 @@
 ﻿using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Services;
+using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories;
@@ -47,6 +48,10 @@ namespace HomeDecorAPI.Presentation.Extensions {
             })
              .AddEntityFrameworkStores<ApplicationDbContext>()
              .AddDefaultTokenProviders();
+        }
+        // Configure Cloudinary
+        public static void ConfigureCloudinarySettings(this IServiceCollection services, IConfiguration configuration) {
+            services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
         }
 
         //Repository Manager

@@ -8,5 +8,7 @@ namespace HomeDecorAPI.Application.Contracts {
     public interface IServiceManager {
         IAuthenticationService AuthenticationService { get; }
         IUserService UserService { get; }
+        IFileUploadService FileUploadService { get; }
+        IAddressService AddressService { get; }
     }
 }

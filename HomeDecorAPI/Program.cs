@@ -1,6 +1,7 @@
-using HomeDecorAPI.Application.MappingProfile;
+﻿using HomeDecorAPI.Application.MappingProfile;
 using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Presentation.Extensions;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureJsonSerializerSettings();
+builder.Services.ConfigureCloudinarySettings(builder.Configuration);
 
 //Action Filters
 builder.Services.AddScoped<ValidationFilterAttribute>();
@@ -37,6 +39,14 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Cấu hình để cho phép truy cập tệp từ thư mục "uploads"
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions {
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.WebRootPath, "uploads")),
+    RequestPath = "/uploads"
+});
 
 app.UseHttpsRedirection();
 

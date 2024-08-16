@@ -2,10 +2,14 @@
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.DTOs.TokenDtos;
+using HomeDecorAPI.Application.Shared.DTOs.UploadDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
 
 namespace HomeDecorAPI.Presentation.Controllers {
     [Route("api/user")]
@@ -114,5 +118,45 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 message: "User avatar profile updated successfully."
             ));
         }
+
+        [HttpPut("upload-avatar")]
+        [Authorize]
+        public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarDto uploadAvatarDto) {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null) {
+                return Unauthorized(new ApiResponse<object>(
+                        isSuccess : false,
+                        message: "User not authenticated."
+                    ));
+            }
+
+            var fileUploadResult = await _service.FileUploadService.UploadAvatarFileAsync(uploadAvatarDto.File);
+
+            if(fileUploadResult == null) {
+                return BadRequest(new ApiResponse<object>(
+                    isSuccess: false,
+                    message: "File upload failed."
+                    ));
+            }
+
+            var uploadAvatarResult = await _service.UserService.UploadAvatarUserAsync(userId, fileUploadResult);
+
+            if (!uploadAvatarResult.Succeeded) {
+                var errors = uploadAvatarResult.Errors.Select(e => e.Description).ToList();
+
+                return BadRequest(new ApiResponse<object>(
+                    isSuccess: false,
+                    message: "Failed to upload user avatar",
+                    errors: errors
+                    ));
+            }
+
+            return Ok(new ApiResponse<string>(
+                isSuccess: true,
+                message: "Avatar uploaded successfully.",
+                data: fileUploadResult
+                ));
+        } 
     }
 }
