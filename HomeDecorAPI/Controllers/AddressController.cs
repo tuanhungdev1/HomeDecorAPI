@@ -10,9 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace HomeDecorAPI.Presentation.Controllers {
-    [Route("api/user/{userId}/address")]
+    [Route("api/address")]
     [ApiController]
     [Authorize]
     public class AddressController : ControllerBase {
@@ -24,10 +25,14 @@ namespace HomeDecorAPI.Presentation.Controllers {
             _mapper = mapper;
         }
 
-        // GET: api/user/{userId}/address/{id}
+        private string GetCurrentUserId() {
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
         [HttpGet("{id:guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> GetAddressById(string userId, Guid id) {
+        public async Task<IActionResult> GetAddressById(Guid id) {
+            var userId = GetCurrentUserId();
             var address = await _service.AddressService.GetAddressAsync(userId, id);
 
             if (address == null) {
@@ -45,16 +50,16 @@ namespace HomeDecorAPI.Presentation.Controllers {
             ));
         }
 
-        // GET: api/user/{userId}/address
         [HttpGet]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> GetAllAddressesByUserId(string userId) {
+        public async Task<IActionResult> GetAllAddresses() {
+            var userId = GetCurrentUserId();
             var addresses = await _service.AddressService.GetAllAddressesByUserIdAsync(userId);
 
             if (addresses == null || !addresses.Any()) {
                 return NotFound(new ApiResponse<object>(
                     isSuccess: false,
-                    message: "No addresses found for the specified user."
+                    message: "No addresses found for the current user."
                 ));
             }
 
@@ -65,81 +70,45 @@ namespace HomeDecorAPI.Presentation.Controllers {
             ));
         }
 
-        // POST: api/user/{userId}/address
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> CreateAddress(string userId, [FromBody] AddressForCreateDto addressForCreateDto) {
-
-            await _service.AddressService.CreateAddressAsync(userId, address);
-
-            var createdAddressDto = _mapper.Map<AddressDto>(address);
-
-            return CreatedAtAction(nameof(GetAddressById), new { userId, id = createdAddressDto.Id }, new ApiResponse<AddressDto>(
+        public async Task<IActionResult> CreateAddress([FromBody] AddressForCreateDto addressForCreateDto) {
+            var userId = GetCurrentUserId();
+            await _service.AddressService.CreateAddressAsync(userId, addressForCreateDto);
+            return StatusCode(StatusCodes.Status201Created, new ApiResponse<AddressDto>(
                 isSuccess: true,
-                message: "Address created successfully.",
-                data: createdAddressDto
+                message: "Address created successfully."
             ));
         }
 
-        // PUT: api/user/{userId}/address/{id}
         [HttpPut("{id:guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateAddress(string userId, Guid id, [FromBody] AddressForUpdateDto addressForUpdateDto) {
-            if (!ModelState.IsValid) {
-                return BadRequest(new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "Invalid data.",
-                    errors: ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()
-                ));
-            }
+        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] AddressForUpdateDto addressForUpdateDto) {
 
-            var address = await _service.AddressService.GetAddressAsync(userId, id);
-            if (address == null) {
-                return NotFound(new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "Address not found."
-                ));
-            }
-
-            _mapper.Map(addressForUpdateDto, address);
-            await _service.AddressService.UpdateAddressAsync(address);
-
-            return NoContent();
+            var userId = GetCurrentUserId();
+            await _service.AddressService.UpdateAddressAsync(userId, id, addressForUpdateDto);
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<AddressDto>(
+                isSuccess: true,
+                message: "Address updated successfully."
+            ));
         }
 
-        // DELETE: api/user/{userId}/address/{id}
         [HttpDelete("{id:guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> DeleteAddress(string userId, Guid id) {
-            var address = await _service.AddressService.GetAddressAsync(userId, id);
-            if (address == null) {
-                return NotFound(new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "Address not found."
-                ));
-            }
-
-            await _service.AddressService.DeleteAddressAsync(address);
-
-            return NoContent();
+        public async Task<IActionResult> DeleteAddress(Guid id) {
+            var userId = GetCurrentUserId();
+            await _service.AddressService.DeleteAddressAsync( userId, id);
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<AddressDto>(
+                isSuccess: true,
+                message: "Address deleted successfully."
+            ));
         }
 
-        // PATCH: api/user/{userId}/address/{id}/default
         [HttpPatch("{id:guid}/default")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> SetDefaultAddress(string userId, Guid id) {
-            var result = await _service.AddressService.SetDefaultAddressAsync(userId, id);
-
-            if (!result.Succeeded) {
-                var errors = result.Errors.Select(e => e.Description).ToList();
-
-                return BadRequest(new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "Failed to set default address.",
-                    errors: errors
-                ));
-            }
-
+        public async Task<IActionResult> SetDefaultAddress(Guid id) {
+            var userId = GetCurrentUserId();
+            await _service.AddressService.SetDefaultAddResAsync(userId, id);
             return Ok(new ApiResponse<object>(
                 isSuccess: true,
                 message: "Default address set successfully."

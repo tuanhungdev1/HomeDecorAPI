@@ -13,8 +13,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories {
         protected readonly DbSet<T> _dbSet;
 
         protected RepositoryBase(ApplicationDbContext context) {
-            _context = context;
-            _dbSet = context.Set<T>();
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _dbSet = _context.Set<T>();
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync() {
@@ -30,28 +30,31 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories {
         }
 
         public virtual async Task AddAsync(T entity) {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync(); // Lưu thay đổi một cách bất đồng bộ
         }
 
         public virtual async Task AddRangeAsync(IEnumerable<T> entities) {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
             await _dbSet.AddRangeAsync(entities);
-            await _context.SaveChangesAsync(); // Lưu thay đổi một cách bất đồng bộ
         }
 
-        public virtual async Task UpdateAsync(T entity) {
+        public virtual Task UpdateAsync(T entity) {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync(); // Lưu thay đổi một cách bất đồng bộ
+            return Task.CompletedTask;
         }
 
-        public virtual async Task RemoveAsync(T entity) {
+        public virtual Task RemoveAsync(T entity) {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
             _dbSet.Remove(entity);
-            await _context.SaveChangesAsync(); // Lưu thay đổi một cách bất đồng bộ
+            return Task.CompletedTask;
         }
 
-        public virtual async Task RemoveRangeAsync(IEnumerable<T> entities) {
+        public virtual Task RemoveRangeAsync(IEnumerable<T> entities) {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
             _dbSet.RemoveRange(entities);
-            await _context.SaveChangesAsync(); // Lưu thay đổi một cách bất đồng bộ
+            return Task.CompletedTask;
         }
 
         public virtual async Task<int> CountAsync(Expression<Func<T, bool>> predicate = null) {
@@ -66,6 +69,10 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories {
 
         public virtual async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate) {
             return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
+
+        public virtual async Task SaveChangesAsync() {
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace HomeDecorAPI.Application.MappingProfile {
 
             //Address
             CreateMap<Address, AddressDto>().ReverseMap();
-            CreateMap<AddressForUpdateDto, Address>();
+            CreateMap<AddressForUpdateDto, Address>().ForMember(dest => dest.Id, opt => opt.Ignore()); 
             CreateMap<AddressForCreateDto, Address>();
         }
     }
