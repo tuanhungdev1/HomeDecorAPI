@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
-    public class UserDto {
+namespace HomeDecorAPI.Application.DTOs.UserDtos
+{
+    public class UserDto
+    {
         public string Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }

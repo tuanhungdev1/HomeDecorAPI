@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Shared.ActionFilters;
-using HomeDecorAPI.Application.Shared.DTOs.AddressDtos;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using HomeDecorAPI.Application.DTOs.AddressDtos;
 
-namespace HomeDecorAPI.Presentation.Controllers {
+namespace HomeDecorAPI.Presentation.Controllers
+{
     [Route("api/address")]
     [ApiController]
     [Authorize]

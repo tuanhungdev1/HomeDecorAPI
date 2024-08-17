@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Shared.DTOs.AddressDtos {
-    public class AddressForUpdateDto {
+namespace HomeDecorAPI.Application.DTOs.AddressDtos
+{
+    public class AddressForCreateDto
+    {
         [Required(ErrorMessage = "Display name is required.")]
         [StringLength(100, ErrorMessage = "Display name cannot exceed 100 characters.")]
         public string DisplayName { get; set; } = null!;

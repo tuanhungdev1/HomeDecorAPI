@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
-using HomeDecorAPI.Application.Shared.DTOs.AddressDtos;
-using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
+using HomeDecorAPI.Application.DTOs.AddressDtos;
+using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
@@ -12,7 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Services {
+namespace HomeDecorAPI.Application.Services
+{
     public class UserService : IUserService {
         private readonly UserManager<User> _userService;
         private readonly IMapper _mapper;

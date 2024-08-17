@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
-    public class UserForRegistrationDto {
+namespace HomeDecorAPI.Application.DTOs.UserDtos
+{
+    public class UserForRegistrationDto
+    {
         [Required(ErrorMessage = "Username is required")]
         [StringLength(50, ErrorMessage = "Username must be between 3 and 50 characters", MinimumLength = 3)]
         public string? UserName { get; init; }

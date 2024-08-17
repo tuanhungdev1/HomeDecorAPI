@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
-using HomeDecorAPI.Application.Shared.DTOs.TokenDtos;
-using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
+using HomeDecorAPI.Application.DTOs.TokenDtos;
+using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
@@ -18,7 +18,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Services {
+namespace HomeDecorAPI.Application.Services
+{
     public sealed class AuthenticationService : IAuthenticationService {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;

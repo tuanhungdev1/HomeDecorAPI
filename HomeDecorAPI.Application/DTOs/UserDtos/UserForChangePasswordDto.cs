@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
-    public class ChangePasswordDto {
+namespace HomeDecorAPI.Application.DTOs.UserDtos
+{
+    public class ChangePasswordDto
+    {
         [Required(ErrorMessage = "Username is required.")]
         [StringLength(50, ErrorMessage = "Username cannot exceed 50 characters.")]
         public required string Username { get; set; }

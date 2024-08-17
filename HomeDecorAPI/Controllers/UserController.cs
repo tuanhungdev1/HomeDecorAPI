@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
+using HomeDecorAPI.Application.DTOs.UploadDtos;
+using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
-using HomeDecorAPI.Application.Shared.DTOs.TokenDtos;
-using HomeDecorAPI.Application.Shared.DTOs.UploadDtos;
-using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 
-namespace HomeDecorAPI.Presentation.Controllers {
+namespace HomeDecorAPI.Presentation.Controllers
+{
     [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase {

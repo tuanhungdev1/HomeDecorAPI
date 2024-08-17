@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
-    public class UserForLoginDto {
+namespace HomeDecorAPI.Application.DTOs.UserDtos
+{
+    public class UserForLoginDto
+    {
         [Required(ErrorMessage = "Username is required")]
         [StringLength(50, ErrorMessage = "Username must be between 3 and 50 characters", MinimumLength = 3)]
         public required string UserName { get; init; }

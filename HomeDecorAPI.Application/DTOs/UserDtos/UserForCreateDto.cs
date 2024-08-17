@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
-    public class UserForCreateDto {
+namespace HomeDecorAPI.Application.DTOs.UserDtos
+{
+    public class UserForCreateDto
+    {
 
     }
 }

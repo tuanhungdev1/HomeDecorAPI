@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
+using HomeDecorAPI.Application.DTOs.AddressDtos;
 using HomeDecorAPI.Application.Interfaces;
-using HomeDecorAPI.Application.Shared.DTOs.AddressDtos;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Services {
+namespace HomeDecorAPI.Application.Services
+{
     public class AddressService : IAddressService {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;

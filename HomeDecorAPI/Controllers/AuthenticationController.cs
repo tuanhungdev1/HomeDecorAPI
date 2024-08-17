@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
+using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
-using HomeDecorAPI.Application.Shared.DTOs.TokenDtos;
-using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
+
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomeDecorAPI.Presentation.Controllers {
+namespace HomeDecorAPI.Presentation.Controllers
+{
     [Route("api/auth")]
     [ApiController]
     public class AuthenticationController : ControllerBase {

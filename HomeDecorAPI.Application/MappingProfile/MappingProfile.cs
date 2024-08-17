@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +9,11 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
-using HomeDecorAPI.Application.Shared.DTOs.AddressDtos;
+using HomeDecorAPI.Application.DTOs.AddressDtos;
+using HomeDecorAPI.Application.DTOs.UserDtos;
 
-namespace HomeDecorAPI.Application.MappingProfile {
+namespace HomeDecorAPI.Application.MappingProfile
+{
     public class MappingProfile : Profile {
         public MappingProfile() {
             // USER

@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Shared.DTOs.UploadDtos {
-    public class UploadAvatarDto {
+namespace HomeDecorAPI.Application.DTOs.UploadDtos
+{
+    public class UploadAvatarDto
+    {
         [Required]
         public IFormFile File { get; set; }
     }
