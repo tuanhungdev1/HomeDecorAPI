@@ -24,6 +24,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
 
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
 
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+
         }
     }
 }

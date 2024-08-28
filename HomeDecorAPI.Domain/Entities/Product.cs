@@ -47,5 +47,8 @@ namespace HomeDecorAPI.Domain.Entities {
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? UpdatedDate { get; set; }
+
+        // Navigation property to categories
+        public ICollection<Category>? Categories { get; set; }
     }
 }

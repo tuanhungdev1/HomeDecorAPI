@@ -4,6 +4,7 @@ using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240828152136_add category table migration")]
+    partial class addcategorytablemigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,163 +126,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Category");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "All bedroom related furniture and accessories",
-                            ImageUrl = "https://example.com/bedroom.jpg",
-                            Name = "Bedroom"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Different types of beds",
-                            ImageUrl = "https://example.com/beds.jpg",
-                            Name = "Beds",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Various bedroom lamps",
-                            ImageUrl = "https://example.com/lamps.jpg",
-                            Name = "Lamps",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Wardrobes and storage solutions",
-                            ImageUrl = "https://example.com/wardrobes.jpg",
-                            Name = "Wardrobes",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Dressers and bedroom storage",
-                            ImageUrl = "https://example.com/dressers.jpg",
-                            Name = "Dressers",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Furniture and accessories for the living room",
-                            ImageUrl = "https://example.com/livingroom.jpg",
-                            Name = "Living Room"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Description = "Various types of sofas for the living room",
-                            ImageUrl = "https://example.com/sofas.jpg",
-                            Name = "Sofas",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Description = "Coffee tables for the living room",
-                            ImageUrl = "https://example.com/coffeetables.jpg",
-                            Name = "Coffee Tables",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Description = "TV stands and media units",
-                            ImageUrl = "https://example.com/tvstands.jpg",
-                            Name = "TV Stands",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Description = "Bookcases and shelving units",
-                            ImageUrl = "https://example.com/bookcases.jpg",
-                            Name = "Bookcases",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Description = "Furniture and accessories for the dining room",
-                            ImageUrl = "https://example.com/diningroom.jpg",
-                            Name = "Dining Room"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Description = "Dining tables for the dining room",
-                            ImageUrl = "https://example.com/diningtables.jpg",
-                            Name = "Dining Tables",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Description = "Dining chairs for the dining room",
-                            ImageUrl = "https://example.com/diningchairs.jpg",
-                            Name = "Dining Chairs",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Description = "Bar stools and counter seating",
-                            ImageUrl = "https://example.com/barstools.jpg",
-                            Name = "Bar Stools",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Description = "Furniture and accessories for the kitchen",
-                            ImageUrl = "https://example.com/kitchen.jpg",
-                            Name = "Kitchen"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Description = "Kitchen cabinets and storage solutions",
-                            ImageUrl = "https://example.com/cabinets.jpg",
-                            Name = "Cabinets",
-                            ParentCategoryId = 15
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Description = "Kitchen islands and counters",
-                            ImageUrl = "https://example.com/kitchenislands.jpg",
-                            Name = "Kitchen Islands",
-                            ParentCategoryId = 15
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Description = "Furniture and accessories for outdoor spaces",
-                            ImageUrl = "https://example.com/outdoor.jpg",
-                            Name = "Outdoor"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Description = "Seating solutions for outdoor areas",
-                            ImageUrl = "https://example.com/outdoorseating.jpg",
-                            Name = "Outdoor Seating",
-                            ParentCategoryId = 18
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Description = "Tables for outdoor dining and lounging",
-                            ImageUrl = "https://example.com/outdoortables.jpg",
-                            Name = "Outdoor Tables",
-                            ParentCategoryId = 18
-                        });
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
@@ -342,7 +188,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 8, 28, 15, 23, 46, 68, DateTimeKind.Utc).AddTicks(6147),
+                            CreatedDate = new DateTime(2024, 8, 28, 15, 21, 36, 336, DateTimeKind.Utc).AddTicks(5460),
                             Description = "A sleek and modern coffee table made from high-quality oak wood.",
                             DiscountPercentage = 10,
                             ImageUrl = "https://th.bing.com/th/id/OIP.j8duPDpTdbCRp96Z-V6jXQHaHa?rs=1&pid=ImgDetMain",
@@ -356,7 +202,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 8, 28, 15, 23, 46, 68, DateTimeKind.Utc).AddTicks(6150),
+                            CreatedDate = new DateTime(2024, 8, 28, 15, 21, 36, 336, DateTimeKind.Utc).AddTicks(5464),
                             Description = "A comfortable and stylish armchair upholstered in genuine leather.",
                             ImageUrl = "https://a.1stdibscdn.com/20th-century-french-leather-wing-back-armchair-c1960-for-sale-picture-2/f_13482/f_285265221651735694424/PUSHKIN_ANTIQUES_STUNNING_LATE_20thC_FRENCH_LEATHER_WING_BACK_ARMCHAIR_c_1960_03_master.jpg?width=768",
                             IsNew = false,
@@ -369,7 +215,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2024, 8, 28, 15, 23, 46, 68, DateTimeKind.Utc).AddTicks(6153),
+                            CreatedDate = new DateTime(2024, 8, 28, 15, 21, 36, 336, DateTimeKind.Utc).AddTicks(5467),
                             Description = "A minimalist floor lamp with a sleek metal frame and adjustable height.",
                             DiscountPercentage = 15,
                             ImageUrl = "https://i5.walmartimages.com/asr/3181df7b-b2e3-411e-bf47-95fe5bcd8c4b_1.c7553cfd9e1daaed9c6cd9e1544bb12b.jpeg",
@@ -383,7 +229,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2024, 8, 28, 15, 23, 46, 68, DateTimeKind.Utc).AddTicks(6155),
+                            CreatedDate = new DateTime(2024, 8, 28, 15, 21, 36, 336, DateTimeKind.Utc).AddTicks(5469),
                             Description = "A beautiful vintage wall clock with a wooden frame and Roman numerals.",
                             DiscountPercentage = 5,
                             ImageUrl = "https://www.vkwoods.com/vkwoods/uploads/2022/03/TJP_7853_1024x1024.webp",
@@ -397,7 +243,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2024, 8, 28, 15, 23, 46, 68, DateTimeKind.Utc).AddTicks(6157),
+                            CreatedDate = new DateTime(2024, 8, 28, 15, 21, 36, 336, DateTimeKind.Utc).AddTicks(5472),
                             Description = "A luxurious dining table with a polished marble top and sturdy metal legs.",
                             DiscountPercentage = 20,
                             ImageUrl = "https://th.bing.com/th/id/R.8c5920f9aeefc029e47eb83afb6f5283?rik=ACMUfp1vINNgnQ&pid=ImgRaw&r=0",
@@ -529,25 +375,25 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f10e19fe-2752-4a7e-aa51-f17758dba697",
+                            Id = "0cbed28d-eab1-4da3-9560-74fe4335fc18",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9a2a6374-80bc-48b0-8499-1036bc2f0001",
+                            Id = "22913a08-c45a-487c-95a6-988791653503",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "37fc96f9-59cf-4484-9f53-7ac3dc0e71b1",
+                            Id = "89b7480a-54d1-47a8-9772-d695f378b559",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "7af0ae9a-25cf-4546-96e6-c41e829bea81",
+                            Id = "762552fa-f639-4946-b4ae-7fda853dc5a1",
                             Name = "ContentCreator",
                             NormalizedName = "ContentCreator"
                         });
