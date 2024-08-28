@@ -42,11 +42,7 @@ if (app.Environment.IsDevelopment()) {
 
 // Cấu hình để cho phép truy cập tệp từ thư mục "uploads"
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(app.Environment.WebRootPath, "uploads")),
-    RequestPath = "/uploads"
-});
+
 
 app.UseHttpsRedirection();
 

@@ -6,14 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories {
-    public sealed class RepositoryManager : IRepositoryManager {
+namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
+{
+    public sealed class RepositoryManager : IRepositoryManager
+    {
         private readonly ApplicationDbContext _applicationContext;
 
         private readonly Lazy<IAddressRepository> _addressRepository;
 
-        public RepositoryManager(ApplicationDbContext applicationContext, IAddressRepository addressRepository) {
-            _applicationContext = applicationContext;   
+        public RepositoryManager(ApplicationDbContext applicationContext)
+        {
+            _applicationContext = applicationContext;
             _addressRepository = new Lazy<IAddressRepository>(() => new AddressRepository(applicationContext));
         }
 

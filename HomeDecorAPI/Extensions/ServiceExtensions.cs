@@ -4,7 +4,7 @@ using HomeDecorAPI.Application.Services;
 using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
-using HomeDecorAPI.Infrastructure.SQLServer.Data.Repositories;
+using HomeDecorAPI.Infrastructure.SQLServer.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace HomeDecorAPI.Presentation.Extensions {
+namespace HomeDecorAPI.Presentation.Extensions
+{
     public static class ServiceExtensions {
         // Connect Database 
         public static void ConfigureSQLServerContext(this IServiceCollection services, IConfiguration configuration) =>
