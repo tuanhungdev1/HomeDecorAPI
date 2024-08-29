@@ -20,17 +20,17 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>?> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
 
-        public virtual async Task<T> GetByIdAsync(Guid id)
+        public virtual async Task<T?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<IEnumerable<T>?> FindAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.Where(predicate).ToListAsync();
         }
@@ -68,19 +68,14 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
             return Task.CompletedTask;
         }
 
-        public virtual async Task<int> CountAsync(Expression<Func<T, bool>> predicate = null)
+        public virtual async Task<int?> CountAsync(Expression<Func<T, bool>>? predicate = null)
         {
             return predicate == null
                 ? await _dbSet.CountAsync()
                 : await _dbSet.CountAsync(predicate);
         }
 
-        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _dbSet.AnyAsync(predicate);
-        }
-
-        public virtual async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.FirstOrDefaultAsync(predicate);
         }

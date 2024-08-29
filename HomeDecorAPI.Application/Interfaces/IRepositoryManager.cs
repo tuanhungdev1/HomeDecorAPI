@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.Interfaces {
     public interface IRepositoryManager {
         public IAddressRepository AddressRepository { get; }
-        Task SaveAsync();
+        
     }
 }

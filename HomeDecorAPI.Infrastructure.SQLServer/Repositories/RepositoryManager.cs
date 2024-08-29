@@ -19,8 +19,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
             _applicationContext = applicationContext;
             _addressRepository = new Lazy<IAddressRepository>(() => new AddressRepository(applicationContext));
         }
-
-        public async Task SaveAsync() => await _applicationContext.SaveChangesAsync();
         public IAddressRepository AddressRepository => _addressRepository.Value;
     }
 }
