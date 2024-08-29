@@ -20,6 +20,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Categories)
+                .WithMany(c => c.Products)
+                .UsingEntity(j => j.ToTable("ProductCategory"));
+
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
