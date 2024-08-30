@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Contracts {
     public interface IProductService {
-        Task<PagedList<ProductDto>> GetAllProductsAsync();
+        Task<(IEnumerable<ProductDto>, MetaData)> GetAllProductsAsync(int pageNumber, int pageSize);
         Task<ProductDto> GetProdductByIdAsync(int productId);
         Task<ProductDto> CreateProductAsync(ProductForCreateDto productForCreateDto);
         Task<ProductDto> UpdateProductAsync(int productId, ProductForUpdateDto productForUpdateDto);
-        Task<bool> DeleteProductAsync(int productId);
+        Task DeleteProductAsync(int productId);
         //Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(int categoryId);   
-        Task<bool> ProductExistsAsync(int productId);
+    
     }
 }

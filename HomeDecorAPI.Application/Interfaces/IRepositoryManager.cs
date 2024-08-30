@@ -9,5 +9,7 @@ namespace HomeDecorAPI.Application.Interfaces {
         public IAddressRepository AddressRepository { get; }
         public IProductRepository ProductRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
+
+        public Task SaveChangesAsync();
     }
 }

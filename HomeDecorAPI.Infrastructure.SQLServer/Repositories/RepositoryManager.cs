@@ -26,5 +26,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
         public IAddressRepository AddressRepository => _addressRepository.Value;
         public IProductRepository ProductRepository => _productRepository.Value;
         public ICategoryRepository CategoryRepository => _categoryRepository.Value;
+
+        public async Task SaveChangesAsync() {
+            await _applicationContext.SaveChangesAsync();
+        }
     }
 }
