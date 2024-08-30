@@ -23,11 +23,13 @@ namespace HomeDecorAPI.Domain.Entities {
         [Range(0, 100, ErrorMessage = "Discount Percentage must be between 0 and 100.")]
         public int? DiscountPercentage { get; set; }
 
+        public DateTime? DiscountEndDate { get; set; } // Ngày hết hạn giảm giá
+
         [Required]
         [Url(ErrorMessage = "Invalid URL format.")]
         public required string ImageUrl { get; set; }
 
-        public bool? IsNew { get; set; }
+        public DateTime? IsNewExpiryDate { get; set; } // Ngày hết hạn trạng thái mới
 
         [Required]
         [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters.")]
