@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.Interfaces {
     public interface IRepositoryManager {
         public IAddressRepository AddressRepository { get; }
-        
+        public IProductRepository ProductRepository { get; }
+        public ICategoryRepository CategoryRepository { get; }
     }
 }

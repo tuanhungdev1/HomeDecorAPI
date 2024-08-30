@@ -13,12 +13,18 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
         private readonly ApplicationDbContext _applicationContext;
 
         private readonly Lazy<IAddressRepository> _addressRepository;
+        private readonly Lazy<IProductRepository> _productRepository;
+        private readonly Lazy<ICategoryRepository> _categoryRepository;
 
         public RepositoryManager(ApplicationDbContext applicationContext)
         {
             _applicationContext = applicationContext;
             _addressRepository = new Lazy<IAddressRepository>(() => new AddressRepository(applicationContext));
+            _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(applicationContext));
+            _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(applicationContext));
         }
         public IAddressRepository AddressRepository => _addressRepository.Value;
+        public IProductRepository ProductRepository => _productRepository.Value;
+        public ICategoryRepository CategoryRepository => _categoryRepository.Value;
     }
 }
