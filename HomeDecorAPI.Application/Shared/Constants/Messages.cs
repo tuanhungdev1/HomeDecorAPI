@@ -40,6 +40,7 @@ namespace HomeDecorAPI.Application.Shared.Constants {
             public const string OrderShipped = "Order with ID {0} has been shipped.";
             public const string LoginSuccessful = "You have successfully logged in.";
             public const string LogoutSuccessful = "You have successfully logged out.";
+            public const string DataRetrieved = "Information was successfully retrieved.";
 
             public static string EntityAction(string action, string entityName, string identifier) => FormatMessage($"{entityName} with {identifier} was successfully {action}.");
         }
