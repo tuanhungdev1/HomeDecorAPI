@@ -34,7 +34,7 @@ namespace HomeDecorAPI.Application.Services
             return (pagedResult, pagedResult.MetaData);
         }
 
-        public async Task<ProductDto> GetProdductByIdAsync(int productId) {
+        public async Task<ProductDto> GetProductByIdAsync(int productId) {
             var product = await _repositoryManager.ProductRepository.GetByIdAsync(productId);
 
             if (product == null) {

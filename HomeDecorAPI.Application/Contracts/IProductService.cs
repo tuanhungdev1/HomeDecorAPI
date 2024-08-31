@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.Contracts {
     public interface IProductService {
         Task<(IEnumerable<ProductDto>, MetaData)> GetAllProductsAsync(int pageNumber, int pageSize);
-        Task<ProductDto> GetProdductByIdAsync(int productId);
+        Task<ProductDto> GetProductByIdAsync(int productId);
         Task<ProductDto> CreateProductAsync(ProductForCreateDto productForCreateDto);
         Task<ProductDto> UpdateProductAsync(int productId, ProductForUpdateDto productForUpdateDto);
         Task DeleteProductAsync(int productId);

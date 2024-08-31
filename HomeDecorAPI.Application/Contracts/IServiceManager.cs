@@ -11,5 +11,6 @@ namespace HomeDecorAPI.Application.Contracts {
         IFileUploadService FileUploadService { get; }
         IAddressService AddressService { get; }
         IProductService ProductService { get; }
+        ICategoryService CategoryService { get; }
     }
 }

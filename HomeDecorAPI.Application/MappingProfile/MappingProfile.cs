@@ -12,6 +12,8 @@ using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Sha
 using HomeDecorAPI.Application.DTOs.AddressDtos;
 using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.DTOs.ProductDtos;
+using HomeDecorAPI.Application.DTOs.CategoryDto;
+using HomeDecorAPI.Application.DTOs.CategoryDtos;
 
 namespace HomeDecorAPI.Application.MappingProfile
 {
@@ -40,6 +42,15 @@ namespace HomeDecorAPI.Application.MappingProfile
             CreateMap<ProductForUpdateDto, Product>()
                 .ForMember(dest => dest.Id, act => act.Ignore());
             // PRODUCT
+
+            // CATEGORY
+            CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryForCreateDto, Category>()
+                .ForMember(dest => dest.Id, act => act.Ignore());
+            CreateMap<CategoryForCreateDto, CategoryDto>();
+            CreateMap<CategoryForUpdateDto, Category>()
+                .ForMember(dest => dest.Id, act => act.Ignore());
+            // CATEGORY
         }
     }
 }

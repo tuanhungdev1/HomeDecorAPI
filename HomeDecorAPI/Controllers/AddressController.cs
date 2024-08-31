@@ -2,18 +2,19 @@
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using HomeDecorAPI.Application.DTOs.AddressDtos;
+using HomeDecorAPI.Application.Shared.Utilities;
 
-namespace HomeDecorAPI.Presentation.Controllers
-{
+namespace HomeDecorAPI.Presentation.Controllers {
     [Route("api/address")]
     [ApiController]
     [Authorize]
@@ -32,23 +33,19 @@ namespace HomeDecorAPI.Presentation.Controllers
 
         [HttpGet("{id:guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> GetAddressById(Guid id) {
+        public async Task<IActionResult> GetAddressById(int id) {
             var userId = GetCurrentUserId();
             var address = await _service.AddressService.GetAddressAsync(userId, id);
 
             if (address == null) {
-                return NotFound(new ApiResponse<object>(
+                return NotFound(ApiResponseFactory.CreateResponse<object>(
                     isSuccess: false,
-                    message: "Address not found.",
-                    errors: new List<string> { "The specified address could not be found." }
+                    message: Messages.Error.EntityNotFound("Address", id),
+                    errors: new List<string> { Messages.Error.EntityNotFound("Address", id) }
                 ));
             }
 
-            return Ok(new ApiResponse<AddressDto>(
-                isSuccess: true,
-                message: "Address retrieved successfully.",
-                data: address
-            ));
+            return Ok(ApiResponseFactory.CreateResponse(true, Messages.Success.EntityAction("retrieved", "Address", id.ToString()), address));
         }
 
         [HttpGet]
@@ -58,17 +55,13 @@ namespace HomeDecorAPI.Presentation.Controllers
             var addresses = await _service.AddressService.GetAllAddressesByUserIdAsync(userId);
 
             if (addresses == null || !addresses.Any()) {
-                return NotFound(new ApiResponse<object>(
+                return NotFound(ApiResponseFactory.CreateResponse<object>(
                     isSuccess: false,
-                    message: "No addresses found for the current user."
+                    message: Messages.Info.NoDataAvailable
                 ));
             }
 
-            return Ok(new ApiResponse<IEnumerable<AddressDto>>(
-                isSuccess: true,
-                message: "Addresses retrieved successfully.",
-                data: addresses
-            ));
+            return Ok(ApiResponseFactory.CreateResponse(true, Messages.Success.DataRetrieved, addresses));
         }
 
         [HttpPost]
@@ -76,44 +69,31 @@ namespace HomeDecorAPI.Presentation.Controllers
         public async Task<IActionResult> CreateAddress([FromBody] AddressForCreateDto addressForCreateDto) {
             var userId = GetCurrentUserId();
             await _service.AddressService.CreateAddressAsync(userId, addressForCreateDto);
-            return StatusCode(StatusCodes.Status201Created, new ApiResponse<AddressDto>(
-                isSuccess: true,
-                message: "Address created successfully."
-            ));
+            return StatusCode(StatusCodes.Status201Created, ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityCreated.Replace("{0}", "Address")));
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPut("{id:int}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] AddressForUpdateDto addressForUpdateDto) {
-
+        public async Task<IActionResult> UpdateAddress(int id, [FromBody] AddressForUpdateDto addressForUpdateDto) {
             var userId = GetCurrentUserId();
             await _service.AddressService.UpdateAddressAsync(userId, id, addressForUpdateDto);
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<AddressDto>(
-                isSuccess: true,
-                message: "Address updated successfully."
-            ));
+            return StatusCode(StatusCodes.Status200OK, ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityUpdated.Replace("{0}", "Address")));
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("{id:int}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> DeleteAddress(Guid id) {
+        public async Task<IActionResult> DeleteAddress(int id) {
             var userId = GetCurrentUserId();
-            await _service.AddressService.DeleteAddressAsync( userId, id);
-            return StatusCode(StatusCodes.Status200OK, new ApiResponse<AddressDto>(
-                isSuccess: true,
-                message: "Address deleted successfully."
-            ));
+            await _service.AddressService.DeleteAddressAsync(userId, id);
+            return StatusCode(StatusCodes.Status200OK, ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityDeleted.Replace("{0}", "Address")));
         }
 
         [HttpPatch("{id:guid}/default")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> SetDefaultAddress(Guid id) {
+        public async Task<IActionResult> SetDefaultAddress(int id) {
             var userId = GetCurrentUserId();
             await _service.AddressService.SetDefaultAddResAsync(userId, id);
-            return Ok(new ApiResponse<object>(
-                isSuccess: true,
-                message: "Default address set successfully."
-            ));
+            return Ok(ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityAction("set as default", "Address", id.ToString())));
         }
     }
 }

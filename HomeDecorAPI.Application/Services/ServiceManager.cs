@@ -20,6 +20,7 @@ namespace HomeDecorAPI.Application.Services {
         private readonly Lazy<IFileUploadService> _fileUploadService; 
         private readonly Lazy<IAddressService> _addressService;
         private readonly Lazy<IProductService> _productService;
+        private readonly Lazy<ICategoryService> _categoryService;
 
         public ServiceManager(IRepositoryManager repositoryManager, IOptions<CloudinarySettings> config, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration) {
             _authenticationService = new Lazy<IAuthenticationService>(() =>
@@ -30,14 +31,14 @@ namespace HomeDecorAPI.Application.Services {
             _fileUploadService = new Lazy<IFileUploadService>(() => new CloudinaryFileUploadService(config));
 
             _productService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper));
+
+            _categoryService = new Lazy<ICategoryService> (() => new CategoryService(repositoryManager, mapper));
         }
-        public IAuthenticationService AuthenticationService =>
-       _authenticationService.Value;
-
+        public IAuthenticationService AuthenticationService => _authenticationService.Value;
         public IUserService UserService => _userService.Value;
-
         public IFileUploadService FileUploadService => _fileUploadService.Value;
         public IAddressService AddressService => _addressService.Value;
         public IProductService ProductService => _productService.Value;
+        public ICategoryService CategoryService => _categoryService.Value;
     }
 }
