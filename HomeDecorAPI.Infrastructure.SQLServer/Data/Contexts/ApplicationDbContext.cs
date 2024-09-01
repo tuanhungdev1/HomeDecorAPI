@@ -24,18 +24,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-            
-
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.FavoriteProducts)
-                .WithOne(f => f.User);
-
-
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
 
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+
+            modelBuilder.ApplyConfiguration(new FavoriteProductConfiguration());
 
         }
     }

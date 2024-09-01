@@ -59,9 +59,5 @@ namespace HomeDecorAPI.Domain.Entities {
         // Navigation property to categories
         public ICollection<Category>? Categories { get; set; }
         //public ICollection<Review>? Reviews { get; set; } = new List<Review>();
-        
-        //public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
-
-        public ICollection<FavoriteProduct>? FavoriteProducts { get; set; } = new List<FavoriteProduct>();
     }
 }

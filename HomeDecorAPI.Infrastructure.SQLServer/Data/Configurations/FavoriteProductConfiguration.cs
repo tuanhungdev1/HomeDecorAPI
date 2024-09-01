@@ -9,6 +9,16 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
     public class FavoriteProductConfiguration : IEntityTypeConfiguration<FavoriteProduct> {
-        public void Configure(EntityTypeBuilder<Category> builder) { }
+        public void Configure(EntityTypeBuilder<FavoriteProduct> builder) { 
+            builder.HasKey(fp => new {fp.UserId, fp.ProductId});
+
+            builder.HasOne(fp => fp.User)
+                .WithMany(u => u.FavoriteProducts)
+                .HasForeignKey(fp => fp.UserId);
+
+            builder.HasOne(fp => fp.Product)
+                .WithMany()
+                .HasForeignKey(fp => fp.ProductId);
+        }
     }
 }
