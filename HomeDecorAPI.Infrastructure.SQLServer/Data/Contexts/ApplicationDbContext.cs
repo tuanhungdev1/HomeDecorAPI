@@ -16,14 +16,20 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<FavoriteProduct> FavoriteProducts { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>()
-                .HasMany(p => p.Categories)
-                .WithMany(c => c.Products)
-                .UsingEntity(j => j.ToTable("ProductCategory"));
+            
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FavoriteProducts)
+                .WithOne(f => f.User);
+
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
 

@@ -8,9 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
-    public class UserConfiguration : IEntityTypeConfiguration<User> {
-        public void Configure(EntityTypeBuilder<User> builder) {
-            
-        }
+    public class FavoriteProductConfiguration : IEntityTypeConfiguration<FavoriteProduct> {
+        public void Configure(EntityTypeBuilder<Category> builder) { }
     }
 }

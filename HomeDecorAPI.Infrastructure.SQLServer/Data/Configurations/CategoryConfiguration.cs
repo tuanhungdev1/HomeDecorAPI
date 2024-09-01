@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category> {
         public void Configure(EntityTypeBuilder<Category> builder) {
+
+            
+
             builder.HasData(
                 new Category {
                     Id = 1,
