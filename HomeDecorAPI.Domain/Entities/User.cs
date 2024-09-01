@@ -27,5 +27,6 @@ namespace HomeDecorAPI.Domain.Entities {
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
         public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+        public virtual ICollection<FavoriteProduct> FavoriteProducts { get; set; } = new List<FavoriteProduct>();
     }
 }

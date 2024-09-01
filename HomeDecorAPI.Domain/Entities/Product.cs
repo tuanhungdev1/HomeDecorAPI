@@ -54,9 +54,12 @@ namespace HomeDecorAPI.Domain.Entities {
         public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime? UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; } = DateTime.UtcNow;
 
         // Navigation property to categories
         public ICollection<Category>? Categories { get; set; }
+        public ICollection<Review>? Reviews { get; set; } = new List<Review>();
+        public ICollection<FavoriteProduct> FavoriteProducts { get; set;} = new List<FavoriteProduct>();
+        public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
     }
 }
