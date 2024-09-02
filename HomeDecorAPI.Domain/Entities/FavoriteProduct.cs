@@ -8,7 +8,7 @@ public class FavoriteProduct {
     public int Id { get; set; }
 
     [Required(ErrorMessage = "User ID is required.")]
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
     public User? User { get; set; }
 
     [Required(ErrorMessage = "Product ID is required.")]

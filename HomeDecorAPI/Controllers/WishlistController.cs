@@ -18,8 +18,8 @@ namespace HomeDecorAPI.Presentation.Controllers {
             _serviceManager = serviceManager;
        }
 
-        [HttpGet("all/{userId:Guid}")]
-        public async Task<IActionResult> GetWishlistByUserId(Guid userId) {
+        [HttpGet("all/{userId}")]
+        public async Task<IActionResult> GetWishlistByUserId(string userId) {
             var result = await _serviceManager.FavoriteProductService.GetAllFavoriteProductsAsync(userId);
 
             if(result == null) 
@@ -41,8 +41,8 @@ namespace HomeDecorAPI.Presentation.Controllers {
             return Ok(ApiResponseFactory.CreateResponse<object>(true, SuccessMessages.Entity.ItemRemoved(addProductForWishlistDto.ProductId.ToString(), "Wishlist", addProductForWishlistDto.UserId.ToString())));
         }
 
-        [HttpDelete("{userId:Guid}")]
-        public async Task<IActionResult> RemoveAllProductForWishlist(Guid userId) {
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> RemoveAllProductForWishlist(string userId) {
             var result = await _serviceManager.FavoriteProductService.RemoveAllFavoriteProductAsync(userId);
 
             if (!result) {

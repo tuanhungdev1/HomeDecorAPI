@@ -15,7 +15,7 @@ namespace HomeDecorAPI.Domain.Entities {
         public string? LastName { get; set; }
 
         [StringLength(100)]
-        public required string DisplayName { get; set; }
+        public string? DisplayName { get; set; }
 
         [DataType(DataType.ImageUrl)]
         public string? ProfilePicture { get; set; }
@@ -26,7 +26,7 @@ namespace HomeDecorAPI.Domain.Entities {
 
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
-        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
-        public virtual ICollection<FavoriteProduct> FavoriteProducts { get; set; } = new List<FavoriteProduct>();
+        public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
+        public virtual ICollection<FavoriteProduct>? FavoriteProducts { get; set; } = new List<FavoriteProduct>();
     }
 }

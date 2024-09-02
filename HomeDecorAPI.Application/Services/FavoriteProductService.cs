@@ -22,7 +22,7 @@ namespace HomeDecorAPI.Application.Services {
             _mapper = mapper;
         }
 
-        public async Task<bool> AddProductAsync(Guid userId, int productId) {
+        public async Task<bool> AddProductAsync(string userId, int productId) {
             var existingFavorite = await _repositoryManager.FavoriteProductRepository.FirstOrDefaultAsync(fp => fp.UserId == userId && fp.ProductId == productId);
 
             if (existingFavorite != null) 
@@ -38,7 +38,7 @@ namespace HomeDecorAPI.Application.Services {
             return true;
         }
 
-        public async Task<bool> RemoveFavoriteProductAsync(Guid userId, int productId) {
+        public async Task<bool> RemoveFavoriteProductAsync(string userId, int productId) {
             var favoriteProduct = await _repositoryManager.FavoriteProductRepository.FirstOrDefaultAsync(fp => fp.UserId == userId && fp.ProductId == productId);
 
             if (favoriteProduct == null)
@@ -50,7 +50,7 @@ namespace HomeDecorAPI.Application.Services {
             return true;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllFavoriteProductsAsync(Guid userId) {
+        public async Task<IEnumerable<ProductDto>> GetAllFavoriteProductsAsync(string userId) {
             var favoriteProductList = await _repositoryManager.FavoriteProductRepository
                 .FindByCondition(fp => fp.UserId == userId)
                 .Select(fp => fp.Product)
@@ -59,7 +59,7 @@ namespace HomeDecorAPI.Application.Services {
             return _mapper.Map<IEnumerable<ProductDto>>(favoriteProductList);
         }
 
-        public async Task<bool> RemoveAllFavoriteProductAsync(Guid userId) {
+        public async Task<bool> RemoveAllFavoriteProductAsync(string userId) {
             var favoriteProducts = await _repositoryManager.FavoriteProductRepository
                 .FindByCondition(fp => fp.UserId == userId)
                 .ToListAsync();

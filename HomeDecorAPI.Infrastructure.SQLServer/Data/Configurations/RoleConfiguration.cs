@@ -25,7 +25,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
             },
             new IdentityRole {
                 Name = "ContentCreator",
-                NormalizedName = "ContentCreator"
+                NormalizedName = "CONTENTCREATOR"
+            },
+            new IdentityRole {
+                Name = "Moderator",
+                NormalizedName = "MODERATOR"
             }
             );
         }

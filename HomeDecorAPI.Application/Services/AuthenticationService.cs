@@ -26,7 +26,7 @@ namespace HomeDecorAPI.Application.Services
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
 
-        private User? _user;
+        private User _user;
 
         public AuthenticationService(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
@@ -48,7 +48,7 @@ namespace HomeDecorAPI.Application.Services
             return result;
         }
 
-        public async Task<User?> LoginAsync(UserForLoginDto userForLoginDto) {
+        public async Task<UserDto?> LoginAsync(UserForLoginDto userForLoginDto) {
             var user = await _userManager.FindByEmailAsync(userForLoginDto.UserName)
                        ?? await _userManager.FindByNameAsync(userForLoginDto.UserName);
 
@@ -56,8 +56,16 @@ namespace HomeDecorAPI.Application.Services
                 return null;
             }
             _user = user;
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, userForLoginDto.Password, userForLoginDto.RememberMe, lockoutOnFailure: false);
-            return result.Succeeded ? user : null;
+            var result = await _signInManager.PasswordSignInAsync(user.UserName!, userForLoginDto.Password, userForLoginDto.RememberMe, lockoutOnFailure: false);
+            if(result.Succeeded) {
+                var userDto = _mapper.Map<UserDto>(user);
+                var roles = await _userManager.GetRolesAsync(user);
+                userDto.Roles = roles;
+
+                return userDto;
+            }
+            
+            return null;
         }
 
 
@@ -89,12 +97,12 @@ namespace HomeDecorAPI.Application.Services
         private async Task<List<Claim>> GetClaims() {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, _user.UserName),
-                new Claim(ClaimTypes.Email, _user.Email), 
-                new Claim(ClaimTypes.NameIdentifier, _user.Id)
+                new Claim(ClaimTypes.Name, _user.UserName!),
+                new Claim(ClaimTypes.Email, _user.Email!), 
+                new Claim(ClaimTypes.NameIdentifier, _user.Id!)
             };
 
-            claims.Add(new Claim("DisplayName", _user.DisplayName));
+            //claims.Add(new Claim("DisplayName", _user.DisplayName));
 
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles) {

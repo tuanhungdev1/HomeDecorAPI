@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.DTOs.WishlistDtos {
     public class AddProductForWishlistDto {
         [Required(ErrorMessage = "UserID is required.")]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         [Required(ErrorMessage = "ProductID is required.")]
         public int ProductId { get; set; }
     }

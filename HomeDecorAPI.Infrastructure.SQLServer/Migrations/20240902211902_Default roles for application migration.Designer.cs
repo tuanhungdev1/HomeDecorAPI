@@ -4,6 +4,7 @@ using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240902211902_Default roles for application migration")]
+    partial class Defaultrolesforapplicationmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -456,23 +459,23 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6914),
+                            CreatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1954),
                             Description = "A sleek and modern coffee table made from high-quality oak wood.",
-                            DiscountEndDate = new DateTime(2024, 10, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6882),
+                            DiscountEndDate = new DateTime(2024, 10, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1944),
                             DiscountPercentage = 10,
                             ImageUrl = "https://th.bing.com/th/id/OIP.j8duPDpTdbCRp96Z-V6jXQHaHa?rs=1&pid=ImgDetMain",
-                            IsNewExpiryDate = new DateTime(2024, 9, 16, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6905),
+                            IsNewExpiryDate = new DateTime(2024, 9, 16, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1952),
                             Measurements = "120x60x45 cm",
                             Name = "Modern Wooden Coffee Table",
                             OriginalPrice = 149.99m,
                             SKU = "WDN-COFTBL-001",
                             StockQuantity = 50,
-                            UpdatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6915)
+                            UpdatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1955)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6918),
+                            CreatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1959),
                             Description = "A comfortable and stylish armchair upholstered in genuine leather.",
                             ImageUrl = "https://a.1stdibscdn.com/20th-century-french-leather-wing-back-armchair-c1960-for-sale-picture-2/f_13482/f_285265221651735694424/PUSHKIN_ANTIQUES_STUNNING_LATE_20thC_FRENCH_LEATHER_WING_BACK_ARMCHAIR_c_1960_03_master.jpg?width=768",
                             Measurements = "90x80x75 cm",
@@ -480,30 +483,30 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             OriginalPrice = 299.99m,
                             SKU = "LTHR-ARMCHR-002",
                             StockQuantity = 20,
-                            UpdatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6919)
+                            UpdatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1960)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6923),
+                            CreatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1965),
                             Description = "A minimalist floor lamp with a sleek metal frame and adjustable height.",
-                            DiscountEndDate = new DateTime(2024, 10, 17, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6921),
+                            DiscountEndDate = new DateTime(2024, 10, 17, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1963),
                             DiscountPercentage = 15,
                             ImageUrl = "https://i5.walmartimages.com/asr/3181df7b-b2e3-411e-bf47-95fe5bcd8c4b_1.c7553cfd9e1daaed9c6cd9e1544bb12b.jpeg",
-                            IsNewExpiryDate = new DateTime(2024, 9, 16, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6922),
+                            IsNewExpiryDate = new DateTime(2024, 9, 16, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1964),
                             Measurements = "Height: 150-180 cm",
                             Name = "Contemporary Floor Lamp",
                             OriginalPrice = 89.99m,
                             SKU = "MTL-FLRLMP-003",
                             StockQuantity = 100,
-                            UpdatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6924)
+                            UpdatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1966)
                         },
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6928),
+                            CreatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1971),
                             Description = "A beautiful vintage wall clock with a wooden frame and Roman numerals.",
-                            DiscountEndDate = new DateTime(2024, 9, 17, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6926),
+                            DiscountEndDate = new DateTime(2024, 9, 17, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1969),
                             DiscountPercentage = 5,
                             ImageUrl = "https://www.vkwoods.com/vkwoods/uploads/2022/03/TJP_7853_1024x1024.webp",
                             Measurements = "Diameter: 40 cm",
@@ -511,23 +514,23 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             OriginalPrice = 59.99m,
                             SKU = "VTG-WLCLK-004",
                             StockQuantity = 75,
-                            UpdatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6928)
+                            UpdatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1971)
                         },
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6932),
+                            CreatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1976),
                             Description = "A luxurious dining table with a polished marble top and sturdy metal legs.",
-                            DiscountEndDate = new DateTime(2024, 11, 1, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6931),
+                            DiscountEndDate = new DateTime(2024, 11, 1, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1974),
                             DiscountPercentage = 20,
                             ImageUrl = "https://th.bing.com/th/id/R.8c5920f9aeefc029e47eb83afb6f5283?rik=ACMUfp1vINNgnQ&pid=ImgRaw&r=0",
-                            IsNewExpiryDate = new DateTime(2024, 9, 16, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6931),
+                            IsNewExpiryDate = new DateTime(2024, 9, 16, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1975),
                             Measurements = "200x100x75 cm",
                             Name = "Marble Dining Table",
                             OriginalPrice = 799.99m,
                             SKU = "MRB-DNTBL-005",
                             StockQuantity = 10,
-                            UpdatedDate = new DateTime(2024, 9, 2, 21, 33, 21, 439, DateTimeKind.Utc).AddTicks(6935)
+                            UpdatedDate = new DateTime(2024, 9, 2, 21, 19, 1, 700, DateTimeKind.Utc).AddTicks(1977)
                         });
                 });
 
@@ -593,6 +596,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DisplayName")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -695,31 +699,31 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0a548cac-eff6-412c-8dc5-0198c24a66ed",
+                            Id = "e4659fb8-10e6-44fc-b58a-0cf82a5b5cae",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "90bb9065-7ac9-446a-b073-23c4b84005e8",
+                            Id = "99c9d328-0436-402f-9d50-c4cb8c336adc",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "455054fd-dbf3-455c-8bd6-74b89743a58a",
+                            Id = "4c2d3c00-6f4c-40f4-a140-35e9c348dd6c",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "e04294e6-62a1-40fd-853b-36a43acb89ea",
+                            Id = "b8fc6920-3f96-4eb0-a814-95dd2049eeb0",
                             Name = "ContentCreator",
                             NormalizedName = "CONTENTCREATOR"
                         },
                         new
                         {
-                            Id = "fcc7aac0-c111-4d2a-bc5f-68b739438d85",
+                            Id = "54145f54-0e28-48a4-a8ec-370ba8e1fb00",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
