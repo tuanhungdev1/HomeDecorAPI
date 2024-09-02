@@ -21,6 +21,7 @@ namespace HomeDecorAPI.Application.Services {
         private readonly Lazy<IAddressService> _addressService;
         private readonly Lazy<IProductService> _productService;
         private readonly Lazy<ICategoryService> _categoryService;
+        private readonly Lazy<IFavoriteProductService> _favoriteProductService;
 
         public ServiceManager(IRepositoryManager repositoryManager, IOptions<CloudinarySettings> config, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration) {
             _authenticationService = new Lazy<IAuthenticationService>(() =>
@@ -33,6 +34,8 @@ namespace HomeDecorAPI.Application.Services {
             _productService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper));
 
             _categoryService = new Lazy<ICategoryService> (() => new CategoryService(repositoryManager, mapper));
+
+            _favoriteProductService = new Lazy<IFavoriteProductService>(() => new FavoriteProductService(repositoryManager, mapper));
         }
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
         public IUserService UserService => _userService.Value;
@@ -40,5 +43,6 @@ namespace HomeDecorAPI.Application.Services {
         public IAddressService AddressService => _addressService.Value;
         public IProductService ProductService => _productService.Value;
         public ICategoryService CategoryService => _categoryService.Value;
+        public IFavoriteProductService FavoriteProductService => _favoriteProductService.Value;
     }
 }

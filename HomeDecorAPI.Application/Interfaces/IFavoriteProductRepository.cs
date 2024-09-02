@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Interfaces {
-    public interface IFavoriteProductRepository  {
-
+    public interface IFavoriteProductRepository : IRepositoryBase<FavoriteProduct>  {
+         
     }
 }

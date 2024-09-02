@@ -35,6 +35,10 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
+        public virtual IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) {
+            return _context.Set<T>().Where(expression);
+        }
+
         public virtual async Task AddAsync(T entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
@@ -68,21 +72,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
             return Task.CompletedTask;
         }
 
-        public virtual async Task<int?> CountAsync(Expression<Func<T, bool>>? predicate = null)
-        {
-            return predicate == null
-                ? await _dbSet.CountAsync()
-                : await _dbSet.CountAsync(predicate);
-        }
-
         public virtual async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.FirstOrDefaultAsync(predicate);
-        }
-
-        public virtual async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
         }
     }
 }

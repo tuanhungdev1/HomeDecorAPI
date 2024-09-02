@@ -9,15 +9,11 @@ public class FavoriteProduct {
 
     [Required(ErrorMessage = "User ID is required.")]
     public Guid UserId { get; set; }
-
-    [ForeignKey("UserId")]
-    public required User User { get; set; }
+    public User? User { get; set; }
 
     [Required(ErrorMessage = "Product ID is required.")]
     public int ProductId { get; set; }
-
-    [ForeignKey("ProductId")]
-    public required Product Product { get; set; }
+    public Product? Product { get; set; }
 
     [DataType(DataType.DateTime)]
     public DateTime? DateAdded { get; set; } = DateTime.UtcNow;
