@@ -23,7 +23,11 @@ namespace HomeDecorAPI.Application.Shared.Constants {
             public const string Unauthorized = "Unauthorized access. Please log in.";
             public const string TokenExpired = "Your session has expired. Please log in again.";
 
-            public static string EntityNotFound(string entityName, int id) => FormatMessage(NotFound, entityName, id);
+            public static string EntityNotFound(string entityName, object id) {
+                string idValue = id is Guid guid ? guid.ToString() : id.ToString();
+                return FormatMessage(NotFound, entityName, idValue);
+            }
+
             public static string DuplicateEntity(string entityName, string value) => FormatMessage(AlreadyExists, entityName, value);
             public static string ItemOutOfStock(string itemName) => FormatMessage(OutOfStock, itemName);
             public static string InvalidEntityPrice(string entityName, decimal price) => FormatMessage(InvalidPrice, entityName, price);
