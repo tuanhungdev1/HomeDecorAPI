@@ -8,7 +8,6 @@ namespace HomeDecorAPI.Application.Shared.Messages {
             public static string UpdateFailed(string entityName, object entityId) => $"Failed to update {entityName} with ID {entityId}.";
             public static string DeletionFailed(string entityName, object entityId) => $"Failed to delete {entityName} with ID {entityId}.";
             public static string InvalidRequest(string entityName) => $"The request for {entityName} is invalid.";
-
             public static string ItemNotFound(string entityName, string productId, string userId) =>
              $"{entityName} item with ID {productId} for user with ID {userId} was not found.";
 

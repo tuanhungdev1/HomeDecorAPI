@@ -16,6 +16,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
         private readonly Lazy<IProductRepository> _productRepository;
         private readonly Lazy<ICategoryRepository> _categoryRepository;
         private readonly Lazy<IFavoriteProductRepository> _favoriteProductRepository;
+        private readonly Lazy<ICartRepository> _cartRepository;
 
         public RepositoryManager(ApplicationDbContext applicationContext)
         {
@@ -24,12 +25,14 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
             _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(applicationContext));
             _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(applicationContext));
             _favoriteProductRepository = new Lazy<IFavoriteProductRepository>(() => new FavoriteProductRepository(applicationContext));
+            _cartRepository = new Lazy<ICartRepository>(() => new CartRepository(applicationContext));
         }
         public IAddressRepository AddressRepository => _addressRepository.Value;
         public IProductRepository ProductRepository => _productRepository.Value;
         public ICategoryRepository CategoryRepository => _categoryRepository.Value;
         
         public IFavoriteProductRepository FavoriteProductRepository => _favoriteProductRepository.Value;
+        public ICartRepository CartRepository => _cartRepository.Value;
         public async Task SaveChangesAsync() {
             await _applicationContext.SaveChangesAsync();
         }

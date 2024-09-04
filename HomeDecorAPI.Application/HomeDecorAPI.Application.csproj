@@ -28,4 +28,8 @@
     <ProjectReference Include="..\HomeDecorAPI.Domain\HomeDecorAPI.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\CartDtos\" />
+  </ItemGroup>
+
 </Project>
