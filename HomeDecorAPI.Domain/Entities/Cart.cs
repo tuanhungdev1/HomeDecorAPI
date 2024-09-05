@@ -25,6 +25,7 @@ namespace HomeDecorAPI.Domain.Entities {
                 // Calculate TotalPrice based on Items
                 return Items?.Sum(x => x.TotalPrice) ?? 0;
             }
+            set { }
         }
 
         [Required]
