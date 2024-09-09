@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HomeDecorAPI.Application.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace HomeDecorAPI.Application.Contracts {
         IProductService ProductService { get; }
         ICategoryService CategoryService { get; }
         IFavoriteProductService FavoriteProductService { get; }
+        ICartService CartService { get; }
     }
 }

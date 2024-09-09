@@ -1,0 +1,55 @@
+﻿using HomeDecorAPI.Application.Shared.Messages;
+using HomeDecorAPI.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HomeDecorAPI.Application.DTOs.CartDtos {
+    public class CartItemDto {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "CartId is required.")]
+        public int CartId { get; set; }
+
+        [Required(ErrorMessage = "Product is required.")]
+        public Cart? Cart { get; set; }
+
+        [Required(ErrorMessage = "ProductId is required.")]
+        public int ProductId { get; set; }
+
+        [Required(ErrorMessage = "Product is required.")]
+        public Product? Product { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
+        public int Quantity { get; set; } = 1;
+
+        [Range(0.01, double.MaxValue, ErrorMessage = "UnitPrice must be greater than zero.")]
+        public decimal UnitPrice {
+            get {
+                if (Product!.DiscountPercentage.HasValue) {
+                    return Product.OriginalPrice - (Product.OriginalPrice * Product.DiscountPercentage.Value / 100);
+                }
+                return Product.OriginalPrice;
+            }
+        }
+
+        [Range(0.01, double.MaxValue, ErrorMessage = "TotalPrice must be greater than zero.")]
+        public decimal TotalPrice => Quantity * UnitPrice;
+
+        [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters.")]
+        public string SKU {
+            get {
+                return Product?.SKU ?? string.Empty;
+            }
+        }
+
+        [Required(ErrorMessage = "AddedAt is required.")]
+        public DateTime? AddedAt { get; set; } = DateTime.UtcNow;
+
+        [Required(ErrorMessage = "UpdatedAt is required.")]
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
+    }
+}

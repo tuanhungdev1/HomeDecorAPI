@@ -1,43 +1,60 @@
 ﻿using AutoMapper;
+using HomeDecorAPI.Application.DTOs.CartDtos;
 using HomeDecorAPI.Application.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
-using HomeDecorAPI.Application.Shared.Messages;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Services.Cart {
-    internal class CartService : ICartService {
-
+namespace HomeDecorAPI.Application.Services {
+    public class CartService : ICartService {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
-        public CartService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager)
-        {
+
+        public CartService(IRepositoryManager repositoryManager, IMapper mapper) {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
-            _userManager = userManager;
         }
 
-        public async Task<bool> AddItemToCartAsync(string userId, int productId) {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                throw new UserNotFoundException(ErrorMessages.Entity.NotFound("User", userId));
+        public async Task<CartDto> GetCartByUserIdAsync(string userId) {
+            var cart = await _repositoryManager.CartRepository.GetCartByUserIdAsync(userId);
+            return _mapper.Map<CartDto>(cart);
+        }
 
-            var product = await _repositoryManager.ProductRepository.GetByIdAsync(productId);
+        public async Task<IEnumerable<CartItemDto>> GetAllCartItemsForUserAsync(string userId) {
+            var cartItems = await _repositoryManager.CartRepository.GetAllCartItemForUserAsync(userId);
+            return _mapper.Map<IEnumerable<CartItemDto>>(cartItems);
+        }
+
+        public async Task AddProductToCartAsync(string userId, AddToCartDto addToCartDto) {
+            var product = await _repositoryManager.ProductRepository.GetByIdAsync(addToCartDto.ProductId);
             if (product == null)
-                throw new ProductNotFoundException(ErrorMessages.Entity.NotFound("Product", userId));
+                throw new ProductNotFoundException($"Product with ID {addToCartDto.ProductId} not found.");
 
-            var productExistsInCart = await _repositoryManager.CartRepository.FindByCondition(c => c.UserId == userId)
-                                                                             .Include(c => c.Items)
-                                                                             .ToListAsync();
-                                                          
-               
+            if (!await _repositoryManager.CartRepository.CheckProductStockAsync(addToCartDto.ProductId, addToCartDto.Quantity))
+                throw new InvalidOperationException("Insufficient stock.");
+
+            await _repositoryManager.CartRepository.AddProductToCartAsync(userId, addToCartDto.ProductId, addToCartDto.Quantity);
+        }
+
+        public async Task RemoveProductFromCartAsync(string userId, int cartItemId) {
+            await _repositoryManager.CartRepository.RemoveProductFromCartAsync(userId, cartItemId);
+        }
+
+        public async Task ClearCartAsync(string userId) {
+            await _repositoryManager.CartRepository.ClearCartAsync(userId);
+        }
+
+        public async Task UpdateCartItemQuantityAsync(string userId, int cartItemId, int newQuantity) {
+            await _repositoryManager.CartRepository.UpdateCartItemQuantityAsync(userId, cartItemId, newQuantity);
+        }
+
+        public async Task UpdateCartShippingCostAsync(string userId, decimal shippingCost) {
+            await _repositoryManager.CartRepository.UpdateCartShippingCostAsync(userId, shippingCost);
+        }
+
+        public async Task ApplyDiscountAsync(string userId, decimal discountAmount) {
+            await _repositoryManager.CartRepository.ApplyDiscountAsync(userId, discountAmount);
         }
     }
 }

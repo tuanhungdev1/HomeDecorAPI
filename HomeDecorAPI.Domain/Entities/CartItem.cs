@@ -8,42 +8,27 @@ namespace HomeDecorAPI.Domain.Entities {
         [Required(ErrorMessage = "CartId is required.")]
         public int CartId { get; set; }
 
-        [Required(ErrorMessage = "Product is required.")]
-        public Cart? Cart { get; set; }
+        public virtual Cart? Cart { get; set; }
 
         [Required(ErrorMessage = "ProductId is required.")]
         public int ProductId { get; set; }
 
-        [Required(ErrorMessage = "Product is required.")]
-        public Product? Product { get; set; }
+        public virtual Product? Product { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
         public int Quantity { get; set; } = 1;
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "UnitPrice must be greater than zero.")]
-        public decimal UnitPrice {
-            get {
-                if (Product!.DiscountPercentage.HasValue) {
-                    return Product.OriginalPrice - (Product.OriginalPrice * Product.DiscountPercentage.Value / 100);
-                }
-                return Product.OriginalPrice;
-            }
-        }
+        public decimal UnitPrice => Product?.DiscountPercentage.HasValue == true
+            ? Product.OriginalPrice - (Product.OriginalPrice * Product.DiscountPercentage.Value / 100)
+            : Product?.OriginalPrice ?? 0;
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "TotalPrice must be greater than zero.")]
         public decimal TotalPrice => Quantity * UnitPrice;
 
         [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters.")]
-        public string SKU {
-            get {
-                return Product?.SKU ?? string.Empty;
-            }
-        }
+        public string SKU => Product?.SKU ?? string.Empty;
 
-        [Required(ErrorMessage = "AddedAt is required.")]
-        public DateTime? AddedAt { get; set; } = DateTime.UtcNow;
+        public DateTime AddedAt { get; set; } = DateTime.UtcNow;
 
-        [Required(ErrorMessage = "UpdatedAt is required.")]
-        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
