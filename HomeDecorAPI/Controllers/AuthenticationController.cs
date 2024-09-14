@@ -44,12 +44,9 @@ namespace HomeDecorAPI.Presentation.Controllers
             var user = await _service.AuthenticationService.LoginAsync(userForLoginDto);
 
             if (user == null) {
-
-               
                 return BadRequest(new ApiResponse<object>(
                     isSuccess: false,
-                    message: "User login failed.",
-                    errors: new List<string> { "Invalid login attempt." }
+                    message: "Invalid username or password."
                 ));
             }
 

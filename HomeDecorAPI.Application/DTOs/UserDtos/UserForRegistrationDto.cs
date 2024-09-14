@@ -7,6 +7,9 @@ namespace HomeDecorAPI.Application.DTOs.UserDtos
 {
     public class UserForRegistrationDto
     {
+        [Required(ErrorMessage = "Display Name is required")]
+        [StringLength(50, ErrorMessage = "Display Name must be between 3 and 50 characters", MinimumLength = 3)]
+        public required string DisplayName { get; init; }
         [Required(ErrorMessage = "Username is required")]
         [StringLength(50, ErrorMessage = "Username must be between 3 and 50 characters", MinimumLength = 3)]
         public required string UserName { get; init; }
