@@ -12,6 +12,7 @@ using System.Security.Claims;
 
 namespace HomeDecorAPI.Presentation.Controllers
 {
+    [Authorize]
     [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase {
@@ -46,23 +47,17 @@ namespace HomeDecorAPI.Presentation.Controllers
             ));
         }
 
-        [HttpPost("{userId}")]
+        [HttpPut("{userId}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateUserProfileAsync(string userId, [FromBody] UserForUpdateProfileDto userForUpdateProfile) {
-            var result = await _service.UserService.UpdateUserProfileAsync(userId, userForUpdateProfile);
+            var user = await _service.UserService.UpdateUserProfileAsync(userId, userForUpdateProfile);
 
-            if (!result.Succeeded) {
-                var errors = result.Errors.Select(e => e.Description).ToList();
-                return StatusCode(400, new ApiResponse<object>(
-                    isSuccess : false,
-                    message: "Failed to update user profile.",
-                    errors: errors
-                ));
-            }
+            
 
-            return Ok(new ApiResponse<object>(
+            return Ok(new ApiResponse<UserDto>(
                 isSuccess: true,
-                message: "User profile updated successfully."
+                message: "User profile updated successfully.",
+                data: user
             ));
         }
 
@@ -119,44 +114,44 @@ namespace HomeDecorAPI.Presentation.Controllers
             ));
         }
 
-        [HttpPut("upload-avatar")]
-        [Authorize]
-        public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarDto uploadAvatarDto) {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //[HttpPut("upload-avatar")]
+        //[Authorize]
+        //public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarDto uploadAvatarDto) {
+        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId == null) {
-                return Unauthorized(new ApiResponse<object>(
-                        isSuccess : false,
-                        message: "User not authenticated."
-                    ));
-            }
+        //    if (userId == null) {
+        //        return Unauthorized(new ApiResponse<object>(
+        //                isSuccess : false,
+        //                message: "User not authenticated."
+        //            ));
+        //    }
 
-            var fileUploadResult = await _service.FileUploadService.UploadAvatarFileAsync(uploadAvatarDto.File);
+        //    var fileUploadResult = await _service.FileUploadService.UploadAvatarFileAsync(uploadAvatarDto.File);
 
-            if(fileUploadResult == null) {
-                return BadRequest(new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "File upload failed."
-                    ));
-            }
+        //    if(fileUploadResult == null) {
+        //        return BadRequest(new ApiResponse<object>(
+        //            isSuccess: false,
+        //            message: "File upload failed."
+        //            ));
+        //    }
 
-            var uploadAvatarResult = await _service.UserService.UploadAvatarUserAsync(userId, fileUploadResult);
+        //    var uploadAvatarResult = await _service.UserService.UploadAvatarUserAsync(userId, fileUploadResult);
 
-            if (!uploadAvatarResult.Succeeded) {
-                var errors = uploadAvatarResult.Errors.Select(e => e.Description).ToList();
+        //    if (!uploadAvatarResult.Succeeded) {
+        //        var errors = uploadAvatarResult.Errors.Select(e => e.Description).ToList();
 
-                return BadRequest(new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "Failed to upload user avatar",
-                    errors: errors
-                    ));
-            }
+        //        return BadRequest(new ApiResponse<object>(
+        //            isSuccess: false,
+        //            message: "Failed to upload user avatar",
+        //            errors: errors
+        //            ));
+        //    }
 
-            return Ok(new ApiResponse<string>(
-                isSuccess: true,
-                message: "Avatar uploaded successfully.",
-                data: fileUploadResult
-                ));
-        } 
+        //    return Ok(new ApiResponse<string>(
+        //        isSuccess: true,
+        //        message: "Avatar uploaded successfully.",
+        //        data: fileUploadResult
+        //        ));
+        //} 
     }
 }

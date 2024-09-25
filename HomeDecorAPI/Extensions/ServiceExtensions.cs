@@ -65,7 +65,7 @@ namespace HomeDecorAPI.Presentation.Extensions
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration
 configuration) {
             var jwtSettings = configuration.GetSection("JwtSettings");
-            var secretKey = configuration["JwtSettings:secretKey"];
+            var secretKey = jwtSettings["secretKey"];
 
             services.AddAuthentication(opt =>
             {

@@ -30,7 +30,7 @@ namespace HomeDecorAPI.Application.Services {
 
             _userService = new Lazy<IUserService>(() => new UserService(userManager, mapper));
 
-            _fileUploadService = new Lazy<IFileUploadService>(() => new CloudinaryFileUploadService(config));
+            _fileUploadService = new Lazy<IFileUploadService>(() => new FileUploadService(userManager));
 
             _productService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper));
 

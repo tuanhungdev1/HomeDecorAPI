@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Contracts {
     public interface IFileUploadService {
-        Task<string> UploadAvatarFileAsync(IFormFile file);
+        Task UploadAvatarFileAsync(IFormFile file);
     }
 }

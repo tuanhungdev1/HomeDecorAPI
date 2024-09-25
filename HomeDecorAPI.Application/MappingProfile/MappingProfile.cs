@@ -21,9 +21,10 @@ namespace HomeDecorAPI.Application.MappingProfile
     public class MappingProfile : Profile {
         public MappingProfile() {
             // USER
-            CreateMap<UserForRegistrationDto, User>();
+            CreateMap<UserForRegistrationDto, User>().ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<User, UserDto>();
-            CreateMap<UserForLoginDto, User>();
+            CreateMap<UserForUpdateProfileDto, User>().ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<UserForLoginDto, User>().ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<User, UserProfileDto>();
             CreateMap<User, UserForUpdateProfileDto>();
             // USER

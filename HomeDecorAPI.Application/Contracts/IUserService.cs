@@ -13,7 +13,7 @@ namespace HomeDecorAPI.Application.Contracts
 {
     public interface IUserService {
         Task<UserProfileDto> GetUserProfileAsync(string userId);
-        Task<IdentityResult> UpdateUserProfileAsync(string userId, UserForUpdateProfileDto userForUpdateProfileDto);
+        Task<UserDto> UpdateUserProfileAsync(string userId, UserForUpdateProfileDto userForUpdateProfileDto);
         Task<IEnumerable<AddressDto>> GetAllUserAddressAsync(string userId);
         Task<IdentityResult> UploadAvatarUserAsync(string userId, string avatarUrl);
     }

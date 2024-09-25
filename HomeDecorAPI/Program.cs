@@ -43,13 +43,13 @@ if (app.Environment.IsDevelopment()) {
 // Cấu hình để cho phép truy cập tệp từ thư mục "uploads"
 app.UseStaticFiles();
 
-
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("CorsPolicy");
+
 app.MapControllers();
 
 app.Run();

@@ -24,4 +24,8 @@
     <ProjectReference Include="..\HomeDecorAPI.Infrastructure.SQLServer\HomeDecorAPI.Infrastructure.SQLServer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\users\" />
+  </ItemGroup>
+
 </Project>

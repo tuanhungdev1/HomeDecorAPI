@@ -15,10 +15,6 @@ namespace HomeDecorAPI.Application.DTOs.UserDtos
         public string? LastName { get; set; }
         [StringLength(100)]
         public string? DisplayName { get; set; }
-        [EmailAddress]
-        public string? Email { get; set; }
-        [DataType(DataType.ImageUrl)]
-        public string? ProfilePicture { get; set; }
         public DateTime? DateOfBirth { get; set; }
     }
 }

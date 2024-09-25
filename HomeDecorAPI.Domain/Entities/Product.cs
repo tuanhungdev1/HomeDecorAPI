@@ -43,21 +43,8 @@ namespace HomeDecorAPI.Domain.Entities {
         [Required]
         [Range(0, int.MaxValue, ErrorMessage = "Stock Quantity must be a non-negative integer.")]
         public required int StockQuantity { get; set; }
-
-        public bool IsDiscountActive {
-            get {
-                return DiscountPercentage.HasValue && DiscountEndDate.HasValue && DiscountEndDate > DateTime.UtcNow;
-            }
-        }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? UpdatedDate { get; set; } = DateTime.UtcNow;
-
-        // Navigation property to categories
         public ICollection<Category>? Categories { get; set; }
-        //public ICollection<Review>? Reviews { get; set; } = new List<Review>();
     }
 }
