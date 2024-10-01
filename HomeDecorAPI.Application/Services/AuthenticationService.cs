@@ -2,10 +2,13 @@
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.TokenDtos;
 using HomeDecorAPI.Application.DTOs.UserDtos;
+using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -25,15 +28,18 @@ namespace HomeDecorAPI.Application.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
-
+        private readonly IRepositoryManager _repositoryManager;
         private User _user;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthenticationService(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        public AuthenticationService(IHttpContextAccessor httpContextAccessor ,IRepositoryManager repositoryManager ,IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             _mapper = mapper;
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
+            _repositoryManager = repositoryManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IdentityResult> RegisterUserAsync(UserForRegistrationDto userForRegistration) {
@@ -199,20 +205,35 @@ namespace HomeDecorAPI.Application.Services
             return changePasswordResult;
         }
 
+
         public async Task LogoutUserAsync() {
-            if(_user == null ) {
-                throw new InvalidOperationException("No user is currently logged in.");
+           
+            var userName = _httpContextAccessor.HttpContext.User.Identity.Name; 
+
+            if (string.IsNullOrEmpty(userName)) {
+                throw new InvalidOperationException("Không tìm thấy người dùng nào đang đăng nhập.");
             }
 
-            _user.RefreshToken = null;
+            
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null) {
+                throw new UserNotFoundException($"Người dùng {userName} không tồn tại.");
+            }
 
-            var result = await _userManager.UpdateAsync(_user);
+            
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+
+            var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded) {
-                throw new InvalidOperationException("Unable to update user information during logout.");
+                // Cân nhắc ghi log nếu bạn có hệ thống log.
+                throw new InvalidOperationException("Không thể cập nhật thông tin người dùng trong quá trình đăng xuất.");
             }
 
-           
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _repositoryManager.SaveChangesAsync();
         }
+
     }
 }

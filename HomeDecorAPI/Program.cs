@@ -24,6 +24,7 @@ builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureJsonSerializerSettings();
 builder.Services.ConfigureCloudinarySettings(builder.Configuration);
+builder.Services.ConfigureUnitOfWork();
 
 //Action Filters
 builder.Services.AddScoped<ValidationFilterAttribute>();

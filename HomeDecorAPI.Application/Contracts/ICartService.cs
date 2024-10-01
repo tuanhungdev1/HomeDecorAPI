@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Interfaces {
-    public interface ICartService {
+namespace HomeDecorAPI.Application.Contracts
+{
+    public interface ICartService
+    {
         Task<CartDto> GetCartByUserIdAsync(string userId);
         Task<IEnumerable<CartItemDto>> GetAllCartItemsForUserAsync(string userId);
         Task AddProductToCartAsync(string userId, AddToCartDto addToCartDto);

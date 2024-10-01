@@ -3,6 +3,7 @@ using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -12,7 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Services {
+namespace HomeDecorAPI.Application.Services
+{
     public sealed class ServiceManager : IServiceManager {
 
         private readonly Lazy<IAuthenticationService> _authenticationService;
@@ -24,9 +26,9 @@ namespace HomeDecorAPI.Application.Services {
         private readonly Lazy<IFavoriteProductService> _favoriteProductService;
         private readonly Lazy<ICartService> _cartService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, IOptions<CloudinarySettings> config, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration) {
+        public ServiceManager(IHttpContextAccessor httpContextAccessor, IRepositoryManager repositoryManager, IOptions<CloudinarySettings> config, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration) {
             _authenticationService = new Lazy<IAuthenticationService>(() =>
-             new AuthenticationService(mapper, userManager, signInManager, configuration));
+             new AuthenticationService(httpContextAccessor, repositoryManager, mapper, userManager, signInManager, configuration));
 
             _userService = new Lazy<IUserService>(() => new UserService(userManager, mapper));
 

@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
-    public class FavoriteProductRepository : RepositoryBase<FavoriteProduct>, IFavoriteProductRepository {
+namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
+{
+    public class FavoriteProductRepository : RepositoryBase<FavoriteProduct>, IFavoriteProductRepository
+    {
         public FavoriteProductRepository(ApplicationDbContext context) : base(context)
         {
 

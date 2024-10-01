@@ -7,11 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
-    public class ProductRepository : RepositoryBase<Product>, IProductRepository {
+namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
+{
+    public class ProductRepository : RepositoryBase<Product>, IProductRepository
+    {
         public ProductRepository(ApplicationDbContext context) : base(context)
         {
-            
+
         }
     }
 }

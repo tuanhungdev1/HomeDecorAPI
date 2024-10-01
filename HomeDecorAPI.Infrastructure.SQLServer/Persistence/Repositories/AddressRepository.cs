@@ -3,7 +3,7 @@ using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
 
 
-namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
+namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
 {
     public class AddressRepository : RepositoryBase<Address>, IAddressRepository
     {

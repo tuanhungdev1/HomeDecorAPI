@@ -9,11 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 
-namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
-    public class CartRepository : RepositoryBase<Cart>, ICartRepository {
+namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
+{
+    public class CartRepository : RepositoryBase<Cart>, ICartRepository
+    {
         public CartRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) { }
 
-        public async Task<Cart> GetCartByUserIdAsync(string userId) {
+        public async Task<Cart> GetCartByUserIdAsync(string userId)
+        {
             var cart = await _context.Carts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
@@ -22,12 +25,14 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
             return cart ?? new Cart { UserId = userId };
         }
 
-        public async Task<IEnumerable<CartItem>> GetAllCartItemForUserAsync(string userId) {
+        public async Task<IEnumerable<CartItem>> GetAllCartItemForUserAsync(string userId)
+        {
             var cart = await GetCartByUserIdAsync(userId);
             return cart.Items ?? Enumerable.Empty<CartItem>();
         }
 
-        public async Task AddProductToCartAsync(string userId, int productId, int quantity) {
+        public async Task AddProductToCartAsync(string userId, int productId, int quantity)
+        {
             var cart = await GetCartByUserIdAsync(userId);
             var product = await _context.Products.FindAsync(productId);
 
@@ -38,9 +43,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
 
             if (existingItem != null)
                 existingItem.Quantity += quantity;
-            else {
+            else
+            {
                 cart.Items ??= new List<CartItem>();
-                cart.Items.Add(new CartItem {
+                cart.Items.Add(new CartItem
+                {
                     ProductId = productId,
                     Quantity = quantity,
                     Product = product
@@ -51,27 +58,32 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveProductFromCartAsync(string userId, int cartItemId) {
+        public async Task RemoveProductFromCartAsync(string userId, int cartItemId)
+        {
             var cart = await GetCartByUserIdAsync(userId);
             var item = cart.Items?.FirstOrDefault(i => i.Id == cartItemId);
 
-            if (item != null) {
+            if (item != null)
+            {
                 cart.Items?.Remove(item);
                 cart.LastModifiedDate = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task ClearCartAsync(string userId) {
+        public async Task ClearCartAsync(string userId)
+        {
             var cart = await GetCartByUserIdAsync(userId);
-            if (cart.Items != null) {
+            if (cart.Items != null)
+            {
                 cart.Items.Clear();
                 cart.LastModifiedDate = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task UpdateCartItemQuantityAsync(string userId, int cartItemId, int newQuantity) {
+        public async Task UpdateCartItemQuantityAsync(string userId, int cartItemId, int newQuantity)
+        {
             var cart = await GetCartByUserIdAsync(userId);
             var item = cart.Items?.FirstOrDefault(i => i.Id == cartItemId);
 
@@ -81,28 +93,33 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
             if (newQuantity < 1)
                 throw new ArgumentException("Quantity must be at least 1.");
 
-            if (await CheckProductStockAsync(item.ProductId, newQuantity)) {
+            if (await CheckProductStockAsync(item.ProductId, newQuantity))
+            {
                 item.Quantity = newQuantity;
                 item.UpdatedAt = DateTime.UtcNow;
                 cart.LastModifiedDate = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
-            } else
+            }
+            else
                 throw new InvalidOperationException("Insufficient stock.");
         }
 
-        public async Task<bool> CheckProductStockAsync(int productId, int quantity) {
+        public async Task<bool> CheckProductStockAsync(int productId, int quantity)
+        {
             var product = await _context.Products.FindAsync(productId);
             return product != null && product.StockQuantity >= quantity;
         }
 
-        public async Task UpdateCartShippingCostAsync(string userId, decimal shippingCost) {
+        public async Task UpdateCartShippingCostAsync(string userId, decimal shippingCost)
+        {
             var cart = await GetCartByUserIdAsync(userId);
             cart.ShippingCost = shippingCost;
             cart.LastModifiedDate = DateTime.UtcNow;
             await _context.SaveChangesAsync();
         }
 
-        public async Task ApplyDiscountAsync(string userId, decimal discountAmount) {
+        public async Task ApplyDiscountAsync(string userId, decimal discountAmount)
+        {
             var cart = await GetCartByUserIdAsync(userId);
             cart.Discount = discountAmount;
             cart.LastModifiedDate = DateTime.UtcNow;

@@ -8,8 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
-    public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository {
+namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
+{
+    public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
+    {
 
         private readonly ApplicationDbContext _applicationDbContext;
         public CategoryRepository(ApplicationDbContext context) : base(context)
@@ -17,7 +19,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories {
             _applicationDbContext = context;
         }
 
-        public async Task<IEnumerable<Category>?> GetSubcategoriesByParentCategory(int parentCategoryId) {
+        public async Task<IEnumerable<Category>?> GetSubcategoriesByParentCategory(int parentCategoryId)
+        {
             var category = await _applicationDbContext.Set<Category>()
                 .Include(c => c.SubCategories)
                 .Where(c => c.Id == parentCategoryId)

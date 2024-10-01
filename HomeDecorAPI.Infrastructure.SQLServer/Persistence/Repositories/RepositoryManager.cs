@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
+namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
 {
     public sealed class RepositoryManager : IRepositoryManager
     {
@@ -30,10 +30,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Repositories
         public IAddressRepository AddressRepository => _addressRepository.Value;
         public IProductRepository ProductRepository => _productRepository.Value;
         public ICategoryRepository CategoryRepository => _categoryRepository.Value;
-        
+
         public IFavoriteProductRepository FavoriteProductRepository => _favoriteProductRepository.Value;
         public ICartRepository CartRepository => _cartRepository.Value;
-        public async Task SaveChangesAsync() {
+        public async Task SaveChangesAsync()
+        {
             await _applicationContext.SaveChangesAsync();
         }
     }

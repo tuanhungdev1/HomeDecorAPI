@@ -4,7 +4,8 @@ using HomeDecorAPI.Application.Services;
 using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
-using HomeDecorAPI.Infrastructure.SQLServer.Repositories;
+using HomeDecorAPI.Infrastructure.SQLServer.Persistence;
+using HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +58,10 @@ namespace HomeDecorAPI.Presentation.Extensions
 
         //Repository Manager
         public static void ConfigureRepositoryManager(this IServiceCollection services) => services.AddScoped<IRepositoryManager, RepositoryManager>();
-
+        
+        //Unit Of Work
+        public static void ConfigureUnitOfWork(this IServiceCollection services) => 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         //Service Manager
         public static void ConfigureServiceManager(this IServiceCollection services) => services.AddScoped<IServiceManager, ServiceManager>();
 

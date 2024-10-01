@@ -4,6 +4,7 @@ using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
 
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeDecorAPI.Presentation.Controllers
@@ -89,8 +90,8 @@ namespace HomeDecorAPI.Presentation.Controllers
             ));
         }
 
+        [Authorize]
         [HttpPost("logout")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Logout() {
             await _service.AuthenticationService.LogoutUserAsync();
             return Ok(new ApiResponse<object>(
