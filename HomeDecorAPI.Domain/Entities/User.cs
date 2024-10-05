@@ -17,8 +17,7 @@ namespace HomeDecorAPI.Domain.Entities {
         [StringLength(100)]
         public string? DisplayName { get; set; }
 
-        [DataType(DataType.ImageUrl)]
-        public string? ProfilePicture { get; set; }
+        public UserImage? UserImage { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 

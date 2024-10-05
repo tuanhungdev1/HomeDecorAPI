@@ -1,7 +1,13 @@
-﻿using HomeDecorAPI.Application.MappingProfile;
+﻿using HomeDecorAPI.Application.Contracts;
+using HomeDecorAPI.Application.DependencyInjection;
+using HomeDecorAPI.Application.MappingProfile;
+using HomeDecorAPI.Application.Services;
 using HomeDecorAPI.Application.Shared.ActionFilters;
+using HomeDecorAPI.Infrastructure.SQLServer.DependencyInjection;
 using HomeDecorAPI.Presentation.Extensions;
 using Microsoft.Extensions.FileProviders;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Host.UseSerilog();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 //Extensions
@@ -18,16 +24,16 @@ builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureCors();
-builder.Services.ConfigureSQLServerContext(builder.Configuration);
-builder.Services.ConfigureRepositoryManager();
-builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureJsonSerializerSettings();
-builder.Services.ConfigureCloudinarySettings(builder.Configuration);
-builder.Services.ConfigureUnitOfWork();
 
-//Action Filters
-builder.Services.AddScoped<ValidationFilterAttribute>();
+
+// ServicesCollectionExtensions
+// Add services to the container
+builder.Services
+    .AddInfrastructureServices(builder.Configuration)
+    .AddApplicationServices()
+    .AddLoggingServices(builder.Configuration);
 
 
 var app = builder.Build();
@@ -41,7 +47,6 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-// Cấu hình để cho phép truy cập tệp từ thư mục "uploads"
 app.UseStaticFiles();
 
 app.UseCors("CorsPolicy");

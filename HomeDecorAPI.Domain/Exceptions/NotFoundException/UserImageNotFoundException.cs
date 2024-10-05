@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Domain.Exceptions.NotFoundException {
-    public sealed class UserNotFoundException : NotFoundException {
-        public UserNotFoundException(string userId) : base($"User with ID: {userId} was not found.")
+    public class UserImageNotFoundException : NotFoundException {
+        public UserImageNotFoundException(string userId) : base($"User with ID {userId} does not have an avatar.")
         {
             
         }

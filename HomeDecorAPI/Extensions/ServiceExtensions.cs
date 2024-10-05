@@ -16,10 +16,6 @@ using System.Text;
 namespace HomeDecorAPI.Presentation.Extensions
 {
     public static class ServiceExtensions {
-        // Connect Database 
-        public static void ConfigureSQLServerContext(this IServiceCollection services, IConfiguration configuration) =>
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ApplicationConnection")));
-
         // Create Policy Cors
         public static void ConfigureCors(this IServiceCollection services) =>
             services.AddCors(options => {
@@ -31,7 +27,6 @@ namespace HomeDecorAPI.Presentation.Extensions
             });
 
         // IIS
-
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
             services.Configure<IISOptions>(options => {
 
@@ -51,20 +46,7 @@ namespace HomeDecorAPI.Presentation.Extensions
              .AddEntityFrameworkStores<ApplicationDbContext>()
              .AddDefaultTokenProviders();
         }
-        // Configure Cloudinary
-        public static void ConfigureCloudinarySettings(this IServiceCollection services, IConfiguration configuration) {
-            services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
-        }
-
-        //Repository Manager
-        public static void ConfigureRepositoryManager(this IServiceCollection services) => services.AddScoped<IRepositoryManager, RepositoryManager>();
-        
-        //Unit Of Work
-        public static void ConfigureUnitOfWork(this IServiceCollection services) => 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-        //Service Manager
-        public static void ConfigureServiceManager(this IServiceCollection services) => services.AddScoped<IServiceManager, ServiceManager>();
-
+            
         // JWT
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration
 configuration) {

@@ -1,157 +1,206 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
 using HomeDecorAPI.Application.Contracts;
+using HomeDecorAPI.Application.DTOs.AddressDtos;
 using HomeDecorAPI.Application.DTOs.UploadDtos;
 using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
+using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
+using HomeDecorAPI.Application.Shared.Messages;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-
-namespace HomeDecorAPI.Presentation.Controllers
-{
+namespace HomeDecorAPI.Presentation.Controllers {
     [Authorize]
     [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase {
-        private readonly IServiceManager _service;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _enviroment;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<UserController> _logger;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public UserController(IServiceManager service, IMapper mapper, IWebHostEnvironment environment) {
+        public UserController(IUserService userService, IMapper mapper, IWebHostEnvironment environment, ILogger<UserController> logger, ICloudinaryService cloudinaryService) {
             _mapper = mapper;
-            _service = service;
-            _enviroment = environment;
+            _environment = environment;
+            _userService = userService;
+            _logger = logger;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpGet("{userId}")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> GetUserProfileAsync(string userId) {
-            var user = await _service.UserService.GetUserProfileAsync(userId);
+            try {
+                var user = await _userService.GetUserProfileAsync(userId);
 
-            if (user == null) {
-                return StatusCode(500, new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "Failed to retrieve user profile.",
-                    errors: new List<string> { "The user profile could not be found or retrieved." }
-                ));
+                if (user == null) {
+                    _logger.LogWarning("User not found for userId: {userId}", userId);
+                    return BadRequest(new ApiResponse<UserProfileDto> {
+                        Success = false,
+                        Message = "Failed to retrieve user profile.",
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Errors = new List<string> { "The user profile could not be found or retrieved." },
+                    });
+                }
+                _logger.LogInformation("User profile retrieved successfully for userId: {userId}", userId);
+                return Ok(new ApiResponse<UserProfileDto> {
+                    Success = true,
+                    Message = "User profile retrieved successfully.",
+                    Data = user,
+                    StatusCode = StatusCodes.Status200OK,
+                });
+            } catch (Exception ex) {
+                _logger.LogInformation(ex, "Error occurred while retrieving user profile for userId:{userId}", userId);
+                return BadRequest(new ApiResponse<UserProfileDto> {
+                    Success = false,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = "An error occurred while retrieving the user profile.",
+                    Errors = new List<string> { "Unexpected error. Please try again later." }
+                });
             }
-
-            return Ok(new ApiResponse<object>(
-                isSuccess: true,
-                message: "User profile retrieved successfully.",
-                data: _mapper.Map<UserProfileDto>(user),
-                errors: null
-            ));
         }
 
         [HttpPut("{userId}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateUserProfileAsync(string userId, [FromBody] UserForUpdateProfileDto userForUpdateProfile) {
-            var user = await _service.UserService.UpdateUserProfileAsync(userId, userForUpdateProfile);
+            _logger.LogInformation("Received request to update profile for userId: {userId}", userId);
 
-            
+            try {
+                var user = await _userService.GetUserProfileAsync(userId);
 
-            return Ok(new ApiResponse<UserDto>(
-                isSuccess: true,
-                message: "User profile updated successfully.",
-                data: user
-            ));
+                if (user == null) {
+                    _logger.LogWarning("User not found for userId: {userId}", userId);
+                    return BadRequest(new ApiResponse<UserProfileDto> {
+                        Success = false,
+                        Message = "Failed to retrieve user profile.",
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Errors = new List<string> { "The user profile could not be found or retrieved." },
+                    });
+                }
+                await _userService.UpdateUserProfileAsync(userId, userForUpdateProfile);
+
+                _logger.LogInformation("User profile updated successfully for userId: {userId}", userId);
+
+                return Ok(new ApiResponse<UserDto> {
+                    Success = true,
+                    Message = "User profile updated successfully.",
+                    StatusCode = StatusCodes.Status200OK,
+                });
+            } catch (Exception ex) {
+                _logger.LogInformation(ex, "Error occurred while retrieving user profile for userId:{userId}", userId);
+                return BadRequest(new ApiResponse<UserProfileDto> {
+                    Success = false,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = "An error occurred while retrieving the user profile.",
+                    Errors = new List<string> { "Unexpected error. Please try again later." }
+                });
+            }
         }
 
-
         [HttpPost("{userId}/addresses")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> GetAllUserAddressAsync(string userId) {
-            var addressListForUser = await _service.UserService.GetAllUserAddressAsync(userId);
+            _logger.LogInformation("Received request to get all addresses for userId: {userId}", userId);
+            try {
+                var addressListForUser = await _userService.GetAllUserAddressAsync(userId);
 
-            if (addressListForUser == null || !addressListForUser.Any()) {
-                return StatusCode(404, new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "No addresses found for the specified user."
-                ));
+                if (addressListForUser == null || !addressListForUser.Any()) {
+                    _logger.LogWarning("No addresses found for userId: {userId}", userId);
+                    return NotFound(new ApiResponse<object> {
+                        Success = false,
+                        Message = "No addresses found for the specified user.",
+                        StatusCode = StatusCodes.Status404NotFound
+                    });
+                }
+
+                _logger.LogInformation("Addresses retrieved successfully for userId: {userId}", userId);
+
+                return Ok(new ApiResponse<IEnumerable<AddressDto>> {
+                    Success = true,
+                    Message = "Addresses retrieved successfully.",
+                    Data = addressListForUser,
+                    StatusCode = StatusCodes.Status200OK
+                });
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error occurred while retrieving addresses for userId: {userId}", userId);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object> {
+                    Success = false,
+                    Message = "An error occurred while retrieving the addresses.",
+                    Errors = new List<string> { "Unexpected error. Please try again later." },
+                    StatusCode = StatusCodes.Status500InternalServerError
+                });
             }
-
-            return Ok(new ApiResponse<object>(
-                isSuccess: true,
-                message: "Addresses retrieved successfully.",
-                data: addressListForUser
-            ));
         }
 
         [HttpPost("{userId}/upload-avatar")]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UploadAvarUserAsync(string userId, IFormFile file) {
-            string uploadsFolder = Path.Combine(_enviroment.WebRootPath, "uploads");
+        public async Task<IActionResult> UploadAvatarUserAsync(string userId, IFormFile file) {
+            _logger.LogInformation("Received request to upload avatar for userId: {userId}", userId);
+            try {
+                var uploadResult = await _cloudinaryService.UploadUserAvatarAsync(file, userId);
 
-            if (!Directory.Exists(uploadsFolder)) {
-                Directory.CreateDirectory(uploadsFolder);
+                return Ok(new ApiResponse<UploadResult> {
+                    Success = true,
+                    Message = "Avatar uploaded successfully.",
+                    Data = uploadResult,
+                    StatusCode = StatusCodes.Status200OK,
+                });
+            } catch (UserNotFoundException ex) {
+                _logger.LogWarning(ex, "User not found for userId: {userId}", userId);
+                return NotFound(new ApiResponse<object> {
+                    Success = false,
+                    Message = "User not found.",
+                    StatusCode = StatusCodes.Status404NotFound
+                });
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error occurred while uploading avatar for userId: {userId}", userId);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object> {
+                    Success = false,
+                    Message = "An error occurred while uploading the avatar.",
+                    Errors = new List<string> { "Unexpected error. Please try again later." },
+                    StatusCode = StatusCodes.Status500InternalServerError
+                });
             }
-
-            string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create)) {
-                await file.CopyToAsync(fileStream);
-            }
-
-            var result = await _service.UserService.UploadAvatarUserAsync(userId, uniqueFileName);
-
-            if (!result.Succeeded) {
-                var errors = result.Errors.Select(e => e.Description).ToList();
-                return StatusCode(400, new ApiResponse<object>(
-                    isSuccess: false,
-                    message: "Failed to update avatar user profile.",
-                    errors: errors
-                ));
-            }
-
-            return Ok(new ApiResponse<object>(
-                isSuccess: true,
-                message: "User avatar profile updated successfully."
-            ));
         }
 
-        //[HttpPut("upload-avatar")]
-        //[Authorize]
-        //public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarDto uploadAvatarDto) {
-        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        [HttpDelete("{userId}/delete-avatar")]
+        public async Task<IActionResult> DeleteUserAvatarAsync(string userId) {
+            _logger.LogInformation("Received request to delete avatar for userId: {userId}", userId);
+            try {
+                var deletionResult = await _cloudinaryService.DeleteUserAvatarAsync(userId);
 
-        //    if (userId == null) {
-        //        return Unauthorized(new ApiResponse<object>(
-        //                isSuccess : false,
-        //                message: "User not authenticated."
-        //            ));
-        //    }
-
-        //    var fileUploadResult = await _service.FileUploadService.UploadAvatarFileAsync(uploadAvatarDto.File);
-
-        //    if(fileUploadResult == null) {
-        //        return BadRequest(new ApiResponse<object>(
-        //            isSuccess: false,
-        //            message: "File upload failed."
-        //            ));
-        //    }
-
-        //    var uploadAvatarResult = await _service.UserService.UploadAvatarUserAsync(userId, fileUploadResult);
-
-        //    if (!uploadAvatarResult.Succeeded) {
-        //        var errors = uploadAvatarResult.Errors.Select(e => e.Description).ToList();
-
-        //        return BadRequest(new ApiResponse<object>(
-        //            isSuccess: false,
-        //            message: "Failed to upload user avatar",
-        //            errors: errors
-        //            ));
-        //    }
-
-        //    return Ok(new ApiResponse<string>(
-        //        isSuccess: true,
-        //        message: "Avatar uploaded successfully.",
-        //        data: fileUploadResult
-        //        ));
-        //} 
+                return Ok(new ApiResponse<DeletionResult> {
+                    Success = true,
+                    Message = "Avatar deleted successfully.",
+                    Data = deletionResult,
+                    StatusCode = StatusCodes.Status200OK,
+                });
+            } catch (UserNotFoundException ex) {
+                _logger.LogWarning(ex, "User not found for userId: {userId}", userId);
+                return NotFound(new ApiResponse<object> {
+                    Success = false,
+                    Message = "User not found.",
+                    StatusCode = StatusCodes.Status404NotFound
+                });
+            } catch (UserImageNotFoundException ex) {
+                _logger.LogWarning(ex, "User image not found for userId: {userId}", userId);
+                return NotFound(new ApiResponse<object> {
+                    Success = false,
+                    Message = "User does not have an avatar to delete.",
+                    StatusCode = StatusCodes.Status404NotFound
+                });
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error occurred while deleting avatar for userId: {userId}", userId);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<object> {
+                    Success = false,
+                    Message = "An error occurred while deleting the avatar.",
+                    Errors = new List<string> { "Unexpected error. Please try again later." },
+                    StatusCode = StatusCodes.Status500InternalServerError
+                });
+            }
+        }
     }
 }

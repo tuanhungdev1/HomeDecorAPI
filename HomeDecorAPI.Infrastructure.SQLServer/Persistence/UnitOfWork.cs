@@ -1,5 +1,6 @@
 ﻿using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
+using HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -9,14 +10,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
-    public class UnitOfWork : IUnitOfWork {
+    public class UnitOfWork : IUnitOfWork, IDisposable {
         private readonly ApplicationDbContext _context;
         private IDbContextTransaction? _objTran = null;
-
+        private readonly Lazy<IUserRepository> _userRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
+            _userRepository = new Lazy<IUserRepository>(() => new UserRepository(_context));
         }
+
+        public IUserRepository UserRepository => _userRepository.Value;
 
         public void CreateTransaction() {
             _objTran = _context.Database.BeginTransaction();
