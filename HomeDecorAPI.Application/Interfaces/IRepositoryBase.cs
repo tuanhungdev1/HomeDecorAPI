@@ -15,5 +15,6 @@ namespace HomeDecorAPI.Application.Interfaces {
         void Update(T entity);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
+        Task SaveChangesAsync();
     }
 }

@@ -67,5 +67,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
         {
             _dbSet.RemoveRange(entities);
         }
+
+        public async Task SaveChangesAsync() {
+        await _context.SaveChangesAsync();
+    }
     }
 }

@@ -14,13 +14,28 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
         private readonly ApplicationDbContext _context;
         private IDbContextTransaction? _objTran = null;
         private readonly Lazy<IUserRepository> _userRepository;
+        private readonly Lazy<IAddressRepository> _addressRepository;
+        private readonly Lazy<IProductRepository> _productRepository;
+        private readonly Lazy<ICategoryRepository> _categoryRepository;
+        private readonly Lazy<IFavoriteProductRepository> _favoriteProductRepository;
+        private readonly Lazy<ICartRepository> _cartRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             _userRepository = new Lazy<IUserRepository>(() => new UserRepository(_context));
+            _addressRepository = new Lazy<IAddressRepository>(() => new AddressRepository(_context));
+            _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(_context));
+            _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(_context));
+            _favoriteProductRepository = new Lazy<IFavoriteProductRepository>(() => new FavoriteProductRepository(_context));
+            _cartRepository = new Lazy<ICartRepository>(() => new CartRepository(_context));
         }
 
         public IUserRepository UserRepository => _userRepository.Value;
+        public IAddressRepository AddressRepository => _addressRepository.Value;
+        public IProductRepository ProductRepository => _productRepository.Value;
+        public ICategoryRepository CategoryRepository => _categoryRepository.Value;
+        public IFavoriteProductRepository FavoriteProductRepository => _favoriteProductRepository.Value;
+        public ICartRepository CartRepository => _cartRepository.Value;
 
         public void CreateTransaction() {
             _objTran = _context.Database.BeginTransaction();

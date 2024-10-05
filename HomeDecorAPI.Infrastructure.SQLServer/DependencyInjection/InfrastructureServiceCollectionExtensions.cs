@@ -22,11 +22,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.DependencyInjection {
 
             // Đăng Kí Repository
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ILoggerService, LoggerService>();
-            services.AddScoped<ILoggerService, LoggerService>();
-            services.AddScoped<ILoggerService, LoggerService>();
-            services.AddScoped<ILoggerService, LoggerService>();
-            services.AddScoped<ILoggerService, LoggerService>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IFavoriteProductRepository, FavoriteProductRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             //Đăng Kí Unit Of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
