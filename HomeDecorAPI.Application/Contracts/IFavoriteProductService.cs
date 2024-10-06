@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Contracts {
     public interface IFavoriteProductService {
-        Task<bool> AddProductAsync(string userId, int productId);
-        Task<bool> RemoveFavoriteProductAsync(string userId, int productId);
-        Task<bool> RemoveAllFavoriteProductAsync(string userId);
-        Task<IEnumerable<ProductDto>> GetAllFavoriteProductsAsync(string userId);
+        Task AddProductToFavoritesAsync(string userId, int productId);
+        Task RemoveProductToFavoritesAsync(string userId, int productId);
+        Task RemoveAllFavoriteProductAsync(string userId);
+        Task<IEnumerable<ProductDto>> GetAllProductToFavoritesAsync(string userId);
     }
 }

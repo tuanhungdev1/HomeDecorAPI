@@ -4,8 +4,6 @@ using HomeDecorAPI.Application.Services;
 using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
-using HomeDecorAPI.Infrastructure.SQLServer.Persistence;
-using HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

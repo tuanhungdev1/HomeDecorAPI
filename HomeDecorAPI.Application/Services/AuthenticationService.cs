@@ -28,17 +28,17 @@ namespace HomeDecorAPI.Application.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
-        private readonly IRepositoryManager _repositoryManager;
+        private readonly IAuthenticationService _authenticationService;
         private User _user;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthenticationService(IHttpContextAccessor httpContextAccessor ,IRepositoryManager repositoryManager ,IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        public AuthenticationService(IHttpContextAccessor httpContextAccessor , IAuthenticationService authenticationService, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             _mapper = mapper;
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
-            _repositoryManager = repositoryManager;
+            _authenticationService = authenticationService;
             _httpContextAccessor = httpContextAccessor;
         }
 
