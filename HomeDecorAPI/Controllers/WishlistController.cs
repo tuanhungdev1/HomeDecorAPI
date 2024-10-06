@@ -1,9 +1,6 @@
 ﻿using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.WishlistDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
-using HomeDecorAPI.Application.Shared.Constants;
-using HomeDecorAPI.Application.Shared.Messages;
-using HomeDecorAPI.Application.Shared.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeDecorAPI.Presentation.Controllers {
@@ -11,45 +8,41 @@ namespace HomeDecorAPI.Presentation.Controllers {
     [ApiController]
     public class WishlistController : ControllerBase {
 
-        private readonly IServiceManager _serviceManager;
+        private readonly IFavoriteProductService _favoriteProductService;
 
-        public WishlistController(IServiceManager serviceManager)
+        public WishlistController(IFavoriteProductService favoriteProductService)
         {
-            _serviceManager = serviceManager;
+           _favoriteProductService = favoriteProductService;
        }
 
         [HttpGet("all/{userId}")]
         public async Task<IActionResult> GetWishlistByUserId(string userId) {
-            var result = await _serviceManager.FavoriteProductService.GetAllFavoriteProductsAsync(userId);
+            var result = await _favoriteProductService.GetAllProductToFavoritesAsync(userId);
 
             if(result == null) 
-                return NotFound(ApiResponseFactory.CreateResponse<object>(false, ErrorMessages.Entity.NotFound("User", userId)));
+                return NotFound();
 
-            return Ok(ApiResponseFactory.CreateResponse(true, SuccessMessages.Entity.ListRetrieved("Wishlist"), result));
+            return Ok();
         }
 
 
         [HttpDelete]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RemoveProductForWishlist([FromBody] AddProductForWishlistDto addProductForWishlistDto) {
-            var result = await _serviceManager.FavoriteProductService.RemoveFavoriteProductAsync(addProductForWishlistDto.UserId, addProductForWishlistDto.ProductId);
+            await _favoriteProductService.RemoveProductToFavoritesAsync(addProductForWishlistDto.UserId, addProductForWishlistDto.ProductId);
 
-            if(!result) {
-                return BadRequest(ApiResponseFactory.CreateResponse<object>(false, ErrorMessages.Entity.ItemNotFound("Wishlist", addProductForWishlistDto.ProductId.ToString(), addProductForWishlistDto.UserId.ToString())));
-            }
+           
 
-            return Ok(ApiResponseFactory.CreateResponse<object>(true, SuccessMessages.Entity.ItemRemoved(addProductForWishlistDto.ProductId.ToString(), "Wishlist", addProductForWishlistDto.UserId.ToString())));
+            return Ok();
         }
 
         [HttpDelete("{userId}")]
         public async Task<IActionResult> RemoveAllProductForWishlist(string userId) {
-            var result = await _serviceManager.FavoriteProductService.RemoveAllFavoriteProductAsync(userId);
+            await _favoriteProductService.RemoveAllFavoriteProductAsync(userId);
 
-            if (!result) {
-                return BadRequest(ApiResponseFactory.CreateResponse<object>(false, ErrorMessages.Entity.ItemDeletionFailed("Wishlist", userId.ToString())));
-            }
+           
 
-            return Ok(ApiResponseFactory.CreateResponse<object>(true, SuccessMessages.Entity.AllItemsDeleted("Wishlist")));
+            return Ok();
 
         }
 

@@ -46,13 +46,13 @@ namespace HomeDecorAPI.Presentation.Extensions
         }
             
         // JWT
-        public static void ConfigureJWT(this IServiceCollection services, IConfiguration
-configuration) {
+        public static void ConfigureJWT(this IServiceCollection services,
+            IConfiguration configuration)
+        {
             var jwtSettings = configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["secretKey"];
+            var secretKey = jwtSettings["SecurityKey"];
 
-            services.AddAuthentication(opt =>
-            {
+            services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
@@ -62,11 +62,9 @@ configuration) {
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-
-                    ValidIssuer = jwtSettings["validIssuer"],
-                    ValidAudience = jwtSettings["validAudience"],
-                    IssuerSigningKey = new
-   SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                    ValidIssuer = jwtSettings["ValidIssuer"],
+                    ValidAudience = jwtSettings["ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
             });
         }

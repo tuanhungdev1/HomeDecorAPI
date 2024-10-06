@@ -16,52 +16,54 @@ namespace HomeDecorAPI.Presentation.Controllers {
     [ApiController]
     public class ProductController : ControllerBase {
 
-        private readonly IServiceManager _serviceManager;
+        private readonly IProductService _productService;
+        private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IServiceManager serviceManager)
+        public ProductController(IProductService productService, ILogger<ProductController> logger)
         {
-            _serviceManager = serviceManager;
+            _productService = productService;
+            _logger = logger;
         }
 
 
         [HttpGet]
         public async Task<IActionResult> GetAllProductAsync([FromQuery] ProductRequestParameters productRequestParameters) {
-            var (pagedList, metaData) = await _serviceManager.ProductService.GetAllProductsAsync(productRequestParameters.PageNumber, productRequestParameters.PageSize);
+            var (pagedList, metaData) = await _productService.GetAllProductsAsync(productRequestParameters.PageNumber, productRequestParameters.PageSize);
 
             Response.AddPaginationHeader(metaData);
 
-            return Ok(ApiResponseFactory.CreateResponse(true, Messages.Success.DataRetrieved, pagedList));
+            return Ok();
         }
 
         [HttpGet("{productId:int}")]
         public async Task<IActionResult> GetProductById(int productId) {
-            var productDto = await _serviceManager.ProductService.GetProductByIdAsync(productId);
+            var productDto = await _productService.GetProductByIdAsync(productId);
 
-            return Ok(ApiResponseFactory.CreateResponse(true, Messages.Success.DataRetrieved, productDto));
+            return Ok();
         }
 
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateProductAsync([FromBody] ProductForCreateDto productForCreateDto) {
-            var productDto = await _serviceManager.ProductService.CreateProductAsync(productForCreateDto);
+            var productDto = await _productService.CreateProductAsync(productForCreateDto);
 
-            return StatusCode(StatusCodes.Status201Created, ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityCreated.Replace("{0}", "Product")));
+            return Created();
         }
 
         [HttpPut("{productId:int}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateProductAsync([FromBody] ProductForUpdateDto productForUpdateDto, int productId) {
-            var productDto = await _serviceManager.ProductService.UpdateProductAsync(productId, productForUpdateDto);
+            var productDto = await _productService.UpdateProductAsync(productId, productForUpdateDto);
 
-            return Ok(ApiResponseFactory.CreateResponse(true, Messages.Success.EntityUpdated.Replace("{0}", "Product"), productDto));
+            return Ok();
         }
 
 
         [HttpDelete("{productId:int}")]
         public async Task<IActionResult> DeleteProductAsync(int productId) {
-            await _serviceManager.ProductService.DeleteProductAsync(productId);
+            await _productService.DeleteProductAsync(productId);
 
-            return Ok(ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityDeleted.Replace("{0}", "Product")));
+            return Ok();
         }
     }
 }

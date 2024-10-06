@@ -31,8 +31,18 @@ namespace HomeDecorAPI.Application.Services
         private readonly IAuthenticationService _authenticationService;
         private User _user;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository _userRepository;
+ 
 
-        public AuthenticationService(IHttpContextAccessor httpContextAccessor , IAuthenticationService authenticationService, IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        public AuthenticationService(IHttpContextAccessor httpContextAccessor, 
+                                    IAuthenticationService authenticationService,
+                                    IMapper mapper,
+                                    UserManager<User> userManager,
+                                    SignInManager<User> signInManager,
+                                    IConfiguration configuration,
+                                    IUserRepository userRepository
+                                    
+                                    )
         {
             _mapper = mapper;
             _signInManager = signInManager;
@@ -40,6 +50,7 @@ namespace HomeDecorAPI.Application.Services
             _configuration = configuration;
             _authenticationService = authenticationService;
             _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
         }
 
         public async Task<IdentityResult> RegisterUserAsync(UserForRegistrationDto userForRegistration) {
@@ -232,7 +243,7 @@ namespace HomeDecorAPI.Application.Services
             }
 
             // Lưu thay đổi vào cơ sở dữ liệu
-            await _repositoryManager.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync();
         }
 
     }

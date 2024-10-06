@@ -12,13 +12,5 @@ namespace HomeDecorAPI.Application.Shared.ResponseFeatures {
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string? RefreshToken { get; set; }
-
-        public AuthResponse(bool isSuccess, string message, T? data = default, string? token = null, string? refreshToken = null, List<string>? errors = null)
-            : base(isSuccess, message, data, errors) {
-            Token = token;
-            RefreshToken = refreshToken;
-        }
     }
-
-
 }

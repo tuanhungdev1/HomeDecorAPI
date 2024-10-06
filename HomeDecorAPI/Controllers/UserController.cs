@@ -2,17 +2,13 @@
 using CloudinaryDotNet.Actions;
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.AddressDtos;
-using HomeDecorAPI.Application.DTOs.UploadDtos;
 using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
-using HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
-using HomeDecorAPI.Application.Shared.Messages;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace HomeDecorAPI.Presentation.Controllers {
     [Authorize]

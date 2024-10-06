@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Interfaces {
-    public interface IUserRepository {
+    public interface IUserRepository : IRepositoryBase<User> {
         Task<User?> GetUserImageAsync(string userId);
     }
 }

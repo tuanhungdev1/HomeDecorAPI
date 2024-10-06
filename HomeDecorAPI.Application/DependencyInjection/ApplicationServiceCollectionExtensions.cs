@@ -1,6 +1,7 @@
 ﻿using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Services;
 using HomeDecorAPI.Application.Shared.ActionFilters;
+using HomeDecorAPI.Application.Shared.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace HomeDecorAPI.Application.DependencyInjection {
 
             // Đăng ký Filter
             services.AddScoped<ValidationFilterAttribute>();
+
+            services.AddHttpContextAccessor();
 
             return services;
         }

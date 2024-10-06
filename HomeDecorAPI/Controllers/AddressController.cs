@@ -2,28 +2,21 @@
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
-using HomeDecorAPI.Application.Shared.Constants;
-using HomeDecorAPI.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using HomeDecorAPI.Application.DTOs.AddressDtos;
-using HomeDecorAPI.Application.Shared.Utilities;
 
 namespace HomeDecorAPI.Presentation.Controllers {
     [Route("api/address")]
     [ApiController]
     [Authorize]
     public class AddressController : ControllerBase {
-        private readonly IServiceManager _service;
+        private readonly IAddressService _addressService;
         private readonly IMapper _mapper;
 
-        public AddressController(IServiceManager service, IMapper mapper) {
-            _service = service;
+        public AddressController(IAddressService addressService, IMapper mapper) {
+            _addressService = addressService;
             _mapper = mapper;
         }
 
@@ -35,65 +28,93 @@ namespace HomeDecorAPI.Presentation.Controllers {
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> GetAddressById(int id) {
             var userId = GetCurrentUserId();
-            var address = await _service.AddressService.GetAddressAsync(userId, id);
+            var address = await _addressService.GetAddressAsync(userId, id);
 
             if (address == null) {
-                return NotFound(ApiResponseFactory.CreateResponse<object>(
-                    isSuccess: false,
-                    message: Messages.Error.EntityNotFound("Address", id),
-                    errors: new List<string> { Messages.Error.EntityNotFound("Address", id) }
-                ));
+                return NotFound(new ApiResponse<object> {
+                    Success = false,
+                    Message = "Address not found.",
+                    Errors = new List<string> { "Address not found." },
+                    StatusCode = 404
+                });
             }
 
-            return Ok(ApiResponseFactory.CreateResponse(true, Messages.Success.EntityAction("retrieved", "Address", id.ToString()), address));
+            return Ok(new ApiResponse<object> {
+                Success = true,
+                Message = "Address retrieved successfully.",
+                Data = address,
+                StatusCode = 200
+            });
         }
 
         [HttpGet]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> GetAllAddresses() {
             var userId = GetCurrentUserId();
-            var addresses = await _service.AddressService.GetAllAddressesByUserIdAsync(userId);
+            var addresses = await _addressService.GetAllAddressesByUserIdAsync(userId);
 
             if (addresses == null || !addresses.Any()) {
-                return NotFound(ApiResponseFactory.CreateResponse<object>(
-                    isSuccess: false,
-                    message: Messages.Info.NoDataAvailable
-                ));
+                return NotFound(new ApiResponse<object> {
+                    Success = false,
+                    Message = "No addresses available.",
+                    StatusCode = 404
+                });
             }
 
-            return Ok(ApiResponseFactory.CreateResponse(true, Messages.Success.DataRetrieved, addresses));
+            return Ok(new ApiResponse<object> {
+                Success = true,
+                Message = "Addresses retrieved successfully.",
+                Data = addresses,
+                StatusCode = 200
+            });
         }
 
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateAddress([FromBody] AddressForCreateDto addressForCreateDto) {
             var userId = GetCurrentUserId();
-            await _service.AddressService.CreateAddressAsync(userId, addressForCreateDto);
-            return StatusCode(StatusCodes.Status201Created, ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityCreated.Replace("{0}", "Address")));
+            await _addressService.CreateAddressAsync(userId, addressForCreateDto);
+            return StatusCode(StatusCodes.Status201Created, new ApiResponse<object> {
+                Success = true,
+                Message = "Address created successfully.",
+                StatusCode = 201
+            });
         }
 
         [HttpPut("{id:int}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateAddress(int id, [FromBody] AddressForUpdateDto addressForUpdateDto) {
             var userId = GetCurrentUserId();
-            await _service.AddressService.UpdateAddressAsync(userId, id, addressForUpdateDto);
-            return StatusCode(StatusCodes.Status200OK, ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityUpdated.Replace("{0}", "Address")));
+            await _addressService.UpdateAddressAsync(userId, id, addressForUpdateDto);
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<object> {
+                Success = true,
+                Message = "Address updated successfully.",
+                StatusCode = 200
+            });
         }
 
         [HttpDelete("{id:int}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> DeleteAddress(int id) {
             var userId = GetCurrentUserId();
-            await _service.AddressService.DeleteAddressAsync(userId, id);
-            return StatusCode(StatusCodes.Status200OK, ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityDeleted.Replace("{0}", "Address")));
+            await _addressService.DeleteAddressAsync(userId, id);
+            return StatusCode(StatusCodes.Status200OK, new ApiResponse<object> {
+                Success = true,
+                Message = "Address deleted successfully.",
+                StatusCode = 200
+            });
         }
 
         [HttpPatch("{id:guid}/default")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> SetDefaultAddress(int id) {
             var userId = GetCurrentUserId();
-            await _service.AddressService.SetDefaultAddResAsync(userId, id);
-            return Ok(ApiResponseFactory.CreateResponse<object>(true, Messages.Success.EntityAction("set as default", "Address", id.ToString())));
+            await _addressService.SetDefaultAddResAsync(userId, id);
+            return Ok(new ApiResponse<object> {
+                Success = true,
+                Message = "Address set as default successfully.",
+                StatusCode = 200
+            });
         }
     }
 }

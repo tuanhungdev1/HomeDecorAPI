@@ -1,11 +1,5 @@
-﻿using HomeDecorAPI.Application.Shared.Messages;
-using HomeDecorAPI.Domain.Entities;
-using System;
-using System.Collections.Generic;
+﻿using HomeDecorAPI.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.DTOs.CartDtos {
     public class CartDto {
