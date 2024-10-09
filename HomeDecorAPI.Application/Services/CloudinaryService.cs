@@ -15,19 +15,23 @@ using HomeDecorAPI.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using HomeDecorAPI.Application.Interfaces;
+using HomeDecorAPI.Application.Shared.Models;
 
 namespace HomeDecorAPI.Application.Services {
     public class CloudinaryService : ICloudinaryService {
         private readonly Cloudinary _cloudinary;
+        private readonly CloudinarySettings _cloudinarySettings;
         private readonly ILogger<CloudinaryService> _logger;
         private readonly UserManager<User> _userManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CloudinaryService(IOptions<CloudinarySettings> config, ILogger<CloudinaryService> logger, UserManager<User> userManager, IUnitOfWork unitOfWork) {
+        public CloudinaryService(IOptions<CloudinarySettings> cloudinarySettings, ILogger<CloudinaryService> logger, UserManager<User> userManager, IUnitOfWork unitOfWork) {
+            _cloudinarySettings = cloudinarySettings.Value;
+            
             var acc = new Account(
-                config.Value.CloudName,
-                config.Value.ApiKey,
-                config.Value.ApiSecret);
+                _cloudinarySettings.CloudName,
+                _cloudinarySettings.ApiKey,
+                _cloudinarySettings.ApiSecret);
 
             _cloudinary = new Cloudinary(acc);
             _logger = logger;

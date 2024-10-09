@@ -29,6 +29,10 @@ builder.Configuration
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings")
+    );
+
 //Extensions
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();

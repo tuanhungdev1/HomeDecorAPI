@@ -3,39 +3,31 @@ using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.TokenDtos;
 using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Interfaces;
-using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace HomeDecorAPI.Application.Services
-{
+namespace HomeDecorAPI.Application.Services {
     public sealed class AuthenticationService : IAuthenticationService {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
-        private readonly IAuthenticationService _authenticationService;
         private User _user;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserRepository _userRepository;
  
 
         public AuthenticationService(IHttpContextAccessor httpContextAccessor, 
-                                    IAuthenticationService authenticationService,
+                                    
                                     IMapper mapper,
                                     UserManager<User> userManager,
                                     SignInManager<User> signInManager,
@@ -48,7 +40,6 @@ namespace HomeDecorAPI.Application.Services
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
-            _authenticationService = authenticationService;
             _httpContextAccessor = httpContextAccessor;
             _userRepository = userRepository;
         }
@@ -87,6 +78,7 @@ namespace HomeDecorAPI.Application.Services
 
 
         public async Task<TokenDto> CreateToken(bool populateExp) {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims();
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
@@ -95,8 +87,7 @@ namespace HomeDecorAPI.Application.Services
             _user.RefreshToken = refreshToken;
 
             if (populateExp)
-                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
-
+                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["RefreshTokenExpiryDays"]));
             await _userManager.UpdateAsync(_user);
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
@@ -106,7 +97,7 @@ namespace HomeDecorAPI.Application.Services
 
         private SigningCredentials GetSigningCredentials() {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            var key = Encoding.UTF8.GetBytes(jwtSettings["secretKey"]);
+            var key = Encoding.UTF8.GetBytes(jwtSettings["SecurityKey"]!);
             var secret = new SymmetricSecurityKey(key);
 
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
@@ -134,10 +125,10 @@ namespace HomeDecorAPI.Application.Services
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var tokenOptions = new JwtSecurityToken
             (
-                issuer: jwtSettings["validIssuer"],
-                audience: jwtSettings["validAudience"],
+                issuer: jwtSettings["ValidIssuer"],
+                audience: jwtSettings["ValidAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["expires"])),
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["TokenExpiryMinutes"])),
                 signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -159,10 +150,10 @@ namespace HomeDecorAPI.Application.Services
                 ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(jwtSettings["secretKey"])),
+                    Encoding.UTF8.GetBytes(jwtSettings["SecurityKey"]!)),
                 ValidateLifetime = true,
-                ValidIssuer = jwtSettings["validIssuer"],
-                ValidAudience = jwtSettings["validAudience"]
+                ValidIssuer = jwtSettings["ValidIssuer"],
+                ValidAudience = jwtSettings["ValidAudience"]
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
