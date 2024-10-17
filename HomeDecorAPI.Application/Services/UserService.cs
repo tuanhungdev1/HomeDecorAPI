@@ -2,6 +2,7 @@
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.AddressDtos;
 using HomeDecorAPI.Application.DTOs.UserDtos;
+using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
@@ -17,22 +18,26 @@ namespace HomeDecorAPI.Application.Services {
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly ILogger<UserService> _logger;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(UserManager<User> userManager, IMapper mapper, ILogger<UserService> logger) {
+        public UserService(UserManager<User> userManager, IMapper mapper, ILogger<UserService> logger, IUserRepository userRepository) {
             _userManager = userManager;
             _mapper = mapper;
             _logger = logger;
+            _userRepository = userRepository;
         }
 
         // Lấy thông tin profile người dùng
         public async Task<UserProfileDto> GetUserProfileAsync(string userId) {
             _logger.LogInformation("Attempting to retrieve user profile for userId: {userId}", userId);
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userRepository.GetUserByIdAsync(userId);
 
             if (user == null) {
                 _logger.LogWarning("User not found with userId: {userId}", userId);
                 throw new UserNotFoundException($"UserId {userId} not found in the system.");
             }
+
+            
             _logger.LogInformation("Successfully retrieved user profile for userId: {userId}", userId);
             return _mapper.Map<UserProfileDto>(user);
         }

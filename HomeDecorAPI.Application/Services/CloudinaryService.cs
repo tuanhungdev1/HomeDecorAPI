@@ -59,7 +59,7 @@ namespace HomeDecorAPI.Application.Services {
                 var uploadParams = new ImageUploadParams {
                     File = new FileDescription(file.FileName, stream),
                     Folder = $"HomeDecor/{CloudinaryConstants.Folders.Users}/{uniqueFileName}",
-                    PublicId = user.UserImage?.PublicId ?? $"HomeDecor/{CloudinaryConstants.Folders.Users}/{uniqueFileName}",
+                    PublicId = user.UserImage?.PublicId ?? uniqueFileName,
                     Overwrite = true,
                     Transformation = new Transformation()
                         .Width(1000)
@@ -80,8 +80,8 @@ namespace HomeDecorAPI.Application.Services {
                 if(user.UserImage == null) {
                     var userImage = new UserImage {
                         PublicId = uploadResult.PublicId.ToString(),
-                        Url = uploadResult.SecureUrl.ToString(),
                         UserId = userId,
+                        Url = uploadResult.SecureUrl.ToString(),
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
                     };

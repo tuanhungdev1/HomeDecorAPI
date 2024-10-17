@@ -33,16 +33,6 @@ namespace HomeDecorAPI.Presentation.Controllers {
         public async Task<IActionResult> GetUserProfileAsync(string userId) {
             try {
                 var user = await _userService.GetUserProfileAsync(userId);
-
-                if (user == null) {
-                    _logger.LogWarning("User not found for userId: {userId}", userId);
-                    return BadRequest(new ApiResponse<UserProfileDto> {
-                        Success = false,
-                        Message = "Failed to retrieve user profile.",
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        Errors = new List<string> { "The user profile could not be found or retrieved." },
-                    });
-                }
                 _logger.LogInformation("User profile retrieved successfully for userId: {userId}", userId);
                 return Ok(new ApiResponse<UserProfileDto> {
                     Success = true,
@@ -50,8 +40,18 @@ namespace HomeDecorAPI.Presentation.Controllers {
                     Data = user,
                     StatusCode = StatusCodes.Status200OK,
                 });
+                } catch (UserNotFoundException ex) {
+                _logger.LogWarning(ex, $"User not found for userId: {userId}");
+                return BadRequest(new ApiResponse<UserProfileDto> {
+                    Success = false,
+                    Message = "Failed to retrieve user profile.",
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Errors = new List<string> { "The user profile could not be found or retrieved." },
+                });
+
+
             } catch (Exception ex) {
-                _logger.LogInformation(ex, "Error occurred while retrieving user profile for userId:{userId}", userId);
+                _logger.LogInformation(ex, $"Error occurred while retrieving user profile for userId:{userId}");
                 return BadRequest(new ApiResponse<UserProfileDto> {
                     Success = false,
                     StatusCode = StatusCodes.Status500InternalServerError,

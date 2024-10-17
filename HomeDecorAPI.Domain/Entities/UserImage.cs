@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Domain.Entities {
-    public class UserImage : BaseEntity{
+    public class UserImage : BaseEntity{ 
         [Required]
         public required string UserId { get; set; }
         [Required]

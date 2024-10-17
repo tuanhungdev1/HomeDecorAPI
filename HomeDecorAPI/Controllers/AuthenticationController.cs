@@ -136,17 +136,31 @@ namespace HomeDecorAPI.Presentation.Controllers {
 
         [Authorize]
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout() {
+        public async Task<IActionResult> Logout () {
             try {
                 await _authenticationService.LogoutUserAsync();
-                _logger.LogInformation("User logged out successfully."); // Logging thông tin
+                _logger.LogInformation("User logged out successfully.");
                 return Ok(new ApiResponse<object> {
                     Success = true,
                     Message = "User logged out successfully.",
                     StatusCode = 200
                 });
+            } catch (UnauthorizedAccessException ex) {
+                _logger.LogWarning(ex, "Unauthorized access attempt during logout.");
+                return Unauthorized(new ApiResponse<object> {
+                    Success = false,
+                    Message = "Unauthorized access. User may not be logged in.",
+                    StatusCode = 401
+                });
+            } catch (InvalidOperationException ex) {
+                _logger.LogError(ex, "Invalid operation occurred during logout.");
+                return BadRequest(new ApiResponse<object> {
+                    Success = false,
+                    Message = "Unable to complete logout process. Please try again.",
+                    StatusCode = 400
+                });
             } catch (Exception ex) {
-                _logger.LogError(ex, "An error occurred while logging out user."); // Logging lỗi
+                _logger.LogError(ex, "An unexpected error occurred while logging out user.");
                 return StatusCode(500, new ApiResponse<object> {
                     Success = false,
                     Message = "An internal server error occurred. Please try again later.",

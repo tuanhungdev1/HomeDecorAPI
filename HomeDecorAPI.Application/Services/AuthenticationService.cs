@@ -9,6 +9,7 @@ using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,10 +25,11 @@ namespace HomeDecorAPI.Application.Services {
         private User _user;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<AuthenticationService> _logger;
  
 
         public AuthenticationService(IHttpContextAccessor httpContextAccessor, 
-                                    
+                                    ILogger<AuthenticationService> logger,
                                     IMapper mapper,
                                     UserManager<User> userManager,
                                     SignInManager<User> signInManager,
@@ -42,6 +44,7 @@ namespace HomeDecorAPI.Application.Services {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _userRepository = userRepository;
+            _logger = logger;
         }
 
         public async Task<IdentityResult> RegisterUserAsync(UserForRegistrationDto userForRegistration) {
@@ -106,7 +109,7 @@ namespace HomeDecorAPI.Application.Services {
         private async Task<List<Claim>> GetClaims() {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, _user.UserName!),
+                new Claim(ClaimTypes.Name, _user.DisplayName!),
                 new Claim(ClaimTypes.Email, _user.Email!), 
                 new Claim(ClaimTypes.NameIdentifier, _user.Id!)
             };
@@ -151,20 +154,25 @@ namespace HomeDecorAPI.Application.Services {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtSettings["SecurityKey"]!)),
-                ValidateLifetime = true,
+                ValidateLifetime = false,
                 ValidIssuer = jwtSettings["ValidIssuer"],
                 ValidAudience = jwtSettings["ValidAudience"]
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out
-        securityToken);
+            ClaimsPrincipal principal;
+
+            try {
+                principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            } catch (Exception) {
+                throw new SecurityTokenException("Invalid token");
+            }
 
             var jwtSecurityToken = securityToken as JwtSecurityToken;
             if (jwtSecurityToken == null ||
-        !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
-                StringComparison.InvariantCultureIgnoreCase)) {
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                    StringComparison.InvariantCultureIgnoreCase)) {
                 throw new SecurityTokenException("Invalid token");
             }
 
@@ -173,7 +181,10 @@ namespace HomeDecorAPI.Application.Services {
 
         public async Task<TokenDto> RefreshToken(TokenDto tokenDto) {
             var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
-            var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+            var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new RefreshTokenBadRequest();
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null || user.RefreshToken != tokenDto.RefreshToken ||
             user.RefreshTokenExpiryTime <= DateTime.Now)
                 throw new RefreshTokenBadRequest();
@@ -209,32 +220,44 @@ namespace HomeDecorAPI.Application.Services {
 
 
         public async Task LogoutUserAsync() {
-           
-            var userName = _httpContextAccessor.HttpContext.User.Identity.Name; 
+            try {
+                var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId)) {
+                    _logger.LogWarning("Logout attempt failed: No authenticated user found");
+                    throw new UnauthorizedAccessException("No authenticated user found");
+                }
 
-            if (string.IsNullOrEmpty(userName)) {
-                throw new InvalidOperationException("Không tìm thấy người dùng nào đang đăng nhập.");
+                _logger.LogInformation($"Logout initiated for user ID: {userId}");
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) {
+                    _logger.LogWarning($"Logout failed: User with ID {userId} not found in the database");
+                    throw new InvalidOperationException($"User with ID {userId} not found");
+                }
+
+                user.RefreshToken = null;
+                user.RefreshTokenExpiryTime = null;
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded) {
+                    _logger.LogError($"Failed to update user {userId} during logout. Errors: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    throw new InvalidOperationException("Failed to update user information during logout");
+                }
+
+                await _userRepository.SaveChangesAsync();
+                _logger.LogInformation($"User {userId} logged out successfully");
+
+                await _signInManager.SignOutAsync();
+                _logger.LogInformation($"SignInManager.SignOutAsync completed for user {userId}");
+            } catch (UnauthorizedAccessException ex) {
+                _logger.LogError($"Unauthorized access during logout: {ex.Message}");
+                throw;
+            } catch (InvalidOperationException ex) {
+                _logger.LogError($"Invalid operation during logout: {ex.Message}");
+                throw;
+            } catch (Exception ex) {
+                _logger.LogError($"Unexpected error during logout: {ex.Message}");
+                throw new InvalidOperationException("An unexpected error occurred during logout", ex);
             }
-
-            
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user == null) {
-                throw new UserNotFoundException($"Người dùng {userName} không tồn tại.");
-            }
-
-            
-            user.RefreshToken = null;
-            user.RefreshTokenExpiryTime = null;
-
-            var result = await _userManager.UpdateAsync(user);
-
-            if (!result.Succeeded) {
-                // Cân nhắc ghi log nếu bạn có hệ thống log.
-                throw new InvalidOperationException("Không thể cập nhật thông tin người dùng trong quá trình đăng xuất.");
-            }
-
-            // Lưu thay đổi vào cơ sở dữ liệu
-            await _userRepository.SaveChangesAsync();
         }
 
     }

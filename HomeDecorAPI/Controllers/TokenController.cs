@@ -1,28 +1,48 @@
 ﻿using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.TokenDtos;
+using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace HomeDecorAPI.Presentation.Controllers {
     [Route("api/token")]
     [ApiController]
     public class TokenController : ControllerBase {
         private readonly IAuthenticationService _authenticationService;
-        public TokenController(IAuthenticationService service) => _authenticationService = service;
+        private readonly ILogger<TokenController> _logger;
+
+        public TokenController(IAuthenticationService service, ILogger<TokenController> logger) {
+            _authenticationService = service ?? throw new ArgumentNullException(nameof(service));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         [HttpPost("refresh")]
-
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto) {
-            var tokenDtoToReturn = await _authenticationService.RefreshToken(tokenDto);
-            return Ok(new AuthResponse<TokenDto> {
+            try {
+                var tokenDtoToReturn = await _authenticationService.RefreshToken(tokenDto);
+
+                _logger.LogInformation("Token refreshed successfully");
+
+                return Ok(new AuthResponse<TokenDto> {
                     Success = true,
-                    Message = "Refresh token successfully.",
-                    Data = new TokenDto {
-                        AccessToken = tokenDto.AccessToken,
-                        RefreshToken = tokenDto.RefreshToken,
-                    }
+                    Message = "Refresh token successful.",
+                    Data = tokenDtoToReturn
                 });
+            } catch (RefreshTokenBadRequest ex) {
+                _logger.LogWarning(ex, "Refresh token bad request");
+                return BadRequest(new AuthResponse<TokenDto> {
+                    Success = false,
+                    Message = ex.Message
+                });
+            } catch (Exception ex) {
+                _logger.LogError(ex, "An error occurred while refreshing token");
+                return StatusCode(500, new AuthResponse<TokenDto> {
+                    Success = false,
+                    Message = "An error occurred while processing your request."
+                });
+            }
         }
     }
 }

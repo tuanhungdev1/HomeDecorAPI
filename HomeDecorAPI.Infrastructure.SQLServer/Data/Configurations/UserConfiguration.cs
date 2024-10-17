@@ -12,7 +12,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
         public void Configure(EntityTypeBuilder<User> builder) {
             builder.HasOne(u => u.UserImage)
                 .WithOne(ui => ui.User)
-                .HasForeignKey<UserImage>(ui => ui.UserId);
+                .HasForeignKey<UserImage>(ui => ui.UserId)
+                .HasPrincipalKey<User>(u => u.Id);
         }
     }
 }
