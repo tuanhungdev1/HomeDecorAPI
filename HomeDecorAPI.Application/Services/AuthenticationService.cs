@@ -6,6 +6,7 @@ using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
+using HomeDecorAPI.Domain.Exceptions.UnauthorizedException;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -94,6 +95,39 @@ namespace HomeDecorAPI.Application.Services {
             throw new LoginException();
         }
 
+        public async Task<UserDto> LogoutAdminAsync(UserForLoginDto userForLoginDto) {
+            _logger.LogInformation("Xác thực thông tin đăng nhập của Admin.");
+
+            var admin = await _userManager.FindByNameAsync(userForLoginDto.UserName) ??
+                await _userManager.FindByEmailAsync(userForLoginDto.UserName);
+
+            if(admin == null) {
+                _logger.LogError("Không tìm thấy thông tin của tài khoảng Admin trong hệ thống.");
+                throw new UserNotFoundException();
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(admin, userForLoginDto.Password, userForLoginDto.RememberMe, lockoutOnFailure: false);
+            if(!result.Succeeded) {
+                _logger.LogError("Thông tin đăng nhập không chính xác! Mật khẩu không chính sác.");
+                throw new LoginBadRequest("Thông tin đăng nhập không chính xác! Sai mật khẩu.");
+            }
+
+            _logger.LogInformation("Thông tin đăng nhập chính xác! Đăng nhập thành công.");
+            var isAdmin = await _userManager.IsInRoleAsync(admin, "Admin");
+
+            if(!isAdmin) {
+                _logger.LogError("Đăng nhập không thành công tài khoản không có quyền truy đăng nhập vào trang hiện tại.");
+                throw new AccessDeniedException();
+            }
+
+            _logger.LogInformation("Lấy thông tim Admin sau khi đã xác thực thành công.");
+            _user = admin;
+            var adminDto = _mapper.Map<UserDto>(admin);
+            var roles = await _userManager.GetRolesAsync(admin);
+            adminDto.Roles = roles;
+            _logger.LogInformation("Admin đăng nhập thành công.");
+            return adminDto;
+        }
 
         public async Task<TokenDto> CreateToken(bool populateExp) {
             _logger.LogInformation("Bắt đầu lấy thông tin để tạo Token.");
@@ -125,12 +159,15 @@ namespace HomeDecorAPI.Application.Services {
         private async Task<List<Claim>> GetClaims() {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, _user.Displayname!),
+                new Claim(ClaimTypes.Name, _user.Firstname! + _user.Lastname),
                 new Claim(ClaimTypes.Email, _user.Email!), 
                 new Claim(ClaimTypes.NameIdentifier, _user.Id!)
             };
 
             //claims.Add(new Claim("DisplayName", _user.DisplayName));
+            claims.Add(new Claim("UserId", _user.Id));
+            claims.Add(new Claim("Firstname", _user.Firstname));
+            claims.Add(new Claim("Lastname", _user.Lastname));
 
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles) {

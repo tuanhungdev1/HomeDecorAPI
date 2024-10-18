@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
+using HomeDecorAPI.Domain.Entities;
+using HomeDecorAPI.Domain.Exceptions.UnauthorizedException;
 
 namespace HomeDecorAPI.Presentation.Controllers {
     [Route("api/auth")]
@@ -54,6 +56,57 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 return StatusCode(500, new ApiResponse<object> {
                     Success = false,
                     Message = "An internal server error occurred. Please try again later.",
+                    StatusCode = 500
+                });
+            }
+        }
+
+        [HttpPost("admin/login")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> LoginAdmin([FromBody] UserForLoginDto userForLoginDto) {
+            _logger.LogInformation("Bắt đầu sử lý thông tin đăng nhập Admin");
+
+            try {
+                var adminDto = await _authenticationService.LogoutAdminAsync(userForLoginDto);
+
+                _logger.LogInformation("User đăng nhập thành công bắt đầu tạo AccessToken và RefreshToken");
+                var tokenDto = await _authenticationService.CreateToken(true);
+
+                _logger.LogInformation("Tạo token thành công và gửi thông tin đăng nhập về client.");
+                return Ok(new AuthResponse<UserDto> {
+                    Success = true,
+                    Message = "Admin đăng nhập thành công.",
+                    Data = adminDto,
+                    Token = tokenDto.AccessToken,
+                    RefreshToken = tokenDto.RefreshToken,
+                    StatusCode = 200
+                });
+            } catch (UserNotFoundException ex) {
+                _logger.LogError(ex, "Không tìm thấy người dùng trong hệ thống.");
+                return BadRequest(new ApiResponse<object> {
+                    Success = false,
+                    Message = "Thông tin đăng nhập không chính xác! Sai tên đăng nhập.",
+                    StatusCode = 400
+                });
+            } catch (LoginBadRequest ex) {
+                _logger.LogError(ex, "Thông tin đăng nhập không chính xác! Sai mật khẩu.");
+                return BadRequest(new ApiResponse<object> {
+                    Success = false,
+                    Message = "Thông tin đăng nhập không chính xác! Sai mật khẩu.",
+                    StatusCode = 400
+                });
+            }catch(AccessDeniedException ex) {
+                _logger.LogError(ex, "Người dùng không có quyền truy cập.");
+                return StatusCode(StatusCodes.Status403Forbidden , new ApiResponse<object> {
+                    Success = false,
+                    Message = "Thông tin đăng nhập không chính xác! Sai mật khẩu.",
+                    StatusCode = 403
+                });
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Có một vài vấn đề nào đó của hệ thông gặp lỗi.");
+                return StatusCode(500, new ApiResponse<object> {
+                    Success = false,
+                    Message = "Hệ thống của bạn gặp một vài vấn đề, hãy thử lại.",
                     StatusCode = 500
                 });
             }
