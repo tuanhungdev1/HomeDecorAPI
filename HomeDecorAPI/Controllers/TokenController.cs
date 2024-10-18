@@ -36,6 +36,12 @@ namespace HomeDecorAPI.Presentation.Controllers {
                     Success = false,
                     Message = ex.Message
                 });
+            } catch (RefreshTokenExpiredTimeException ex) {
+                _logger.LogWarning(ex, "Refresh token expired time request");
+                return BadRequest(new AuthResponse<TokenDto> {
+                    Success = false,
+                    Message = ex.Message
+                });
             } catch (Exception ex) {
                 _logger.LogError(ex, "An error occurred while refreshing token");
                 return StatusCode(500, new AuthResponse<TokenDto> {

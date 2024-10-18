@@ -8,24 +8,18 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
     namespace HomeDecorAPI.Application.Shared.DTOs.UserDtos {
         public class UserProfileDto {
-            public Guid Id { get; set; }  
-
-            [StringLength(100)]
-            public string? FirstName { get; set; }
-
-            [StringLength(100)]
-            public string? LastName { get; set; }
-
-            [StringLength(100)]
-            public string? DisplayName { get; set; }
-
-            [EmailAddress]
+            public string? Id { get; set; }
+            public string? Username { get; set; }
             public string? Email { get; set; }
-
-            [DataType(DataType.ImageUrl)]
+            public string? Firstname { get; set; }
+            public string? Lastname { get; set; }
+            public string? Address { get; set; }
+            public int? Age { get; set; }
+            public string? Displayname { get; set; }
+            public string? PhoneNumber { get; set; }
             public string? ProfilePicture { get; set; }
-
-            public DateTime? DateOfBirth { get; set; }
+            public DateOnly? DateOfBirth { get; set; }
+            public IEnumerable<string>? Roles { get; set; } = new List<string>();
         }
     }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Shared.Validate {
     public class RoleValidationAttribute : ValidationAttribute {
-        private readonly List<string> _roles = new List<string>() { "Admin", "Customer", "Manager", "ContentCreator", "Moderator" };
+        private readonly List<string> _roles = new List<string>() { "Admin", "Customer" };
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext) {
             if(value is List<string> roles) {

@@ -10,5 +10,10 @@ namespace HomeDecorAPI.Domain.Exceptions.NotFoundException {
         {
             
         }
+
+        public UserNotFoundException() : base("Không tìm thấy tài khoản người dùng trong database.")
+        {
+            
+        }
     }
 }

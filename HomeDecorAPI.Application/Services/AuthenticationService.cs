@@ -8,6 +8,7 @@ using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -48,39 +49,54 @@ namespace HomeDecorAPI.Application.Services {
         }
 
         public async Task<IdentityResult> RegisterUserAsync(UserForRegistrationDto userForRegistration) {
+
+            _logger.LogInformation("Bắt đầu sử lý thông tin đăng kí người dùng mới trong hệ thống.");
             var user = _mapper.Map<User>(userForRegistration);
 
+            _logger.LogInformation("Tạo người dùng mới với Username và Password mà người dùng cung cấp.");
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);
 
             if (result.Succeeded) {
-                await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+                _logger.LogInformation("Người dùng đăng kí thành công thêm các Role cho người dùng.");
+                 await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+            }else {
+                _logger.LogError("Thông tin đăng kí của người dùng không hợp lệ.");
+                throw new RegisterUserException();
             }
 
             return result;
         }
 
-        public async Task<UserDto?> LoginAsync(UserForLoginDto userForLoginDto) {
+        public async Task<UserDto> LoginAsync(UserForLoginDto userForLoginDto) {
+            _logger.LogInformation("Bắt đầu sử lý xác thực thông tin đăng nhập");
             var user = await _userManager.FindByEmailAsync(userForLoginDto.UserName)
                        ?? await _userManager.FindByNameAsync(userForLoginDto.UserName);
 
             if (user == null) {
-                return null;
+                _logger.LogError("Không tìm thấy thông tin người dùng trong database.");
+                throw new UserNotFoundException();
             }
+
+            _logger.LogInformation($"Đã tìm thấy người dùng trong hệ thống với ID: {user.Id}");
             _user = user;
+
+            _logger.LogInformation($"Xác thực mật khẩu người dùng cung cấp.");
             var result = await _signInManager.PasswordSignInAsync(user.UserName!, userForLoginDto.Password, userForLoginDto.RememberMe, lockoutOnFailure: false);
             if(result.Succeeded) {
+                _logger.LogInformation("Người dùng đăng nhập thành công.");
                 var userDto = _mapper.Map<UserDto>(user);
                 var roles = await _userManager.GetRolesAsync(user);
                 userDto.Roles = roles;
-
                 return userDto;
             }
-            
-            return null;
+
+            _logger.LogError("Đăng nhập không thành công! Username hoặc Password không chính xác.");
+            throw new LoginException();
         }
 
 
         public async Task<TokenDto> CreateToken(bool populateExp) {
+            _logger.LogInformation("Bắt đầu lấy thông tin để tạo Token.");
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims();
@@ -109,7 +125,7 @@ namespace HomeDecorAPI.Application.Services {
         private async Task<List<Claim>> GetClaims() {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, _user.DisplayName!),
+                new Claim(ClaimTypes.Name, _user.Displayname!),
                 new Claim(ClaimTypes.Email, _user.Email!), 
                 new Claim(ClaimTypes.NameIdentifier, _user.Id!)
             };
@@ -187,7 +203,7 @@ namespace HomeDecorAPI.Application.Services {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null || user.RefreshToken != tokenDto.RefreshToken ||
             user.RefreshTokenExpiryTime <= DateTime.Now)
-                throw new RefreshTokenBadRequest();
+                throw new RefreshTokenExpiredTimeException();
             _user = user;
             return await CreateToken(populateExp: false);
         }

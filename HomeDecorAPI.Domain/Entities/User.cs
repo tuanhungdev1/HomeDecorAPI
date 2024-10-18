@@ -10,21 +10,20 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Domain.Entities {
     public class User : IdentityUser {
         [StringLength(100)]
-        public string? FirstName { get; set; }
+        public string? Firstname { get; set; }
         [StringLength(100)]
-        public string? LastName { get; set; }
-
+        public string? Lastname { get; set; }
         [StringLength(100)]
-        public string? DisplayName { get; set; }
-
+        public string? Displayname { get; set; }
+        [StringLength(500)]
+        public string? Address { get; set; }
+        [Range(0, 300)]
+        public int? Age { get; set; }
         public UserImage? UserImage { get; set; }
-
-        public DateTime? DateOfBirth { get; set; }
-
+        [DataType(DataType.Date)]
+        public DateOnly? DateOfBirth { get; set; }
         public string? RefreshToken { get; set; }
-
         public DateTime? RefreshTokenExpiryTime { get; set; }
-
         public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
         public virtual ICollection<FavoriteProduct>? FavoriteProducts { get; set; } = new List<FavoriteProduct>();
     }
