@@ -1,5 +1,7 @@
-﻿using HomeDecorAPI.Application.Contracts;
+﻿using AutoMapper;
+using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.Interfaces;
+using HomeDecorAPI.Application.MappingProfile;
 using HomeDecorAPI.Application.Services;
 using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
@@ -74,6 +76,16 @@ namespace HomeDecorAPI.Presentation.Extensions
                 .AddNewtonsoftJson(options => {
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
+        }
+
+
+        //Auto Mapper Config
+        public static void AddAutoMapperSetup(this IServiceCollection services)
+        {
+            var mappingConfig = MappingConfiguration.RegisterMap();
+            IMapper mapper = mappingConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
         }
     }
 }

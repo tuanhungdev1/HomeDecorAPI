@@ -1,23 +1,16 @@
 ﻿using AutoMapper;
 using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.UserDtos;
-using HomeDecorAPI.Application.DTOs.TokenDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging; // Thêm logging
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
-using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.UnauthorizedException;
 
-namespace HomeDecorAPI.Presentation.Controllers {
+namespace HomeDecorAPI.Presentation.Controllers
+{
     [Route("api/auth")]
     [ApiController]
     public class AuthenticationController : ControllerBase {
@@ -49,14 +42,16 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 return BadRequest(new ApiResponse<object> {
                     Success = false,
                     Message = "Thông tin đăng kí không chính xác!, Vui lòng kiểm tra lại.",
-                    StatusCode = 400
+                    StatusCode = 400,
+                    Errors = new List<string> { ex.Message }
                 });
             } catch (Exception ex) {
                 _logger.LogError(ex, "An error occurred while registering user."); 
                 return StatusCode(500, new ApiResponse<object> {
                     Success = false,
                     Message = "An internal server error occurred. Please try again later.",
-                    StatusCode = 500
+                    StatusCode = 500,
+                    Errors = new List<string> { ex.Message }
                 });
             }
         }
@@ -86,28 +81,32 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 return BadRequest(new ApiResponse<object> {
                     Success = false,
                     Message = "Thông tin đăng nhập không chính xác! Sai tên đăng nhập.",
-                    StatusCode = 400
+                    StatusCode = 400,
+                    Errors = new List<string> { ex.Message }
                 });
             } catch (LoginBadRequest ex) {
                 _logger.LogError(ex, "Thông tin đăng nhập không chính xác! Sai mật khẩu.");
                 return BadRequest(new ApiResponse<object> {
                     Success = false,
                     Message = "Thông tin đăng nhập không chính xác! Sai mật khẩu.",
-                    StatusCode = 400
+                    StatusCode = 400,
+                    Errors = new List<string> { ex.Message }
                 });
             }catch(AccessDeniedException ex) {
                 _logger.LogError(ex, "Người dùng không có quyền truy cập.");
                 return StatusCode(StatusCodes.Status403Forbidden , new ApiResponse<object> {
                     Success = false,
                     Message = "Thông tin đăng nhập không chính xác! Sai mật khẩu.",
-                    StatusCode = 403
+                    StatusCode = 403,
+                    Errors = new List<string> { ex.Message }
                 });
             } catch (Exception ex) {
                 _logger.LogError(ex, "Có một vài vấn đề nào đó của hệ thông gặp lỗi.");
                 return StatusCode(500, new ApiResponse<object> {
                     Success = false,
                     Message = "Hệ thống của bạn gặp một vài vấn đề, hãy thử lại.",
-                    StatusCode = 500
+                    StatusCode = 500,
+                    Errors = new List<string> { ex.Message }
                 });
             }
         }
@@ -138,7 +137,8 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 return BadRequest(new ApiResponse<object> {
                     Success = false,
                     Message = "Thông tin đăng nhập không chính xác! Sai Username hoặc Password.",
-                    StatusCode = 400
+                    StatusCode = 400,
+                    Errors = new List<string> { ex.Message }
                 });
 
             } catch (Exception ex) {
@@ -146,7 +146,8 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 return StatusCode(500, new ApiResponse<object> {
                     Success = false,
                     Message = "An internal server error occurred. Please try again later.",
-                    StatusCode = 500
+                    StatusCode = 500,
+                    Errors = new List<string> { ex.Message }
                 });
             }
         }
@@ -202,21 +203,24 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 return Unauthorized(new ApiResponse<object> {
                     Success = false,
                     Message = "Unauthorized access. User may not be logged in.",
-                    StatusCode = 401
+                    StatusCode = 401,
+                    Errors = new List<string> { ex.Message }
                 });
             } catch (InvalidOperationException ex) {
                 _logger.LogError(ex, "Invalid operation occurred during logout.");
                 return BadRequest(new ApiResponse<object> {
                     Success = false,
                     Message = "Unable to complete logout process. Please try again.",
-                    StatusCode = 400
+                    StatusCode = 400,
+                    Errors = new List<string> { ex.Message }
                 });
             } catch (Exception ex) {
                 _logger.LogError(ex, "An unexpected error occurred while logging out user.");
                 return StatusCode(500, new ApiResponse<object> {
                     Success = false,
                     Message = "An internal server error occurred. Please try again later.",
-                    StatusCode = 500
+                    StatusCode = 500,
+                    Errors = new List<string> { ex.Message }
                 });
             }
         }

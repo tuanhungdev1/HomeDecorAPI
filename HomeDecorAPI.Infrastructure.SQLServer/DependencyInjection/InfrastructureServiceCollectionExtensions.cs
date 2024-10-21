@@ -27,6 +27,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.DependencyInjection {
             services.AddScoped<IFavoriteProductRepository, FavoriteProductRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();
 
             //Đăng Kí Unit Of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();

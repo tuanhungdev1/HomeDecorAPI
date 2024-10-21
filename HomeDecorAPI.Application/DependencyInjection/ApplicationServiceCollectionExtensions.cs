@@ -19,6 +19,8 @@ namespace HomeDecorAPI.Application.DependencyInjection {
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<ISupplierService, SupplierService>();
             
 
             // Đăng ký AutoMapper

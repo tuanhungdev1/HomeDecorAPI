@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Interfaces {
-    public interface IUnitOfWork : IDisposable {
+    public interface IUnitOfWork : IAsyncDisposable {
         public IUserRepository UserRepository { get; }
         public IAddressRepository AddressRepository { get; }
         public IProductRepository ProductRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
         public IFavoriteProductRepository FavoriteProductRepository { get; }
         public ICartRepository CartRepository { get; }
-        void CreateTransaction();
-        void Commit();
-        void Rollback();
+        public IBrandRepository BrandRepository { get; }
+        Task BeginTransactionAsync();
+        Task CommitAsync();
+        Task RollbackAsync();
         Task SaveChangesAsync();
     }
 }

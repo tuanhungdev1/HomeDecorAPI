@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HomeDecorAPI.Domain.Exceptions.BadRequestException;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,16 +28,16 @@ namespace HomeDecorAPI.Application.Shared.Utilities {
 
         public static void ValidateFile(IFormFile file) {
             if (file == null || file.Length == 0)
-                throw new ArgumentException("No file uploaded");
+                throw new FileUploadBadRequestException("No file uploaded");
 
-            // Validate file size (e.g., max 10MB)
+            
             if (file.Length > 10 * 1024 * 1024)
-                throw new ArgumentException("File size exceeds maximum limit of 10MB");
+                throw new FileUploadBadRequestException("File size exceeds maximum limit of 10MB");
 
             // Validate file type
             var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png" };
             if (!allowedTypes.Contains(file.ContentType.ToLower()))
-                throw new ArgumentException("Invalid file type. Only JPEG and PNG are allowed");
+                throw new FileUploadBadRequestException("Invalid file type. Only JPEG and PNG are allowed");
         }
     }
 }

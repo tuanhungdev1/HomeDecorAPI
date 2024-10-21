@@ -34,7 +34,7 @@ namespace HomeDecorAPI.Presentation.Controllers {
             try {
                 var user = await _userService.GetUserProfileAsync(userId);
                 _logger.LogInformation("User profile retrieved successfully for userId: {userId}", userId);
-                return Ok(new ApiResponse<UserProfileDto> {
+                return Ok(new ApiResponse<UserDto> {
                     Success = true,
                     Message = "User profile retrieved successfully.",
                     Data = user,

@@ -28,7 +28,7 @@ namespace HomeDecorAPI.Application.Services {
         }
 
         // Lấy thông tin profile người dùng
-        public async Task<UserProfileDto> GetUserProfileAsync(string userId) {
+        public async Task<UserDto> GetUserProfileAsync(string userId) {
             _logger.LogInformation("Attempting to retrieve user profile for userId: {userId}", userId);
             var user = await _userRepository.GetUserByIdAsync(userId);
 
@@ -39,7 +39,7 @@ namespace HomeDecorAPI.Application.Services {
 
             
             _logger.LogInformation("Successfully retrieved user profile for userId: {userId}", userId);
-            return _mapper.Map<UserProfileDto>(user);
+            return _mapper.Map<UserDto>(user);
         }
 
         // Cập nhật thông tin người dùng

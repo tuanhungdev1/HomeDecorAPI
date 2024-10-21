@@ -14,7 +14,7 @@ namespace HomeDecorAPI.Domain.Entities {
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        // Phương thức cập nhật thời gian sửa đổi
+        
         public void UpdateTimestamp() {
             UpdatedAt = DateTime.UtcNow;
         }

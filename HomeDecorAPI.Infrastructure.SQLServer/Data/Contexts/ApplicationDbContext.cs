@@ -20,6 +20,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -33,6 +35,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
             modelBuilder.ApplyConfiguration(new FavoriteProductConfiguration());
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+
+            modelBuilder.ApplyConfiguration(new SupplierConfiguration());
 
         }
     }

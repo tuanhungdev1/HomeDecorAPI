@@ -39,10 +39,54 @@ namespace HomeDecorAPI.Application.Services {
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<string> UploadImageAsync(IFormFile file, string folder, string prefix)
+        {
+            FileHelper.ValidateFile(file);
+            _logger.LogInformation("Validated file. FileName: {FileName}, FileSize: {FileSize} bytes", file.FileName, file.Length);
+            var uniqueFileName = FileHelper.GenerateUniqueFileName(file.FileName, prefix);
+
+            using var stream = file.OpenReadStream();
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(uniqueFileName, stream),
+                Folder = folder,
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+            return uploadResult.SecureUrl.ToString();
+        }
+
+        public async Task DeleteImageAsync(string publicId)
+        {
+            if (string.IsNullOrEmpty(publicId))
+                return;
+            var deleteParams = new DeletionParams(publicId);
+            await _cloudinary.DestroyAsync(deleteParams);
+        }
+
+        public async Task<string> ReplaceImageAsync(IFormFile newFile,string oldPublicId, string folder, string prefix)
+        {
+            string newImageUrl = await UploadImageAsync(newFile, folder, prefix);
+
+            if(!string.IsNullOrEmpty(oldPublicId))
+                await DeleteImageAsync(oldPublicId);
+
+            return newImageUrl;
+        }
+
+        public string GetPublicIdFromUrl(string imageUrl)
+        {
+            var uri = new Uri(imageUrl);
+            var pathWithoutUpload = uri.AbsolutePath.Replace("/image/upload/", "");
+
+            var publicId = Path.GetFileNameWithoutExtension(pathWithoutUpload);
+            return publicId; 
+        }
+
         public async Task<UploadResult> UploadUserAvatarAsync(IFormFile file, string userId) {
-            _logger.LogInformation("Started uploading avatar for userId: {UserId}", userId);
             try {
-                _unitOfWork.CreateTransaction();
+                await _unitOfWork.BeginTransactionAsync();
                 FileHelper.ValidateFile(file);
                 _logger.LogInformation("Validated file for userId: {UserId}. FileName: {FileName}, FileSize: {FileSize} bytes", userId, file.FileName, file.Length);
 
@@ -53,7 +97,7 @@ namespace HomeDecorAPI.Application.Services {
                 }
 
                 var uniqueFileName = FileHelper.GenerateUniqueFileName(file.FileName, CloudinaryConstants.FileTypes.UserAvatar);
-                _logger.LogInformation("Generated unique file name for userId: {UserId}. FileName: {UniqueFileName}", userId, uniqueFileName);
+                
 
                 using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams {
@@ -92,11 +136,10 @@ namespace HomeDecorAPI.Application.Services {
                 }
                    
                 _logger.LogInformation("User's avatar URL updated in database for userId: {UserId}", userId);
-                await _unitOfWork.SaveChangesAsync();
-                _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
                 return uploadResult;
             } catch (Exception ex) {
-                _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 _logger.LogError(ex, "Error uploading avatar for userId: {UserId}", userId);
                 throw new Exception("Failed to upload user avatar", ex);
             }
@@ -105,7 +148,7 @@ namespace HomeDecorAPI.Application.Services {
         public async Task<DeletionResult> DeleteUserAvatarAsync(string userId) {
             _logger.LogInformation("Started deleting avatar for userId: {userId}", userId);
             try {
-                _unitOfWork.CreateTransaction();
+                await _unitOfWork.BeginTransactionAsync();
                 var user = await _unitOfWork.UserRepository.GetUserImageAsync(userId);
                 if (user == null) {
                     _logger.LogWarning("User not found while attempting to delete avatar. UserId: {UserId}", userId);
@@ -127,11 +170,11 @@ namespace HomeDecorAPI.Application.Services {
 
                 _logger.LogInformation("Successfully deleted avatar from Cloudinary for userId: {UserId}, PublicId: {PublicId}", userId, user.UserImage.PublicId);
                 user.UserImage = null;
-                await _unitOfWork.SaveChangesAsync();
-                _unitOfWork.Commit();
+               
+                await _unitOfWork.CommitAsync();
                 return result;
             } catch (Exception ex) {
-                _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 _logger.LogError(ex, "Error deleting avatar for userId: {userId}", userId);
                 throw new Exception("Failed to delete user avatar", ex);
             }

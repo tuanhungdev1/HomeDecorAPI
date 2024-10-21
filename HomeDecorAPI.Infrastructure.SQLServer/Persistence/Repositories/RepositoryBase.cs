@@ -25,7 +25,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync(bool asNoTracking = false)
         {
-            return !asNoTracking
+            return asNoTracking
                 ? await _dbSet.ToListAsync()
                 : await _dbSet.AsNoTracking().ToListAsync();
         }
@@ -37,7 +37,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool asNoTracking = false)
         {
-            return !asNoTracking
+            return asNoTracking
                 ? await _dbSet.Where(predicate).ToListAsync()
                 : await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }

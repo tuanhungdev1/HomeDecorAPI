@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.Contracts
 {
     public interface IUserService {
-        Task<UserProfileDto> GetUserProfileAsync(string userId);
+        Task<UserDto> GetUserProfileAsync(string userId);
         Task UpdateUserProfileAsync(string userId, UserForUpdateProfileDto userForUpdateProfileDto);
         Task<IEnumerable<AddressDto>> GetAllUserAddressAsync(string userId);
     }
