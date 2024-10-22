@@ -21,6 +21,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
         private readonly Lazy<IFavoriteProductRepository> _favoriteProductRepository;
         private readonly Lazy<ICartRepository> _cartRepository;
         private readonly Lazy<IBrandRepository> _brandRepository;
+        private readonly Lazy<ISupplierRepository> _supplierRepository;
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -31,6 +32,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
             _favoriteProductRepository = new Lazy<IFavoriteProductRepository>(() => new FavoriteProductRepository(_context));
             _cartRepository = new Lazy<ICartRepository>(() => new CartRepository(_context));
             _brandRepository = new Lazy<IBrandRepository>(() => new BrandRepository(_context));
+            _supplierRepository = new Lazy<ISupplierRepository>(() => new SupplierRepository(_context));
         }
 
         public IBrandRepository BrandRepository => _brandRepository.Value;
@@ -40,7 +42,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
         public ICategoryRepository CategoryRepository => _categoryRepository.Value;
         public IFavoriteProductRepository FavoriteProductRepository => _favoriteProductRepository.Value;
         public ICartRepository CartRepository => _cartRepository.Value;
-
+        public ISupplierRepository SupplierRepository => _supplierRepository.Value;
         public async Task BeginTransactionAsync()
         {
             if (_transaction != null)

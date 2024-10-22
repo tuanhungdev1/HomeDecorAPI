@@ -19,6 +19,7 @@ namespace HomeDecorAPI.Application.Services
         private readonly ILoggerService _loggerService;
         private readonly IMapper _mapper;
         private readonly ICloudinaryService _cloudinaryService;
+
         public BrandService(IUnitOfWork unitOfWork,
                             ILoggerService loggerService,
                             IMapper mapper,
@@ -59,9 +60,11 @@ namespace HomeDecorAPI.Application.Services
                 await _unitOfWork.BrandRepository.AddAsync(brand);
                 await _unitOfWork.SaveChangesAsync();
 
+                
+
                 if(brandForCreateDto.LogoFile != null)
                 {
-                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Brand}";
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Brand}/${brand.Id}";
                     string imageUrl = await _cloudinaryService.UploadImageAsync(brandForCreateDto.LogoFile, folder, CloudinaryConstants.FileTypes.BrandImage);
                     brand.LogoUrl = imageUrl;
                     _unitOfWork.BrandRepository.Update(brand);

@@ -13,6 +13,7 @@ namespace HomeDecorAPI.Application.Interfaces {
         public IFavoriteProductRepository FavoriteProductRepository { get; }
         public ICartRepository CartRepository { get; }
         public IBrandRepository BrandRepository { get; }
+        public ISupplierRepository SupplierRepository { get; }
         Task BeginTransactionAsync();
         Task CommitAsync();
         Task RollbackAsync();
