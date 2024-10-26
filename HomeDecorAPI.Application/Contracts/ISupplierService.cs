@@ -12,7 +12,7 @@ namespace HomeDecorAPI.Application.Contracts
         Task<IEnumerable<SupplierDto>> GetAllSupplierAsync();
         Task<SupplierDto> GetSupplierByIdAsync(int id);
         Task<SupplierDto> CreateSupplierAsync(SupplierForCreateDto supplierForCreateDto);
-        Task<SupplierDto> UpdateSupplierAsync(SupplierForUpdateDto supplierForUpdateDto);
+        Task<SupplierDto> UpdateSupplierAsync(int supplierId, SupplierForUpdateDto supplierForUpdateDto);
         Task DeleteSupplierAsync(int id);
     }
 }

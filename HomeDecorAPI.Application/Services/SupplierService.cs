@@ -82,5 +82,53 @@ namespace HomeDecorAPI.Application.Services
                 throw;
             }
         }
+
+        public async Task<SupplierDto> UpdateSupplierAsync(int supplierId, SupplierForUpdateDto supplierForUpdateDto)
+        {
+            var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(supplierId);
+            if(supplier == null)
+            {
+                _loggerService.LogError($"Không tìm thấy Supplier với ID: {supplierId}");
+                throw new SupplierNotFoundException(supplierId);
+            }
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                _mapper.Map(supplierForUpdateDto, supplier);
+                _unitOfWork.SupplierRepository.Update(supplier);
+                await _unitOfWork.SaveChangesAsync();
+
+                if (supplierForUpdateDto.LogoFile != null)
+                {
+                    string folder = $"HomeDecor/${CloudinaryConstants.Folders.Supplier}/${supplier.Id}";
+                    string oldPublicId =  _cloudinaryService.GetPublicIdFromUrl(supplier.LogoUrl);
+                    supplier.LogoUrl = await _cloudinaryService.ReplaceImageAsync(supplierForUpdateDto.LogoFile, oldPublicId, folder, CloudinaryConstants.FileTypes.Supplier);
+                }
+                _unitOfWork.SupplierRepository.Update(supplier);
+                await _unitOfWork.CommitAsync();
+                _loggerService.LogInfo("Cập nhật thông tin Supplier thành công.");
+                return _mapper.Map<SupplierDto>(supplier);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _loggerService.LogError("Có lỗi sảy ra trong quá trình thực thi.");
+                throw;
+            }
+        }
+
+        public async Task DeleteSupplierAsync(int id)
+        {
+
+            var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(id);
+            if(supplier != null)
+            {
+                _loggerService.LogError($"Không tìm thấy Supplier với ID: {id}");
+                throw new SupplierNotFoundException(id);
+            }
+
+            _unitOfWork.SupplierRepository.Remove(supplier);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }
