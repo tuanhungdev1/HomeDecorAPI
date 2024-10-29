@@ -16,7 +16,7 @@ namespace HomeDecorAPI.Presentation.Extensions {
                 appError.Run(async context =>
                 {
                     context.Response.ContentType = "application/json";
-
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if (contextFeature != null) {
                         context.Response.StatusCode = contextFeature.Error switch {

@@ -95,7 +95,7 @@ namespace HomeDecorAPI.Application.Services {
             throw new LoginException();
         }
 
-        public async Task<UserDto> LogoutAdminAsync(UserForLoginDto userForLoginDto) {
+        public async Task<UserDto> LogintAdminAsync(UserForLoginDto userForLoginDto) {
             _logger.LogInformation("Xác thực thông tin đăng nhập của Admin.");
 
             var admin = await _userManager.FindByNameAsync(userForLoginDto.UserName) ??

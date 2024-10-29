@@ -15,6 +15,8 @@ using HomeDecorAPI.Application.DTOs.ProductDtos;
 using HomeDecorAPI.Application.DTOs.CategoryDto;
 using HomeDecorAPI.Application.DTOs.CategoryDtos;
 using HomeDecorAPI.Application.DTOs.CartDtos;
+using HomeDecorAPI.Application.DTOs.SupplierDtos;
+using HomeDecorAPI.Application.DTOs.BrandDtos;
 
 namespace HomeDecorAPI.Application.MappingProfile
 {
@@ -59,6 +61,18 @@ namespace HomeDecorAPI.Application.MappingProfile
             // CART
             CreateMap<Cart, CartDto>();
             // CART
+
+            // SUPPLIER
+            CreateMap<Supplier, SupplierDto>();
+            // SUPPLIER
+
+            // BRAND
+            CreateMap<Brand, BrandDto>();
+            CreateMap<BrandForCreateDto, Brand>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<BrandForUpdateDto, Brand>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            // BRAND
         }
     }
 }

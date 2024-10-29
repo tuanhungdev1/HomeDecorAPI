@@ -79,13 +79,6 @@ namespace HomeDecorAPI.Presentation.Extensions
         }
 
 
-        //Auto Mapper Config
-        public static void AddAutoMapperSetup(this IServiceCollection services)
-        {
-            var mappingConfig = MappingConfiguration.RegisterMap();
-            IMapper mapper = mappingConfig.CreateMapper();
-
-            services.AddSingleton(mapper);
-        }
+       
     }
 }

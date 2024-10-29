@@ -16,12 +16,12 @@ namespace HomeDecorAPI.Presentation.Controllers
     public class AuthenticationController : ControllerBase {
         private readonly IAuthenticationService _authenticationService;
         private readonly IMapper _mapper;
-        private readonly ILogger<AuthenticationController> _logger; 
+        private readonly ILogger<AuthenticationController> _logger;
 
         public AuthenticationController(IAuthenticationService authenticationService, IMapper mapper, ILogger<AuthenticationController> logger) {
             _authenticationService = authenticationService;
             _mapper = mapper;
-            _logger = logger; 
+            _logger = logger;
         }
 
         [HttpPost("register")]
@@ -37,7 +37,7 @@ namespace HomeDecorAPI.Presentation.Controllers
                     Message = "Chúc mừng bạn đã đăng kí tài khoản thành công!",
                     StatusCode = 201
                 });
-            }catch(RegisterUserException ex) {
+            } catch (RegisterUserException ex) {
                 _logger.LogError(ex, "Thông tin đăng kí người dùng không chính xác.");
                 return BadRequest(new ApiResponse<object> {
                     Success = false,
@@ -46,7 +46,7 @@ namespace HomeDecorAPI.Presentation.Controllers
                     Errors = new List<string> { ex.Message }
                 });
             } catch (Exception ex) {
-                _logger.LogError(ex, "An error occurred while registering user."); 
+                _logger.LogError(ex, "An error occurred while registering user.");
                 return StatusCode(500, new ApiResponse<object> {
                     Success = false,
                     Message = "An internal server error occurred. Please try again later.",
@@ -62,7 +62,7 @@ namespace HomeDecorAPI.Presentation.Controllers
             _logger.LogInformation("Bắt đầu sử lý thông tin đăng nhập Admin");
 
             try {
-                var adminDto = await _authenticationService.LogoutAdminAsync(userForLoginDto);
+                var adminDto = await _authenticationService.LogintAdminAsync(userForLoginDto);
 
                 _logger.LogInformation("User đăng nhập thành công bắt đầu tạo AccessToken và RefreshToken");
                 var tokenDto = await _authenticationService.CreateToken(true);
@@ -92,9 +92,9 @@ namespace HomeDecorAPI.Presentation.Controllers
                     StatusCode = 400,
                     Errors = new List<string> { ex.Message }
                 });
-            }catch(AccessDeniedException ex) {
+            } catch (AccessDeniedException ex) {
                 _logger.LogError(ex, "Người dùng không có quyền truy cập.");
-                return StatusCode(StatusCodes.Status403Forbidden , new ApiResponse<object> {
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiResponse<object> {
                     Success = false,
                     Message = "Thông tin đăng nhập không chính xác! Sai mật khẩu.",
                     StatusCode = 403,
@@ -113,16 +113,19 @@ namespace HomeDecorAPI.Presentation.Controllers
 
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> LoginUser([FromBody] UserForLoginDto userForLoginDto) {
+        public async Task<IActionResult> LoginUser([FromBody] UserForLoginDto userForLoginDto)
+        {
             _logger.LogInformation("Sử lý thông tin đăng nhập của người dùng");
-            try {
+            try
+            {
                 var user = await _authenticationService.LoginAsync(userForLoginDto);
 
                 _logger.LogInformation("User đăng nhập thành công bắt đầu tạo AccessToken và RefreshToken");
                 var tokenDto = await _authenticationService.CreateToken(true);
 
-                _logger.LogInformation("Tạo token thành công và gửi thông tin đăng nhập về client."); 
-                return Ok(new AuthResponse<UserDto> {
+                _logger.LogInformation("Tạo token thành công và gửi thông tin đăng nhập về client.");
+                return Ok(new AuthResponse<UserDto>
+                {
                     Success = true,
                     Message = "User login successful.",
                     Data = user,
@@ -130,20 +133,26 @@ namespace HomeDecorAPI.Presentation.Controllers
                     RefreshToken = tokenDto.RefreshToken,
                     StatusCode = 200
                 });
-               
 
-            } catch(LoginException ex) {
+
+            }
+            catch (LoginException ex)
+            {
                 _logger.LogWarning(ex, $"Thông tin đăng nhập của người dùng không chính xác! Sai username hoặc password.");
-                return BadRequest(new ApiResponse<object> {
+                return BadRequest(new ApiResponse<object>
+                {
                     Success = false,
                     Message = "Thông tin đăng nhập không chính xác! Sai Username hoặc Password.",
                     StatusCode = 400,
                     Errors = new List<string> { ex.Message }
                 });
 
-            } catch (Exception ex) {
-                _logger.LogError(ex, "An error occurred while logging in user."); 
-                return StatusCode(500, new ApiResponse<object> {
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while logging in user.");
+                return StatusCode(500, new ApiResponse<object>
+                {
                     Success = false,
                     Message = "An internal server error occurred. Please try again later.",
                     StatusCode = 500,
@@ -152,7 +161,8 @@ namespace HomeDecorAPI.Presentation.Controllers
             }
         }
 
-        
+
+
 
 
         [HttpPost("forgot-password")]

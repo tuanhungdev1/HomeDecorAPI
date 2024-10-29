@@ -20,6 +20,6 @@ namespace HomeDecorAPI.Application.DTOs.SupplierDtos
         public string City { get; set; }
         public string Country { get; set; }
         public string LogoUrl { get; set; }
-        public bool IsActive { get; set; };
+        public bool IsActive { get; set; }
     }
 }

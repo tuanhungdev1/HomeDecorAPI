@@ -19,6 +19,6 @@ namespace HomeDecorAPI.Application.DTOs.UserDtos
         public string? PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public IEnumerable<string>? Roles { get; set; } = new List<string>();
+        public IEnumerable<string> Roles { get; set; } = new List<string>();
     }
 }

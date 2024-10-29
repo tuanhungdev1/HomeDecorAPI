@@ -17,9 +17,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
 //Auto Mapper
-builder.Services.AddAutoMapperSetup();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 // Configuration
 builder.Configuration

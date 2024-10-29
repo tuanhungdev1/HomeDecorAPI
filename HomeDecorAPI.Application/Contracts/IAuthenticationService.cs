@@ -14,7 +14,7 @@ namespace HomeDecorAPI.Application.Contracts
     public interface IAuthenticationService {
         Task<IdentityResult> RegisterUserAsync(UserForRegistrationDto userForRegistration);
         Task<UserDto> LoginAsync(UserForLoginDto userForLoginDto);
-        Task<UserDto> LogoutAdminAsync(UserForLoginDto userForLoginDto);
+        Task<UserDto> LogintAdminAsync(UserForLoginDto userForLoginDto);
         Task<TokenDto> CreateToken(bool populateExp);
         Task<IdentityResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto);
         Task LogoutUserAsync();

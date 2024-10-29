@@ -21,7 +21,7 @@ namespace HomeDecorAPI.Domain.Entities {
         public int? Age { get; set; }
         public UserImage? UserImage { get; set; }
         [DataType(DataType.Date)]
-        public DateOnly? DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
