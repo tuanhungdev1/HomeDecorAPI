@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations
 {
-    public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
+    public class BrandConfiguration : IEntityTypeConfiguration<Brand>
     {
-        public void Configure(EntityTypeBuilder<Supplier> builder)
+        public void Configure(EntityTypeBuilder<Brand> builder)
         {
             builder.HasMany(s => s.Products)
-                 .WithOne(p => p.Supplier)
-                 .HasForeignKey(p => p.SupplierId);
+                 .WithOne(p => p.Brand)
+                 .HasForeignKey(p => p.BrandId);
         }
     }
 }

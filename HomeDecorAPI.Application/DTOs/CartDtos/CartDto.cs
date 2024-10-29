@@ -18,13 +18,6 @@ namespace HomeDecorAPI.Application.DTOs.CartDtos {
         [Range(0, double.MaxValue, ErrorMessage = "Discount must be a positive number.")]
         public decimal Discount { get; set; }
 
-        public decimal TotalPrice {
-            get {
-                // Calculate TotalPrice based on Items
-                return Items?.Sum(x => x.TotalPrice) ?? 0;
-            }
-            set { }
-        }
 
         [Required]
         [StringLength(50, ErrorMessage = "Status length can't be more than 50.")]

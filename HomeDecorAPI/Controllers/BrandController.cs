@@ -89,7 +89,7 @@ namespace HomeDecorAPI.Presentation.Controllers
             }
         }
 
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateBrand([FromBody] BrandForCreateDto brandForUpdateDto)
         {
@@ -129,7 +129,7 @@ namespace HomeDecorAPI.Presentation.Controllers
             }
         }
 
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBrand(int id, [FromBody] BrandForUpdateDto brandForUpdateDto)
         {
@@ -170,7 +170,7 @@ namespace HomeDecorAPI.Presentation.Controllers
         }
 
 
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrand(int id)
         {

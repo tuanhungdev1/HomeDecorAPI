@@ -21,24 +21,6 @@ namespace HomeDecorAPI.Application.DTOs.CartDtos {
         public int Quantity { get; set; } = 1;
 
         [Range(0.01, double.MaxValue, ErrorMessage = "UnitPrice must be greater than zero.")]
-        public decimal UnitPrice {
-            get {
-                if (Product!.DiscountPercentage.HasValue) {
-                    return Product.OriginalPrice - (Product.OriginalPrice * Product.DiscountPercentage.Value / 100);
-                }
-                return Product.OriginalPrice;
-            }
-        }
-
-        [Range(0.01, double.MaxValue, ErrorMessage = "TotalPrice must be greater than zero.")]
-        public decimal TotalPrice => Quantity * UnitPrice;
-
-        [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters.")]
-        public string SKU {
-            get {
-                return Product?.SKU ?? string.Empty;
-            }
-        }
 
         [Required(ErrorMessage = "AddedAt is required.")]
         public DateTime? AddedAt { get; set; } = DateTime.UtcNow;

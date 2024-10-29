@@ -107,7 +107,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
         public async Task<bool> CheckProductStockAsync(int productId, int quantity)
         {
             var product = await _context.Products.FindAsync(productId);
-            return product != null && product.StockQuantity >= quantity;
+            return product != null;
         }
 
         public async Task UpdateCartShippingCostAsync(string userId, decimal shippingCost)

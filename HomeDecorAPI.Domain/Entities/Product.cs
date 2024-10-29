@@ -1,50 +1,39 @@
-﻿using System;
+﻿using HomeDecorAPI.Domain.Common.enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HomeDecorAPI.Domain.Entities {
-    public class Product {
-        [Key]
-        public int Id { get; set; }
+    public class Product : BaseEntity {
 
         [Required]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 100 characters.")]
+        [StringLength(100, MinimumLength = 2)]
         public required string Name { get; set; }
 
         [Required]
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
-        public required string Description { get; set; }
+        [StringLength(300)]
+        public string ShortDescription { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue, ErrorMessage = "Original Price must be a positive value.")]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal OriginalPrice { get; set; }
-
-        [Range(0, 100, ErrorMessage = "Discount Percentage must be between 0 and 100.")]
-        public int? DiscountPercentage { get; set; }
-
-        public DateTime? DiscountEndDate { get; set; } // Ngày hết hạn giảm giá
+        [StringLength(50)]
+        [RegularExpression(@"^[A-Z0-9]+$")]
+        public required string BaseSKU { get; set; }
 
         [Required]
-        [Url(ErrorMessage = "Invalid URL format.")]
-        public required string ImageUrl { get; set; }
-
-        public DateTime? IsNewExpiryDate { get; set; } // Ngày hết hạn trạng thái mới
-
-        [Required]
-        [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters.")]
-        [RegularExpression(@"^[A-Z0-9]+$", ErrorMessage = "SKU must be alphanumeric and uppercase.")]
-        public required string SKU { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "Measurements cannot exceed 100 characters.")]
+        [StringLength(100)]
         public required string Measurements { get; set; }
 
         [Required]
-        [Range(0, int.MaxValue, ErrorMessage = "Stock Quantity must be a non-negative integer.")]
-        public required int StockQuantity { get; set; }
-        public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedDate { get; set; } = DateTime.UtcNow;
+        public ProductStatus Status { get; set; } = ProductStatus.Draft;
+
+        [Required]
+        public bool IsPublished { get; set; } = false;
+        public int BrandId { get; set; }
+        public Brand? Brand { get; set; }
+        public int SupplierId { get; set; }
+        public Supplier? Supplier { get; set; }
+        public ProductDetails? ProductDetails { get; set; }
+        public ICollection<ProductVariant>? ProductVariants { get; set; }
         public ICollection<Category>? Categories { get; set; }
     }
 }

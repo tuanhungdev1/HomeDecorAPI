@@ -17,16 +17,6 @@ namespace HomeDecorAPI.Domain.Entities {
 
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
         public int Quantity { get; set; } = 1;
-
-        public decimal UnitPrice => Product?.DiscountPercentage.HasValue == true
-            ? Product.OriginalPrice - (Product.OriginalPrice * Product.DiscountPercentage.Value / 100)
-            : Product?.OriginalPrice ?? 0;
-
-        public decimal TotalPrice => Quantity * UnitPrice;
-
-        [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters.")]
-        public string SKU => Product?.SKU ?? string.Empty;
-
         public DateTime AddedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

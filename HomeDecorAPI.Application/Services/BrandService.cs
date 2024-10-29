@@ -85,7 +85,7 @@ namespace HomeDecorAPI.Application.Services
         public async Task<BrandDto> UpdateBrandAsync(int id, BrandForUpdateDto brandForUpdateDto)
         {
             var brand = await _unitOfWork.BrandRepository.GetByIdAsync(id);
-            if(brand != null)
+            if(brand == null)
             {
                 _loggerService.LogError($"Không tim thấy Brand ID: {id}");
                 throw new BrandNotFoundException(id);
@@ -119,12 +119,12 @@ namespace HomeDecorAPI.Application.Services
         public async Task DeleteBrandAsync(int id)
         {
             var brand = await _unitOfWork.BrandRepository.GetByIdAsync(id);
-            if (brand != null)
+            if (brand == null)
             {
                 _loggerService.LogError($"Không tim thấy Brand ID: {id}");
                 throw new BrandNotFoundException(id);
             }
-
+            _unitOfWork.BrandRepository.Remove(brand);
             await _unitOfWork.SaveChangesAsync();
         }
     }

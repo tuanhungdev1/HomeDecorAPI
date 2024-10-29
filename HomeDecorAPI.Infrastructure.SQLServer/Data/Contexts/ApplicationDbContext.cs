@@ -22,6 +22,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
+        public DbSet<ProductDetails> ProductDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -37,6 +40,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
 
             modelBuilder.ApplyConfiguration(new SupplierConfiguration());
+
+            modelBuilder.ApplyConfiguration(new BrandConfiguration());
 
         }
     }

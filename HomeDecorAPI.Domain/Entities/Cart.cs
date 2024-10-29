@@ -20,8 +20,6 @@ namespace HomeDecorAPI.Domain.Entities {
         [Range(0, double.MaxValue, ErrorMessage = "Discount must be a non-negative number.")]
         public decimal Discount { get; set; }
 
-        public decimal TotalPrice => (Items?.Sum(x => x.TotalPrice) ?? 0) + ShippingCost - Discount;
-
         [Required]
         [StringLength(50, ErrorMessage = "Status length can't be more than 50.")]
         public string Status { get; set; } = "Active";

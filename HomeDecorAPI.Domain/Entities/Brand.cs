@@ -11,11 +11,9 @@ namespace HomeDecorAPI.Domain.Entities {
         [StringLength(100)]
         public string Name { get; set; }
         [StringLength(300)]
-        public string Description { get; set; }
-        public string LogoUrl { get; set; }
+        public string? Description { get; set; }
+        public string? LogoUrl { get; set; }
         public bool IsActive { get; set; } = true;
-        public int? SupplierId { get; set; }
-        public virtual Supplier Supplier { get; set; }
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Product>? Products { get; set; }
     }
 }
