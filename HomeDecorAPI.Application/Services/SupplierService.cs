@@ -5,11 +5,6 @@ using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.Services
 {
@@ -121,7 +116,7 @@ namespace HomeDecorAPI.Application.Services
         {
 
             var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(id);
-            if(supplier != null)
+            if(supplier == null)
             {
                 _loggerService.LogError($"Không tìm thấy Supplier với ID: {id}");
                 throw new SupplierNotFoundException(id);

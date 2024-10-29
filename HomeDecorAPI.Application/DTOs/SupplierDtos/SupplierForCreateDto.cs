@@ -23,17 +23,17 @@ namespace HomeDecorAPI.Application.DTOs.SupplierDtos
         [Required]
         [EmailAddress]
         [StringLength(100)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
         [Phone]
         [StringLength(20)]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
         [StringLength(200)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
         [StringLength(50)]
-        public string City { get; set; }
+        public string? City { get; set; }
         [StringLength(50)]
-        public string Country { get; set; }
-        public IFormFile LogoFile { get; set; }
+        public string? Country { get; set; }
+        public IFormFile? LogoFile { get; set; }
         public bool IsActive { get; set; } = true;
     }
 }

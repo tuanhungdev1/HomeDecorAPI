@@ -55,6 +55,7 @@ namespace HomeDecorAPI.Application.MappingProfile
                 .ForMember(dest => dest.Id, act => act.Ignore());
             CreateMap<CategoryForCreateDto, CategoryDto>();
             CreateMap<CategoryForUpdateDto, Category>()
+
                 .ForMember(dest => dest.Id, act => act.Ignore());
             // CATEGORY
 
@@ -64,6 +65,10 @@ namespace HomeDecorAPI.Application.MappingProfile
 
             // SUPPLIER
             CreateMap<Supplier, SupplierDto>();
+            CreateMap<SupplierForCreateDto, Supplier>()
+                .ForMember(dest => dest.Id, act => act.Ignore());
+            CreateMap<SupplierForUpdateDto, Supplier>()
+                .ForMember(dest => dest.Id, act => act.Ignore());
             // SUPPLIER
 
             // BRAND
