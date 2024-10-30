@@ -86,7 +86,7 @@ namespace HomeDecorAPI.Presentation.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        
+ 
         public async Task<IActionResult> DeleteSupplier(int id)
         {
             await _supplierService.DeleteSupplierAsync(id);

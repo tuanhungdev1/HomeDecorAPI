@@ -1,6 +1,9 @@
 ﻿using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.BrandDtos;
+using HomeDecorAPI.Application.Shared.ActionFilters;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using HomeDecorAPI.Application.Shared.Utilities;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
@@ -22,16 +25,17 @@ namespace HomeDecorAPI.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBrand()
+        public async Task<IActionResult> GetAllBrand([FromQuery] BrandRequestParameters brandRequestParameters)
         {
             try
             {
-                var brands = await _brandService.GetAllBrandAsync();
+                var pagedResult = await _brandService.GetAllBrandAsync(brandRequestParameters);
                 _logger.LogInfo("Lấy dữ liệu tất cả Brand thành công.");
+                Response.AddPaginationHeader(pagedResult.metaData);
                 return Ok(new ApiResponse<IEnumerable<BrandDto>>
                 {
                     Success = true,
-                    Data = brands,
+                    Data = pagedResult.brands,
                     Message = "Lấy dữ liệu tất cả Brand thành công.",
                     StatusCode = 200
                 });
@@ -131,6 +135,7 @@ namespace HomeDecorAPI.Presentation.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateBrand(int id, [FromBody] BrandForUpdateDto brandForUpdateDto)
         {
             try

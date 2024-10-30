@@ -3,6 +3,7 @@ using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.BrandDtos;
 using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.Constants;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using System;
@@ -32,11 +33,13 @@ namespace HomeDecorAPI.Application.Services
             _cloudinaryService = cloudinaryService;
         }
 
-        public async Task<IEnumerable<BrandDto>> GetAllBrandAsync()
+        public async Task<(IEnumerable<BrandDto> brands, MetaData metaData)> GetAllBrandAsync(BrandRequestParameters brandRequestParameters)
         {
-            var brands = await _unitOfWork.BrandRepository.GetAllAsync(false);
 
-            return _mapper.Map<IEnumerable<BrandDto>>( brands);
+           var brandsWithMetaData = await _unitOfWork.BrandRepository.getAllSupplierAsync(brandRequestParameters);
+           
+            var brandsDto = _mapper.Map<IEnumerable<BrandDto>>(brandsWithMetaData);
+            return (brands: brandsDto, metaData: brandsWithMetaData.MetaData);
         }
 
         public async Task<BrandDto> GetBrandByIdAsync(int id)

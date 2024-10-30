@@ -1,4 +1,5 @@
-﻿using HomeDecorAPI.Domain.Entities;
+﻿using HomeDecorAPI.Application.Shared.RequestFeatures;
+using HomeDecorAPI.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace HomeDecorAPI.Application.Interfaces
 {
     public interface ISupplierRepository : IRepositoryBase<Supplier>
     {
-
+       
     }
 }

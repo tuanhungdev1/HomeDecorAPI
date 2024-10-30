@@ -12,10 +12,11 @@ namespace HomeDecorAPI.Application.DTOs.BrandDtos
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string LogoUrl { get; set; }
-        public bool IsActive { get; set; }
-        public int SupplierId { get; set; }
-        public Supplier? Supplier { get; set; }
+        public string? Description { get; set; }
+        public string? LogoUrl { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+
     }
 }

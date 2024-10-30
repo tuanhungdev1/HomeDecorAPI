@@ -73,6 +73,7 @@ namespace HomeDecorAPI.Application.MappingProfile
 
             // BRAND
             CreateMap<Brand, BrandDto>();
+                
             CreateMap<BrandForCreateDto, Brand>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<BrandForUpdateDto, Brand>()

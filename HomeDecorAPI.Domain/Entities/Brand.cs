@@ -13,7 +13,7 @@ namespace HomeDecorAPI.Domain.Entities {
         [StringLength(300)]
         public string? Description { get; set; }
         public string? LogoUrl { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool? IsActive { get; set; } = true;  
         public virtual ICollection<Product>? Products { get; set; }
     }
 }
