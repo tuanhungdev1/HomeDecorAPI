@@ -18,8 +18,6 @@ namespace HomeDecorAPI.Application.DTOs.CategoryDto {
 
         public int? ParentCategoryId { get; set; }
 
-        public string? ParentCategoryName { get; set; }
-
         public ICollection<CategoryDto>? SubCategories { get; set; }
 
         public ICollection<ProductDto>? Products { get; set; }

@@ -26,6 +26,24 @@ namespace HomeDecorAPI.Application.Services {
 
         public async Task<(IEnumerable<CategoryDto> categories, MetaData metaData)> GetAllCategoriesAsync(CategoryRequestParameters categoryRequestParameters) {
             var categories = await _categoryRepository.GetAllCategories(categoryRequestParameters);
+
+            //var categoriesGroupByParent = categories.Where(c => c.ParentCategoryId.HasValue).GroupBy(c => c.ParentCategoryId).ToDictionary(g => g.Key, g => g.ToList());
+
+            //List<Category> BuildCategoryTree(int? parentId)
+            //{
+            //    if (!categoriesGroupByParent.ContainsKey(parentId))
+            //        return new List<Category>();
+
+            //    var categories = categoriesGroupByParent[parentId];
+            //    foreach(var category in categories)
+            //    {
+            //        category.SubCategories = BuildCategoryTree(category.Id);
+            //    }
+
+            //    return categories;
+            //}
+
+            //var rootCategories = BuildCategoryTree(null);
             var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
             return (categories: categoryDtos, metaData: categories.MetaData);
         }
@@ -71,40 +89,6 @@ namespace HomeDecorAPI.Application.Services {
                 throw new CategoryNotFoundException(categoryId);
 
             _mapper.Map(categoryForUpdateDto, category);
-
-            if (category.ParentCategoryId.HasValue && !categoryForUpdateDto.ParentCategoryId.HasValue)
-            {
-                var parentCategory = await _categoryRepository.FindByCondition(c => c.Id == category.ParentCategoryId, true)
-                                                                .Include(c => c.SubCategories)
-                                                                .SingleOrDefaultAsync();
-
-                parentCategory.SubCategories.Remove(category);
-
-                category.ParentCategoryId = null;
-            } else if(!category.ParentCategoryId.HasValue && categoryForUpdateDto.ParentCategoryId.HasValue)
-            {
-                var parentCategory = await _categoryRepository.FindByCondition(c => c.Id == categoryForUpdateDto.ParentCategoryId, true)
-                                                                .Include(c => c.SubCategories)
-                                                                .SingleOrDefaultAsync();
-
-                if(parentCategory == null)
-                    throw new CategoryNotFoundException(categoryForUpdateDto.ParentCategoryId.Value);
-
-                parentCategory.SubCategories.Add(category);
-                category.ParentCategoryId = parentCategory.Id;
-            }
-            //else if(category.ParentCategoryId.HasValue && categoryForUpdateDto.ParentCategoryId.HasValue && category.ParentCategoryId != categoryForUpdateDto.ParentCategoryId)
-            //{
-            //    var parentCategory = await _categoryRepository.FindByCondition(c => c.Id == categoryForUpdateDto.ParentCategoryId, true)
-            //                                                    .Include(c => c.SubCategories)
-            //                                                    .SingleOrDefaultAsync();
-
-            //    if (parentCategory == null)
-            //        throw new CategoryNotFoundException(categoryForUpdateDto.ParentCategoryId.Value);
-
-
-            //}
-
 
             _categoryRepository.Update(category);
             await _categoryRepository.SaveChangesAsync();

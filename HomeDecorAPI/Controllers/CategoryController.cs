@@ -26,7 +26,7 @@ namespace HomeDecorAPI.Presentation.Controllers {
         public async Task<IActionResult> GetAllCategoriesAsync([FromQuery] CategoryRequestParameters categoryRequestParameters) {
             var categoriesResult = await _categoryService.GetAllCategoriesAsync(categoryRequestParameters);
             _logger.LogInfo("Lấy dữ liệu thông tin Category thành công.");
-
+            Response.AddPaginationHeader(categoriesResult.metaData);
             return Ok(new ApiResponse<IEnumerable<CategoryDto>>
             {
                 StatusCode = 200,
