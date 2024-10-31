@@ -13,7 +13,7 @@ namespace HomeDecorAPI.Domain.Entities
         [Required]
         [Url]
         public required string ImageUrl { get; set; }
-        public bool IsMainImage { get; set; } = false;
+        public bool IsMainImage { get; set; } = true;
         public ProductVariant? ProductVariant { get; set; }
     }
 }

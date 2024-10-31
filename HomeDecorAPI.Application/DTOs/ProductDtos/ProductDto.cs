@@ -47,5 +47,9 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos {
                 return IsNewExpiryDate.HasValue && IsNewExpiryDate > DateTime.UtcNow;
             }
         }
+
+        public ProductDetailsDto? ProductDetailsDto { get; set; }
+
+        public ICollection<ProductVariantDto>? ProductVariants { get; set; }
     }
 }

@@ -1,36 +1,23 @@
-﻿using System;
+﻿using HomeDecorAPI.Domain.Common.enums;
+using HomeDecorAPI.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HomeDecorAPI.Domain.Common.enums;
 
-namespace HomeDecorAPI.Domain.Entities
+namespace HomeDecorAPI.Application.DTOs.ProductDtos
 {
-    public class ProductVariant : BaseEntity
+    public class ProductVariantDto
     {
         public int ProductId { get; set; }
-        [Required]
-        [StringLength(50)]
         public required string Color { get; set; }
-
-        [Required]
-        [StringLength(50)]
         public required string SKU { get; set; }
         public bool IsMainVariant { get; set; } = false;
-
-        // Giá và khuyến mãi
-        [Required]
-        [Range(0, double.MaxValue)]
-        [Column(TypeName = "decimal(18,2)")]
         public decimal OriginalPrice { get; set; }
-
-        [Range(0, 100)]
         public int? DiscountPercentage { get; set; }
-        [NotMapped]
-        [Column(TypeName = "decimal(18,2)")]
         public decimal DiscountPrice
         {
             get
@@ -44,16 +31,10 @@ namespace HomeDecorAPI.Domain.Entities
         }
 
         public DateTime? DiscountStartDate { get; set; }
-
         public DateTime? DiscountEndDate { get; set; }
-
-        // Kho hàng
-        [Required]
-        [Range(0, int.MaxValue)]
         public int StockQuantity { get; set; }
         public DateTime? IsNewStartDate { get; set; }
         public DateTime? IsNewEndDate { get; set; }
-        [NotMapped]
         public bool IsCurrentlyNew
         {
             get
@@ -76,9 +57,6 @@ namespace HomeDecorAPI.Domain.Entities
                 return StockStatus.InStock;
             }
         }
-
-        // Navigation properties
-        public Product? Product { get; set; }
-        public ICollection<ProductImage>? Images { get; set; }
+        public ICollection<ProductImageDto>? ProductImages { get; set; }
     }
 }
