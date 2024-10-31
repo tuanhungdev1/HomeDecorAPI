@@ -10,6 +10,6 @@ namespace HomeDecorAPI.Application.Interfaces
 {
     public interface ISupplierRepository : IRepositoryBase<Supplier>
     {
-       
+       Task<PagedList<Supplier>> GetAllSupplierAsync(SupplierRequestParameters supplierRequestParameters);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using HomeDecorAPI.Application.DTOs.SupplierDtos;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace HomeDecorAPI.Application.Contracts
 {
     public interface ISupplierService
     {
-        Task<IEnumerable<SupplierDto>> GetAllSupplierAsync();
+        Task<(IEnumerable<SupplierDto> suppliers, MetaData metaData)> GetAllSupplierAsync(SupplierRequestParameters supplierRequestParameters);
         Task<SupplierDto> GetSupplierByIdAsync(int id);
         Task<SupplierDto> CreateSupplierAsync(SupplierForCreateDto supplierForCreateDto);
         Task<SupplierDto> UpdateSupplierAsync(int supplierId, SupplierForUpdateDto supplierForUpdateDto);

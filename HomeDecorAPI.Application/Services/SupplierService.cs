@@ -3,6 +3,7 @@ using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.SupplierDtos;
 using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.Constants;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 
@@ -26,11 +27,12 @@ namespace HomeDecorAPI.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<SupplierDto>> GetAllSupplierAsync()
+        public async Task<(IEnumerable<SupplierDto> suppliers, MetaData metaData)> GetAllSupplierAsync(SupplierRequestParameters supplierRequestParameters)
         {
-            var suppliers = await _unitOfWork.SupplierRepository.GetAllAsync(false);
+            var suppliers = await _unitOfWork.SupplierRepository.GetAllSupplierAsync(supplierRequestParameters);
 
-            return _mapper.Map<IEnumerable<SupplierDto>>(suppliers);
+            var supplierDtos = _mapper.Map<IEnumerable<SupplierDto>>( suppliers);
+            return (suppliers: supplierDtos, metaData: suppliers.MetaData);
         }
 
 

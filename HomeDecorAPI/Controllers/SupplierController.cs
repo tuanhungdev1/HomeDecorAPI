@@ -1,7 +1,9 @@
 ﻿using HomeDecorAPI.Application.Contracts;
 using HomeDecorAPI.Application.DTOs.SupplierDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using HomeDecorAPI.Application.Shared.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,15 +25,16 @@ namespace HomeDecorAPI.Presentation.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllSupplier()
+        public async Task<IActionResult> GetAllSupplier([FromQuery] SupplierRequestParameters supplierRequestParameters)
         {
-            var supplierDtos = await _supplierService.GetAllSupplierAsync();
+            var suppliersResult = await _supplierService.GetAllSupplierAsync(supplierRequestParameters);
             _loggerService.LogInfo("Lấy danh sách Supplier thành công.");
+            Response.AddPaginationHeader(suppliersResult.metaData);
             return Ok(new ApiResponse<IEnumerable<SupplierDto>>
             {
                 Success = true,
                 Message = "Lấy tất cả dữ liệu Supplier thành công",
-                Data = supplierDtos,
+                Data = suppliersResult.suppliers,
                 StatusCode = 200
             });
         }
