@@ -22,21 +22,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CategoryProduct", b =>
-                {
-                    b.Property<int>("CategoriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoriesId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("ProductCategory", (string)null);
-                });
-
             modelBuilder.Entity("FavoriteProduct", b =>
                 {
                     b.Property<string>("UserId")
@@ -131,7 +116,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("LogoUrl")
@@ -227,12 +212,18 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -242,168 +233,14 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Category");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "All bedroom related furniture and accessories",
-                            ImageUrl = "https://example.com/bedroom.jpg",
-                            Name = "Bedroom"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Different types of beds",
-                            ImageUrl = "https://example.com/beds.jpg",
-                            Name = "Beds",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Various bedroom lamps",
-                            ImageUrl = "https://example.com/lamps.jpg",
-                            Name = "Lamps",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Wardrobes and storage solutions",
-                            ImageUrl = "https://example.com/wardrobes.jpg",
-                            Name = "Wardrobes",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Dressers and bedroom storage",
-                            ImageUrl = "https://example.com/dressers.jpg",
-                            Name = "Dressers",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Furniture and accessories for the living room",
-                            ImageUrl = "https://example.com/livingroom.jpg",
-                            Name = "Living Room"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Description = "Various types of sofas for the living room",
-                            ImageUrl = "https://example.com/sofas.jpg",
-                            Name = "Sofas",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Description = "Coffee tables for the living room",
-                            ImageUrl = "https://example.com/coffeetables.jpg",
-                            Name = "Coffee Tables",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Description = "TV stands and media units",
-                            ImageUrl = "https://example.com/tvstands.jpg",
-                            Name = "TV Stands",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Description = "Bookcases and shelving units",
-                            ImageUrl = "https://example.com/bookcases.jpg",
-                            Name = "Bookcases",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Description = "Furniture and accessories for the dining room",
-                            ImageUrl = "https://example.com/diningroom.jpg",
-                            Name = "Dining Room"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Description = "Dining tables for the dining room",
-                            ImageUrl = "https://example.com/diningtables.jpg",
-                            Name = "Dining Tables",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Description = "Dining chairs for the dining room",
-                            ImageUrl = "https://example.com/diningchairs.jpg",
-                            Name = "Dining Chairs",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Description = "Bar stools and counter seating",
-                            ImageUrl = "https://example.com/barstools.jpg",
-                            Name = "Bar Stools",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Description = "Furniture and accessories for the kitchen",
-                            ImageUrl = "https://example.com/kitchen.jpg",
-                            Name = "Kitchen"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Description = "Kitchen cabinets and storage solutions",
-                            ImageUrl = "https://example.com/cabinets.jpg",
-                            Name = "Cabinets",
-                            ParentCategoryId = 15
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Description = "Kitchen islands and counters",
-                            ImageUrl = "https://example.com/kitchenislands.jpg",
-                            Name = "Kitchen Islands",
-                            ParentCategoryId = 15
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Description = "Furniture and accessories for outdoor spaces",
-                            ImageUrl = "https://example.com/outdoor.jpg",
-                            Name = "Outdoor"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Description = "Seating solutions for outdoor areas",
-                            ImageUrl = "https://example.com/outdoorseating.jpg",
-                            Name = "Outdoor Seating",
-                            ParentCategoryId = 18
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Description = "Tables for outdoor dining and lounging",
-                            ImageUrl = "https://example.com/outdoortables.jpg",
-                            Name = "Outdoor Tables",
-                            ParentCategoryId = 18
-                        });
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
@@ -420,6 +257,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -455,6 +295,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("SupplierId");
 
@@ -885,33 +727,15 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "43658cf1-62b0-417b-aad0-bab6dc9e2c6b",
+                            Id = "9de8a89b-26be-49b8-adf9-ca8567582895",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "dea3fdd6-d717-45a0-8166-7e9cac799492",
+                            Id = "44151e46-550b-494f-9a1e-9285dc762b85",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
-                        },
-                        new
-                        {
-                            Id = "b9a67562-b173-495f-8fab-ce4aa578d9aa",
-                            Name = "Manager",
-                            NormalizedName = "MANAGER"
-                        },
-                        new
-                        {
-                            Id = "67b89c46-a9f9-4678-b536-d824a911fc7b",
-                            Name = "ContentCreator",
-                            NormalizedName = "CONTENTCREATOR"
-                        },
-                        new
-                        {
-                            Id = "009cda48-5e0a-4df1-90a0-ff49963fd224",
-                            Name = "Moderator",
-                            NormalizedName = "MODERATOR"
                         });
                 });
 
@@ -1021,21 +845,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CategoryProduct", b =>
-                {
-                    b.HasOne("HomeDecorAPI.Domain.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HomeDecorAPI.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("FavoriteProduct", b =>
                 {
                     b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
@@ -1102,6 +911,12 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Category", "Categories")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("HomeDecorAPI.Domain.Entities.Supplier", "Supplier")
                         .WithMany("Products")
                         .HasForeignKey("SupplierId")
@@ -1109,6 +924,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .IsRequired();
 
                     b.Navigation("Brand");
+
+                    b.Navigation("Categories");
 
                     b.Navigation("Supplier");
                 });
@@ -1239,6 +1056,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Category", b =>
                 {
+                    b.Navigation("Products");
+
                     b.Navigation("SubCategories");
                 });
 

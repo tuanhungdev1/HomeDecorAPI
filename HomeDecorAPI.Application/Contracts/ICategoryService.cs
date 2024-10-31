@@ -1,5 +1,6 @@
 ﻿using HomeDecorAPI.Application.DTOs.CategoryDto;
 using HomeDecorAPI.Application.DTOs.CategoryDtos;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Application.Contracts {
     public interface ICategoryService {
         
-        Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
+        Task<(IEnumerable<CategoryDto> categories, MetaData metaData)> GetAllCategoriesAsync(CategoryRequestParameters categoryRequestParameters);
        
         Task<CategoryDto> GetCategoryByIdAsync(int categoryId);
        

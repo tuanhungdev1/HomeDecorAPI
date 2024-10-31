@@ -16,9 +16,7 @@ namespace HomeDecorAPI.Application.DTOs.CategoryDtos {
 
         [Url(ErrorMessage = "Invalid URL format.")]
         public string? ImageUrl { get; set; }
-
+        public bool? IsActive { get; set; } = true;
         public int? ParentCategoryId { get; set; }
-
-        public ICollection<int>? SubCategoryIds { get; set; }
     }
 }

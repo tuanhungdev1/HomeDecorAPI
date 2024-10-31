@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241017052423_connect user table with userImage table")]
-    partial class connectusertablewithuserImagetable
+    [Migration("20241031123959_first-init-table")]
+    partial class firstinittable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CategoryProduct", b =>
-                {
-                    b.Property<int>("CategoriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoriesId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("ProductCategory", (string)null);
-                });
 
             modelBuilder.Entity("FavoriteProduct", b =>
                 {
@@ -119,6 +104,40 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.ToTable("Address");
                 });
 
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Brand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Brands");
+                });
+
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -196,12 +215,18 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -211,168 +236,14 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Category");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "All bedroom related furniture and accessories",
-                            ImageUrl = "https://example.com/bedroom.jpg",
-                            Name = "Bedroom"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Different types of beds",
-                            ImageUrl = "https://example.com/beds.jpg",
-                            Name = "Beds",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Various bedroom lamps",
-                            ImageUrl = "https://example.com/lamps.jpg",
-                            Name = "Lamps",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Wardrobes and storage solutions",
-                            ImageUrl = "https://example.com/wardrobes.jpg",
-                            Name = "Wardrobes",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Dressers and bedroom storage",
-                            ImageUrl = "https://example.com/dressers.jpg",
-                            Name = "Dressers",
-                            ParentCategoryId = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Furniture and accessories for the living room",
-                            ImageUrl = "https://example.com/livingroom.jpg",
-                            Name = "Living Room"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Description = "Various types of sofas for the living room",
-                            ImageUrl = "https://example.com/sofas.jpg",
-                            Name = "Sofas",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Description = "Coffee tables for the living room",
-                            ImageUrl = "https://example.com/coffeetables.jpg",
-                            Name = "Coffee Tables",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Description = "TV stands and media units",
-                            ImageUrl = "https://example.com/tvstands.jpg",
-                            Name = "TV Stands",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Description = "Bookcases and shelving units",
-                            ImageUrl = "https://example.com/bookcases.jpg",
-                            Name = "Bookcases",
-                            ParentCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Description = "Furniture and accessories for the dining room",
-                            ImageUrl = "https://example.com/diningroom.jpg",
-                            Name = "Dining Room"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Description = "Dining tables for the dining room",
-                            ImageUrl = "https://example.com/diningtables.jpg",
-                            Name = "Dining Tables",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Description = "Dining chairs for the dining room",
-                            ImageUrl = "https://example.com/diningchairs.jpg",
-                            Name = "Dining Chairs",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Description = "Bar stools and counter seating",
-                            ImageUrl = "https://example.com/barstools.jpg",
-                            Name = "Bar Stools",
-                            ParentCategoryId = 11
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Description = "Furniture and accessories for the kitchen",
-                            ImageUrl = "https://example.com/kitchen.jpg",
-                            Name = "Kitchen"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Description = "Kitchen cabinets and storage solutions",
-                            ImageUrl = "https://example.com/cabinets.jpg",
-                            Name = "Cabinets",
-                            ParentCategoryId = 15
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Description = "Kitchen islands and counters",
-                            ImageUrl = "https://example.com/kitchenislands.jpg",
-                            Name = "Kitchen Islands",
-                            ParentCategoryId = 15
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Description = "Furniture and accessories for outdoor spaces",
-                            ImageUrl = "https://example.com/outdoor.jpg",
-                            Name = "Outdoor"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Description = "Seating solutions for outdoor areas",
-                            ImageUrl = "https://example.com/outdoorseating.jpg",
-                            Name = "Outdoor Seating",
-                            ParentCategoryId = 18
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Description = "Tables for outdoor dining and lounging",
-                            ImageUrl = "https://example.com/outdoortables.jpg",
-                            Name = "Outdoor Tables",
-                            ParentCategoryId = 18
-                        });
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
@@ -383,26 +254,22 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("BaseSKU")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("DiscountEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("DiscountPercentage")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("IsNewExpiryDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Measurements")
                         .IsRequired()
@@ -414,8 +281,174 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CareInStructions")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Features")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<double?>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<string>("MaintenanceInstructions")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Material")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Measurements")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecommendedCleaningProducts")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("RoomType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WarrantyInfo")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<double?>("Weight")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductDetails");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsMainImage")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductVariantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductVariantId");
+
+                    b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductVariant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DiscountEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DiscountPercentage")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("DiscountPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("DiscountStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMainVariant")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsNew")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("IsNewEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("IsNewStartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SKU")
                         .IsRequired()
@@ -425,90 +458,14 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedDate")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.HasIndex("ProductId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3561),
-                            Description = "A sleek and modern coffee table made from high-quality oak wood.",
-                            DiscountEndDate = new DateTime(2024, 11, 16, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3554),
-                            DiscountPercentage = 10,
-                            ImageUrl = "https://th.bing.com/th/id/OIP.j8duPDpTdbCRp96Z-V6jXQHaHa?rs=1&pid=ImgDetMain",
-                            IsNewExpiryDate = new DateTime(2024, 10, 31, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3560),
-                            Measurements = "120x60x45 cm",
-                            Name = "Modern Wooden Coffee Table",
-                            OriginalPrice = 149.99m,
-                            SKU = "WDN-COFTBL-001",
-                            StockQuantity = 50,
-                            UpdatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3562)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3566),
-                            Description = "A comfortable and stylish armchair upholstered in genuine leather.",
-                            ImageUrl = "https://a.1stdibscdn.com/20th-century-french-leather-wing-back-armchair-c1960-for-sale-picture-2/f_13482/f_285265221651735694424/PUSHKIN_ANTIQUES_STUNNING_LATE_20thC_FRENCH_LEATHER_WING_BACK_ARMCHAIR_c_1960_03_master.jpg?width=768",
-                            Measurements = "90x80x75 cm",
-                            Name = "Classic Leather Armchair",
-                            OriginalPrice = 299.99m,
-                            SKU = "LTHR-ARMCHR-002",
-                            StockQuantity = 20,
-                            UpdatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3567)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3571),
-                            Description = "A minimalist floor lamp with a sleek metal frame and adjustable height.",
-                            DiscountEndDate = new DateTime(2024, 12, 1, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3569),
-                            DiscountPercentage = 15,
-                            ImageUrl = "https://i5.walmartimages.com/asr/3181df7b-b2e3-411e-bf47-95fe5bcd8c4b_1.c7553cfd9e1daaed9c6cd9e1544bb12b.jpeg",
-                            IsNewExpiryDate = new DateTime(2024, 10, 31, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3570),
-                            Measurements = "Height: 150-180 cm",
-                            Name = "Contemporary Floor Lamp",
-                            OriginalPrice = 89.99m,
-                            SKU = "MTL-FLRLMP-003",
-                            StockQuantity = 100,
-                            UpdatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3571)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3574),
-                            Description = "A beautiful vintage wall clock with a wooden frame and Roman numerals.",
-                            DiscountEndDate = new DateTime(2024, 11, 1, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3573),
-                            DiscountPercentage = 5,
-                            ImageUrl = "https://www.vkwoods.com/vkwoods/uploads/2022/03/TJP_7853_1024x1024.webp",
-                            Measurements = "Diameter: 40 cm",
-                            Name = "Vintage Wall Clock",
-                            OriginalPrice = 59.99m,
-                            SKU = "VTG-WLCLK-004",
-                            StockQuantity = 75,
-                            UpdatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3575)
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3578),
-                            Description = "A luxurious dining table with a polished marble top and sturdy metal legs.",
-                            DiscountEndDate = new DateTime(2024, 12, 16, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3577),
-                            DiscountPercentage = 20,
-                            ImageUrl = "https://th.bing.com/th/id/R.8c5920f9aeefc029e47eb83afb6f5283?rik=ACMUfp1vINNgnQ&pid=ImgRaw&r=0",
-                            IsNewExpiryDate = new DateTime(2024, 10, 31, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3577),
-                            Measurements = "200x100x75 cm",
-                            Name = "Marble Dining Table",
-                            OriginalPrice = 799.99m,
-                            SKU = "MRB-DNTBL-005",
-                            StockQuantity = 10,
-                            UpdatedDate = new DateTime(2024, 10, 17, 5, 24, 23, 35, DateTimeKind.Utc).AddTicks(3579)
-                        });
+                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Review", b =>
@@ -557,12 +514,79 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.ToTable("Reviews");
                 });
 
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ContactPerson")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suppliers");
+                });
+
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -572,7 +596,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DisplayName")
+                    b.Property<string>("Displayname")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -583,11 +607,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Firstname")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("Lastname")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -706,33 +730,15 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b31e2b26-d39e-4483-8c9b-4aeebe24e104",
+                            Id = "9de8a89b-26be-49b8-adf9-ca8567582895",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e0c450da-b021-4f88-b6de-93d4fc827821",
+                            Id = "44151e46-550b-494f-9a1e-9285dc762b85",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
-                        },
-                        new
-                        {
-                            Id = "50a503b4-eac3-4bcd-b501-e20d5fa99c4e",
-                            Name = "Manager",
-                            NormalizedName = "MANAGER"
-                        },
-                        new
-                        {
-                            Id = "24e8460f-3ce6-40bc-9054-1a7d1ec9af5e",
-                            Name = "ContentCreator",
-                            NormalizedName = "CONTENTCREATOR"
-                        },
-                        new
-                        {
-                            Id = "cbe306c9-f6e7-49fe-b24a-4bae845bec86",
-                            Name = "Moderator",
-                            NormalizedName = "MODERATOR"
                         });
                 });
 
@@ -842,21 +848,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CategoryProduct", b =>
-                {
-                    b.HasOne("HomeDecorAPI.Domain.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HomeDecorAPI.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("FavoriteProduct", b =>
                 {
                     b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
@@ -913,6 +904,66 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasForeignKey("ParentCategoryId");
 
                     b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Brand", "Brand")
+                        .WithMany("Products")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Category", "Categories")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Supplier", "Supplier")
+                        .WithMany("Products")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Categories");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductDetails", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
+                        .WithOne("ProductDetails")
+                        .HasForeignKey("HomeDecorAPI.Domain.Entities.ProductDetails", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductImage", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.ProductVariant", "ProductVariant")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductVariant");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductVariant", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
+                        .WithMany("ProductVariants")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Review", b =>
@@ -996,6 +1047,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Brand", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Cart", b =>
                 {
                     b.Navigation("Items");
@@ -1003,7 +1059,26 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Category", b =>
                 {
+                    b.Navigation("Products");
+
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("ProductDetails");
+
+                    b.Navigation("ProductVariants");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductVariant", b =>
+                {
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Supplier", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.User", b =>

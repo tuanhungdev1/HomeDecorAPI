@@ -35,6 +35,16 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
             return await _dbSet.FindAsync(id);
         }
 
+        public IQueryable<T> FindAll(bool asNoTracking = false) =>
+            asNoTracking ?
+            _context.Set<T>().AsNoTracking() :
+            _context.Set<T>();
+
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool asNoTracking = false) =>
+            asNoTracking ?
+            _context.Set<T>().Where(expression).AsNoTracking() :
+            _context.Set<T>().Where(expression);
+
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool asNoTracking = false)
         {
             return asNoTracking

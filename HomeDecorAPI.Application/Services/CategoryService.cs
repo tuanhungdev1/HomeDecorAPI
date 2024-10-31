@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeDecorAPI.Application.Services {
     public class CategoryService : ICategoryService {
@@ -21,24 +24,42 @@ namespace HomeDecorAPI.Application.Services {
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync() {
-            var categories = await _categoryRepository.GetAllAsync(false);
-            var categoryDtoList = _mapper.Map<IEnumerable<CategoryDto>>(categories);
-            return categoryDtoList;
+        public async Task<(IEnumerable<CategoryDto> categories, MetaData metaData)> GetAllCategoriesAsync(CategoryRequestParameters categoryRequestParameters) {
+            var categories = await _categoryRepository.GetAllCategories(categoryRequestParameters);
+            var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
+            return (categories: categoryDtos, metaData: categories.MetaData);
         }
 
         public async Task<CategoryDto> GetCategoryByIdAsync(int categoryId) {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
 
             if (category == null)
-                throw new CategoryNotFoundException($"Category with ID {categoryId} not found.");
+                throw new CategoryNotFoundException(categoryId);
 
             return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task<CategoryDto> CreateCategoryAsync(CategoryForCreateDto categoryForCreateDto) {
+
             var category = _mapper.Map<Category>(categoryForCreateDto);
-            await _categoryRepository.AddAsync(category);
+            if(categoryForCreateDto.ParentCategoryId.HasValue)
+            {
+                var parentCategory = await _categoryRepository.GetByIdAsync(categoryForCreateDto.ParentCategoryId.Value);
+
+                if (parentCategory == null)
+                    throw new CategoryNotFoundException(categoryForCreateDto.ParentCategoryId.Value);
+
+
+                var subCategories = await _categoryRepository.GetSubcategoriesByParentCategory(parentCategory.Id);
+                subCategories.Add(category);
+                await _categoryRepository.SaveChangesAsync();
+                
+            } else
+            {
+               
+                await _categoryRepository.AddAsync(category);
+            }
+
             await _categoryRepository.SaveChangesAsync();
             return _mapper.Map<CategoryDto>(category);
         }
@@ -47,30 +68,66 @@ namespace HomeDecorAPI.Application.Services {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
 
             if (category == null)
-                throw new CategoryNotFoundException($"Category with ID {categoryId} not found.");
+                throw new CategoryNotFoundException(categoryId);
 
-            var categoryForUpdate = _mapper.Map(categoryForUpdateDto, category);
-            _categoryRepository.Update(categoryForUpdate);
+            _mapper.Map(categoryForUpdateDto, category);
+
+            if (category.ParentCategoryId.HasValue && !categoryForUpdateDto.ParentCategoryId.HasValue)
+            {
+                var parentCategory = await _categoryRepository.FindByCondition(c => c.Id == category.ParentCategoryId, true)
+                                                                .Include(c => c.SubCategories)
+                                                                .SingleOrDefaultAsync();
+
+                parentCategory.SubCategories.Remove(category);
+
+                category.ParentCategoryId = null;
+            } else if(!category.ParentCategoryId.HasValue && categoryForUpdateDto.ParentCategoryId.HasValue)
+            {
+                var parentCategory = await _categoryRepository.FindByCondition(c => c.Id == categoryForUpdateDto.ParentCategoryId, true)
+                                                                .Include(c => c.SubCategories)
+                                                                .SingleOrDefaultAsync();
+
+                if(parentCategory == null)
+                    throw new CategoryNotFoundException(categoryForUpdateDto.ParentCategoryId.Value);
+
+                parentCategory.SubCategories.Add(category);
+                category.ParentCategoryId = parentCategory.Id;
+            }
+            //else if(category.ParentCategoryId.HasValue && categoryForUpdateDto.ParentCategoryId.HasValue && category.ParentCategoryId != categoryForUpdateDto.ParentCategoryId)
+            //{
+            //    var parentCategory = await _categoryRepository.FindByCondition(c => c.Id == categoryForUpdateDto.ParentCategoryId, true)
+            //                                                    .Include(c => c.SubCategories)
+            //                                                    .SingleOrDefaultAsync();
+
+            //    if (parentCategory == null)
+            //        throw new CategoryNotFoundException(categoryForUpdateDto.ParentCategoryId.Value);
+
+
+            //}
+
+
+            _categoryRepository.Update(category);
             await _categoryRepository.SaveChangesAsync();
 
-            return _mapper.Map<CategoryDto>(categoryForUpdate);
+            return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task DeleteCategoryAsync(int categoryId) {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
 
             if (category == null)
-                throw new CategoryNotFoundException($"Category with ID {categoryId} not found.");
+                throw new CategoryNotFoundException(categoryId);
 
             _categoryRepository.Remove(category);
             await _categoryRepository.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<CategoryDto>> GetSubCategoriesAsync(int parentCategoryId) {
-            var subCategories = await _categoryRepository.GetSubcategoriesByParentCategory(parentCategoryId);
+            var category = await _categoryRepository.GetByIdAsync(parentCategoryId);
 
-            if (subCategories == null)
-                throw new CategoryNotFoundException($"Parent Category with ID {parentCategoryId} not found.");
+            if (category == null)
+                throw new CategoryNotFoundException(parentCategoryId);
+            var subCategories = await _categoryRepository.GetSubcategoriesByParentCategory(parentCategoryId);
 
             return _mapper.Map<IEnumerable<CategoryDto>>(subCategories);
         }

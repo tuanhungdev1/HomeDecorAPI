@@ -3,28 +3,19 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HomeDecorAPI.Domain.Entities {
-    public class Category {
-        [Key]
-        public int Id { get; set; }
+    public class Category : BaseEntity {
 
         [Required]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Category Name must be between 2 and 100 characters.")]
+        [StringLength(100, MinimumLength = 2)]
         public required string Name { get; set; }
 
-        [StringLength(500, MinimumLength = 2, ErrorMessage = "Category Description must be between 2 and 500 characters.")]
+        [StringLength(500, MinimumLength = 2)]
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
-
-        // Foreign key to the parent category
+        public bool? IsActive { get; set; } = true;
         public int? ParentCategoryId { get; set; }
-
-        // Navigation property to the parent category
-        [ForeignKey("ParentCategoryId")]
         public Category? ParentCategory { get; set; }
-
-        // Navigation property to the child categories
         public ICollection<Category>? SubCategories { get; set; }
-
         public ICollection<Product>? Products { get; set; }
     }
 }

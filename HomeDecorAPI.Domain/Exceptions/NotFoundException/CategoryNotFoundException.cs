@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Domain.Exceptions.NotFoundException {
     public class CategoryNotFoundException : NotFoundException {
-        public CategoryNotFoundException(string message) : base(message)
+        public CategoryNotFoundException(int id) : base($"Không tìm thấy Category với ID: {id}.")
         {
             
         }

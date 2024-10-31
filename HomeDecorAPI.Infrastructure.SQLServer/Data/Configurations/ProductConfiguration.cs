@@ -8,9 +8,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
     public class ProductConfiguration : IEntityTypeConfiguration<Product> {
         public void Configure(EntityTypeBuilder<Product> builder) {
 
-            builder.HasMany(p => p.Categories)
+            builder.HasOne(p => p.Categories)
                 .WithMany(c => c.Products)
-                .UsingEntity(j => j.ToTable("ProductCategory"));
+                .HasForeignKey(p => p.CategoryId);
 
             builder.HasOne(p => p.ProductDetails)
                  .WithOne(pd => pd.Product)

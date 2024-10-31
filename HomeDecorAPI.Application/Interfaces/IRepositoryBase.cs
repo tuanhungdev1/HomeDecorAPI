@@ -10,6 +10,8 @@ namespace HomeDecorAPI.Application.Interfaces {
         Task<T?> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync(bool asNoTracking);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool asNoTracking);
+        IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool asNoTracking = false);
+        IQueryable<T> FindAll(bool asNoTracking = false);
         Task AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);
