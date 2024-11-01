@@ -1,5 +1,4 @@
-﻿using HomeDecorAPI.Domain.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Application.DTOs.ProductDtos
 {
-    public class ProductImageForCreateDto
+    public class ProductImageForUpdateDto
     {
         [Required]
         public IFormFile? FileImage { get; set; }

@@ -1,5 +1,6 @@
 ﻿using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.RequestFeatures;
+using HomeDecorAPI.Application.Shared.Utilities;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -56,10 +57,15 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
 
 
             var items = await query
+                .Where(c => c.ParentCategoryId == null)
                 .Skip((categoryRequestParameters.PageNumber - 1) * categoryRequestParameters.PageSize)
                 .Take(categoryRequestParameters.PageSize)
                 .ToListAsync();
 
+            foreach (var category in items)
+            {
+                await EntityLoaderUtil.LoadNestedEntitiesAsync(_context, category, c => c.SubCategories);
+            }
 
             return new PagedList<Category>(items, totalCount, categoryRequestParameters.PageNumber, categoryRequestParameters.PageSize);
         }

@@ -34,6 +34,6 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos {
         public int? BrandId { get; set; }
         public int? SupplierId { get; set; }
         public ProductDetailsForCreateDto? Details { get; set; }
-        public ICollection<ProductVariantForCreateDto> VariantsForCreate { get; set; }
+        public ICollection<ProductVariantForCreateDto> Variants { get; set; }
     }
 }

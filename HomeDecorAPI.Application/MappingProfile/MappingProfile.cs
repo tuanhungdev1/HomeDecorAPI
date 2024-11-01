@@ -50,7 +50,8 @@ namespace HomeDecorAPI.Application.MappingProfile
             // PRODUCT
 
             // CATEGORY
-            CreateMap<Category, CategoryDto>();
+            CreateMap<Category, CategoryDto>()
+                .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(src => src.SubCategories));
             CreateMap<CategoryForCreateDto, Category>()
                 .ForMember(dest => dest.Id, act => act.Ignore());
             CreateMap<CategoryForCreateDto, CategoryDto>();
