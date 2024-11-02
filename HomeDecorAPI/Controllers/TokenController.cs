@@ -44,9 +44,10 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 });
             } catch (Exception ex) {
                 _logger.LogError(ex, "An error occurred while refreshing token");
-                return StatusCode(500, new AuthResponse<TokenDto> {
+                return StatusCode(401, new AuthResponse<TokenDto> {
                     Success = false,
-                    Message = "An error occurred while processing your request."
+                    Message = "Token Invalid"
+                    
                 });
             }
         }

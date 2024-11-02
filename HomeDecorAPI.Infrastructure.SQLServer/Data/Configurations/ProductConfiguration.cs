@@ -14,12 +14,23 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
 
             builder.HasOne(p => p.ProductDetails)
                  .WithOne(pd => pd.Product)
-                 .HasForeignKey<ProductDetails>(pd => pd.ProductId);
+                    .HasForeignKey<ProductDetails>(p => p.ProductId);
 
             builder.HasMany(p => p.ProductVariants)
                  .WithOne(pv => pv.Product)
                  .HasForeignKey(pv => pv.ProductId);
-            
+
+            builder.HasOne(p => p.Categories)
+               .WithMany(c => c.Products)
+               .HasForeignKey(p => p.CategoryId);
+
+            builder.HasOne(p => p.Supplier)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.SupplierId);
+
+            builder.HasOne(p => p.Brand)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.BrandId);
         }
     }
 }

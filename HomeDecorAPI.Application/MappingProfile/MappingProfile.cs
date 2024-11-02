@@ -44,9 +44,20 @@ namespace HomeDecorAPI.Application.MappingProfile
             CreateMap<ProductForCreateDto,  Product>()
                 .ForMember(dest => dest.Id, act => act.Ignore());
             CreateMap<ProductForCreateDto, ProductDto>();
-                
             CreateMap<ProductForUpdateDto, Product>()
                 .ForMember(dest => dest.Id, act => act.Ignore());
+
+            CreateMap<ProductVariant, ProductVariantDto>();
+            CreateMap<ProductVariantForCreateDto, ProductVariant>();
+            CreateMap<ProductVariantForUpdateDto, ProductVariant>();
+
+            CreateMap<ProductDetails, ProductDetailsDto>();
+            CreateMap<ProductDetailsForCreateDto, ProductDetails>();
+            CreateMap<ProductDetailsForUpdateDto, ProductDetails>();
+
+            CreateMap<ProductImage, ProductImageDto>();
+            CreateMap<ProductImageForCreateDto, ProductImage>();
+            CreateMap<ProductImageForUpdateDto, ProductImage>();
             // PRODUCT
 
             // CATEGORY

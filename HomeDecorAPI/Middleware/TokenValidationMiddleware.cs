@@ -1,90 +1,94 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 
-namespace HomeDecorAPI.Presentation.Middleware
+public class TokenValidationMiddleware
 {
-    public class TokenValidationMiddleware
-    {
-        private readonly RequestDelegate _next;
-        private readonly IConfiguration _configuration;
+    private readonly RequestDelegate _next;
+    private readonly ILogger<TokenValidationMiddleware> _logger;
 
-        public TokenValidationMiddleware(RequestDelegate next, IConfiguration configuration)
+    public TokenValidationMiddleware(RequestDelegate next, ILogger<TokenValidationMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+    public async Task Invoke(HttpContext context)
+    {
+        var endpoint = context.GetEndpoint();
+
+        // Nếu không tìm thấy endpoint, cho phép request đi tiếp
+        if (endpoint == null)
         {
-            _next = next;
-            _configuration = configuration;
+            await _next(context);
+            return;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        // Kiểm tra xem endpoint có yêu cầu Authorize không
+        var authorizeAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
+
+        // Nếu endpoint không có Authorize attribute, cho phép request đi tiếp
+        if (authorizeAttribute == null)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            await _next(context);
+            return;
+        }
 
-            if (token != null)
+        // Lấy token từ header
+        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+        // Nếu không có token cho endpoint yêu cầu xác thực
+        if (token == null)
+        {
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsJsonAsync(new
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
+                success = false,
+                message = "Không tìm thấy token xác thực",
+                statusCode = 401
+            });
+            return;
+        }
 
-                try
+        // Kiểm tra token
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken != null)
+            {
+                var now = DateTimeOffset.Now;
+                _logger.LogInformation($"Current time (local): {now}");
+                _logger.LogInformation($"Current time (UTC): {now.UtcDateTime}");
+                _logger.LogInformation($"Token expires at: {jsonToken.ValidTo}");
+
+                // Kiểm tra token hết hạn
+                if (jsonToken.ValidTo < now.UtcDateTime)
                 {
-                    var jwtToken = tokenHandler.ReadJwtToken(token);
-
-                    if (jwtToken.ValidTo < DateTime.UtcNow)
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsJsonAsync(new
                     {
-                        // Ensure response hasn't started
-                        if (!context.Response.HasStarted)
-                        {
-                            context.Response.Clear();
-                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                            context.Response.ContentType = "application/json";
-
-                            var response = new
-                            {
-                                status = 401,
-                                message = "TokenExpireError",
-                                timestamp = DateTime.UtcNow
-                            };
-
-                            await context.Response.WriteAsJsonAsync(response);
-                        }
-                        return;
-                    }
-
-                    // Validate token
-                    var tokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = _configuration["JwtSettings:ValidIssuer"],
-                        ValidAudience = _configuration["JwtSettings:ValidAudience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecurityKey"]))
-                    };
-
-                    var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
-                }
-                catch (SecurityTokenExpiredException)
-                {
-                    if (!context.Response.HasStarted)
-                    {
-                        context.Response.Clear();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/json";
-
-                        var response = new
-                        {
-                            status = 401,
-                            message = "TokenExpireError",
-                            timestamp = DateTime.UtcNow
-                        };
-
-                        await context.Response.WriteAsJsonAsync(response);
-                    }
+                        success = false,
+                        message = "Token has expired",
+                        statusCode = 401
+                    });
                     return;
                 }
             }
-
-            await _next(context);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Token validation error: {ex.Message}");
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                success = false,
+                message = "Invalid token",
+                statusCode = 401
+            });
+            return;
+        }
+
+        await _next(context);
     }
 }

@@ -6,7 +6,6 @@ using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.Models;
 using HomeDecorAPI.Infrastructure.SQLServer.DependencyInjection;
 using HomeDecorAPI.Presentation.Extensions;
-using HomeDecorAPI.Presentation.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -35,17 +34,31 @@ builder.Services.AddAuthentication(x =>
 {
     x.RequireHttpsMetadata = false;
     x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters()
+    x.TokenValidationParameters = new TokenValidationParameters
     {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidAudience = _audience,
         ValidIssuer = _issuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key)),
-        ClockSkew = TimeSpan.FromMinutes(Convert.ToDouble(_expirtyMinutes))
+        ValidAudience = _audience,
+        ClockSkew = TimeSpan.Zero // Quan trọng: đặt ClockSkew = 0
+    };
 
+    // Thêm event handlers để debug
+    x.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine("Token was validated successfully");
+            return Task.CompletedTask;
+        },
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -77,7 +90,7 @@ builder.Services
 
 builder.Services.AddCors(c =>
 {
-    c.AddPolicy("CorsPolicy", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    c.AddPolicy("CorsPolicy", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("X-Pagination"));
 });
 
 var app = builder.Build();
@@ -94,6 +107,7 @@ if (app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
+app.UseMiddleware<TokenValidationMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

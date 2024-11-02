@@ -12,6 +12,7 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos
 {
     public class ProductVariantDto
     {
+        public int Id { get; set; }
         public int ProductId { get; set; }
         public required string Color { get; set; }
         public required string SKU { get; set; }

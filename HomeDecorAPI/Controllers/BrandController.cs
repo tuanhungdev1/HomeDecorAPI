@@ -4,9 +4,6 @@ using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Application.Shared.Utilities;
-using HomeDecorAPI.Domain.Entities;
-using HomeDecorAPI.Domain.Exceptions.BadRequestException;
-using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,8 +35,6 @@ namespace HomeDecorAPI.Presentation.Controllers
                 StatusCode = 200
             });
         }
-
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBrandById(int id)
         {
