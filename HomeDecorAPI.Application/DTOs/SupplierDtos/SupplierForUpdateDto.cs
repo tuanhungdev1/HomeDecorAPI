@@ -35,5 +35,6 @@ namespace HomeDecorAPI.Application.DTOs.SupplierDtos
         public IFormFile? LogoFile { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsDeleteImage { get; set; } = false;
+
     }
 }

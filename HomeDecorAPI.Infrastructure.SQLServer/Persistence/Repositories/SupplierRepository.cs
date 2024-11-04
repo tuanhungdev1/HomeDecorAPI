@@ -76,7 +76,12 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
             query = sortKey.ToLower() switch
             {
                 "id" => isDesending ? query.OrderByDescending(b => b.Id) : query.OrderBy(b => b.Id),
+                "contactperson" => isDesending ? query.OrderByDescending(b => b.ContactPerson) : query.OrderBy(b => b.ContactPerson),
                 "name" => isDesending ? query.OrderByDescending(b => b.Name) : query.OrderBy(b => b.Name),
+                "phone" => isDesending ? query.OrderByDescending(b => b.Phone) : query.OrderBy(b => b.Phone),
+                "city" => isDesending ? query.OrderByDescending(b => b.City) : query.OrderBy(b => b.City),
+                "country" => isDesending ? query.OrderByDescending(b => b.Country) : query.OrderBy(b => b.Country),
+                "address" => isDesending ? query.OrderByDescending(b => b.Address) : query.OrderBy(b => b.Address),
                 "createdat" => isDesending ? query.OrderByDescending(b => b.CreatedAt) : query.OrderBy(b => b.CreatedAt),
                 "description" => isDesending ? query.OrderByDescending(b => b.Description) : query.OrderBy(b => b.Description),
                 _ => query.OrderBy(b => b.Id),

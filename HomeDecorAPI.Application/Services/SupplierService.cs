@@ -60,7 +60,7 @@ namespace HomeDecorAPI.Application.Services
 
                 if(supplierForCreateDto.LogoFile != null)
                 {
-                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Supplier}/{supplier.Id}";
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Supplier}/ID{supplier.Id}/";
                     string imageUrl = await _cloudinaryService.UploadImageAsync(supplierForCreateDto.LogoFile, folder, CloudinaryConstants.FileTypes.Supplier);
                     
                     supplier.LogoUrl = imageUrl;
@@ -98,7 +98,7 @@ namespace HomeDecorAPI.Application.Services
 
                 if (supplierForUpdateDto.LogoFile != null)
                 {
-                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Supplier}/{supplier.Id}";
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Supplier}/ID{supplier.Id}/";
                     string oldPublicId =  _cloudinaryService.GetPublicIdFromUrl(supplier.LogoUrl);
                     supplier.LogoUrl = await _cloudinaryService.ReplaceImageAsync(supplierForUpdateDto.LogoFile, oldPublicId, folder, CloudinaryConstants.FileTypes.Supplier);
                     _loggerService.LogInfo($"Upload thành công ảnh của Supplier với URL: {supplier.LogoUrl}");
