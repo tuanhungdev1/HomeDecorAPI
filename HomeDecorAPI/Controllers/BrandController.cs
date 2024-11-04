@@ -52,7 +52,8 @@ namespace HomeDecorAPI.Presentation.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateBrand([FromBody] BrandForCreateDto brandForUpdateDto)
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> CreateBrand([FromForm] BrandForCreateDto brandForUpdateDto)
         {
             var brandDto = await _brandService.CreateBrandAsync(brandForUpdateDto);
 
@@ -68,11 +69,11 @@ namespace HomeDecorAPI.Presentation.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateBrand(int id, [FromBody] BrandForUpdateDto brandForUpdateDto)
+        public async Task<IActionResult> UpdateBrand(int id, [FromForm] BrandForUpdateDto brandForUpdateDto)
         {
             var brandDto = await _brandService.UpdateBrandAsync(id, brandForUpdateDto);
 
-            _logger.LogError("Cập nhật một Brand mới thành công.");
+            _logger.LogInfo("Cập nhật một Brand mới thành công.");
             return Ok(new ApiResponse<object>
             {
                 Success = true,
@@ -88,7 +89,7 @@ namespace HomeDecorAPI.Presentation.Controllers
         {
             await _brandService.DeleteBrandAsync(id);
 
-            _logger.LogError("Xóa một Brand mới thành công.");
+            _logger.LogInfo("Xóa một Brand mới thành công.");
             return Ok(new ApiResponse<object>
             {
                 Success = true,

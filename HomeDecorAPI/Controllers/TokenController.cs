@@ -30,24 +30,12 @@ namespace HomeDecorAPI.Presentation.Controllers {
                     Message = "Refresh token successful.",
                     Data = tokenDtoToReturn
                 });
-            } catch (RefreshTokenBadRequest ex) {
-                _logger.LogWarning(ex, "Refresh token bad request");
-                return BadRequest(new AuthResponse<TokenDto> {
-                    Success = false,
-                    Message = ex.Message
-                });
-            } catch (RefreshTokenExpiredTimeException ex) {
-                _logger.LogWarning(ex, "Refresh token expired time request");
-                return BadRequest(new AuthResponse<TokenDto> {
-                    Success = false,
-                    Message = ex.Message
-                });
+            
             } catch (Exception ex) {
                 _logger.LogError(ex, "An error occurred while refreshing token");
                 return StatusCode(401, new AuthResponse<TokenDto> {
                     Success = false,
-                    Message = "Token Invalid"
-                    
+                    Message = "Token Invalid" 
                 });
             }
         }

@@ -9,6 +9,7 @@ using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,10 +68,11 @@ namespace HomeDecorAPI.Application.Services
 
                 if(brandForCreateDto.LogoFile != null)
                 {
-                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Brand}/${brand.Id}";
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Brand}/ID{brand.Id}/";
                     string imageUrl = await _cloudinaryService.UploadImageAsync(brandForCreateDto.LogoFile, folder, CloudinaryConstants.FileTypes.BrandImage);
                     brand.LogoUrl = imageUrl;
                     _unitOfWork.BrandRepository.Update(brand);
+                    _loggerService.LogInfo($"Upload Image thành công với URL: {imageUrl}");
                 }
                 await _unitOfWork.CommitAsync();
 
@@ -97,12 +99,19 @@ namespace HomeDecorAPI.Application.Services
             {
                 await _unitOfWork.BeginTransactionAsync();
                 _mapper.Map(brandForUpdateDto, brand);
+                await _unitOfWork.SaveChangesAsync();
                 if(brandForUpdateDto.LogoFile != null)
                 {
-                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Brand}";
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Brand}/ID{brand.Id}/";
                     string oldPublicId = _cloudinaryService.GetPublicIdFromUrl(brand.LogoUrl);
-
                     brand.LogoUrl = await _cloudinaryService.ReplaceImageAsync(brandForUpdateDto.LogoFile, oldPublicId, folder, CloudinaryConstants.FileTypes.BrandImage);
+                    _loggerService.LogInfo($"Cập nhật hình ảnh mới cho Brand thành công với URL: {brand.LogoUrl}");
+                }else if(brandForUpdateDto.isDeleteImage && brand.LogoUrl != null)
+                {
+                    var publicId = _cloudinaryService.GetPublicIdFromUrl(brand.LogoUrl);
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+                    brand.LogoUrl = null;
+                    _loggerService.LogInfo($"Xóa thành công Image Brand với PublicId: {publicId}");
                 }
 
                 _unitOfWork.BrandRepository.Update(brand);
@@ -121,14 +130,31 @@ namespace HomeDecorAPI.Application.Services
 
         public async Task DeleteBrandAsync(int id)
         {
-            var brand = await _unitOfWork.BrandRepository.GetByIdAsync(id);
-            if (brand == null)
+            try
             {
-                _loggerService.LogError($"Không tim thấy Brand ID: {id}");
-                throw new BrandNotFoundException(id);
+                await _unitOfWork.BeginTransactionAsync();
+                var brand = await _unitOfWork.BrandRepository.GetByIdAsync(id);
+                if (brand == null)
+                {
+                    _loggerService.LogError($"Không tim thấy Brand ID: {id}");
+                    throw new BrandNotFoundException(id);
+                }
+
+                if(brand.LogoUrl != null)
+                {
+                    string publicId = _cloudinaryService.GetPublicIdFromUrl(brand.LogoUrl);
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+                    _loggerService.LogInfo($"Xóa thành công Image Brand với PublicId: {publicId}");
+                }
+                _unitOfWork.BrandRepository.Remove(brand);
+                await _unitOfWork.CommitAsync();
             }
-            _unitOfWork.BrandRepository.Remove(brand);
-            await _unitOfWork.SaveChangesAsync();
+            catch(Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _loggerService.LogError($"Có vấn đề sảy ra khi thực hiện xóa Brand với ID: {id}");
+                throw ex;
+            }
         }
     }
 }

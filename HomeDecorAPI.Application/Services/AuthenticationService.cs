@@ -125,37 +125,32 @@ namespace HomeDecorAPI.Application.Services {
             var adminDto = _mapper.Map<UserDto>(admin);
             var roles = await _userManager.GetRolesAsync(admin);
             adminDto.Roles = roles;
-            _logger.LogInformation("Admin đăng nhập thành công.");
+            
             return adminDto;
         }
 
         public async Task<TokenDto> CreateToken(bool populateExp) {
-            _logger.LogInformation("Bắt đầu lấy thông tin để tạo Token.");
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims();
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             var refreshToken = GenerateRefreshToken();
 
-            _user.RefreshToken = refreshToken;
-            // Lấy thời gian hiện tại
+            
             var now = DateTimeOffset.Now;
-            // Tính thời gian hết hạn
             var expires = now.AddDays(Convert.ToDouble(jwtSettings["RefreshTokenExpiryDays"]));
 
-            // Log thời gian để debug
-            Console.WriteLine($"Current time (local): {now}");
-            Console.WriteLine($"Reresh Token expiration (local): {expires}");
-            Console.WriteLine($"Current time (UTC): {now.UtcDateTime}");
-            Console.WriteLine($"Refresh Token expiration (UTC): {expires.UtcDateTime}");
-
             if (populateExp)
+            {
                 _user.RefreshTokenExpiryTime = expires.UtcDateTime;
+                _user.RefreshToken = refreshToken;
+            }
+               
             await _userManager.UpdateAsync(_user);
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-            return new TokenDto(accessToken, refreshToken);
+            return new TokenDto(accessToken,_user.RefreshToken!);
         }
 
         private SigningCredentials GetSigningCredentials() {
@@ -173,11 +168,9 @@ namespace HomeDecorAPI.Application.Services {
                 new Claim(ClaimTypes.Email, _user.Email!), 
                 new Claim(ClaimTypes.NameIdentifier, _user.Id!)
             };
-
-            //claims.Add(new Claim("DisplayName", _user.DisplayName));
             claims.Add(new Claim("UserId", _user.Id));
-            claims.Add(new Claim("Firstname", _user.Firstname));
-            claims.Add(new Claim("Lastname", _user.Lastname));
+            claims.Add(new Claim("Firstname", _user.Firstname!));
+            claims.Add(new Claim("Lastname", _user.Lastname!));
 
             var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles) {
@@ -190,35 +183,17 @@ namespace HomeDecorAPI.Application.Services {
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-
-            // Lấy thời gian hiện tại
             var now = DateTimeOffset.Now;
-            // Tính thời gian hết hạn
             var expires = now.AddMinutes(Convert.ToDouble(jwtSettings["TokenExpiryMinutes"]));
-
-            // Log thời gian để debug
-            Console.WriteLine($"Current time (local): {now}");
-            Console.WriteLine($"Token expiration (local): {expires}");
-            Console.WriteLine($"Current time (UTC): {now.UtcDateTime}");
-            Console.WriteLine($"Token expiration (UTC): {expires.UtcDateTime}");
-
             var tokenOptions = new JwtSecurityToken
             (
                 issuer: jwtSettings["ValidIssuer"],
                 audience: jwtSettings["ValidAudience"],
                 claims: claims,
-                notBefore: now.UtcDateTime,  // Sử dụng thời gian hiện tại
-                expires: expires.UtcDateTime, // Sử dụng thời gian hết hạn
+                notBefore: now.UtcDateTime,  
+                expires: expires.UtcDateTime,
                 signingCredentials: signingCredentials
             );
-
-            // Log token expiration để verify
-            var handler = new JwtSecurityTokenHandler();
-            var tokenString = handler.WriteToken(tokenOptions);
-            var decodedToken = handler.ReadJwtToken(tokenString);
-            Console.WriteLine($"Decoded token nbf: {decodedToken.ValidFrom}");
-            Console.WriteLine($"Decoded token exp: {decodedToken.ValidTo}");
-
             return tokenOptions;
         }
 
@@ -271,7 +246,7 @@ namespace HomeDecorAPI.Application.Services {
                 throw new RefreshTokenBadRequest();
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null || user.RefreshToken != tokenDto.RefreshToken ||
-            user.RefreshTokenExpiryTime <= DateTime.Now)
+            user.RefreshTokenExpiryTime <= DateTimeOffset.Now.UtcDateTime)
                 throw new RefreshTokenExpiredTimeException();
             _user = user;
             return await CreateToken(populateExp: false);

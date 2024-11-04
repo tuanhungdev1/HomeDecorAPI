@@ -12,10 +12,11 @@ namespace HomeDecorAPI.Application.DTOs.BrandDtos
     {
         [Required(ErrorMessage = "Tên Brand không được để trống.")]
         [StringLength(100, ErrorMessage = "Độ dài tối đa trong khoảng 100 kí tự.")]
-        public required string Name { get; set; }
+        public string Name { get; set; }
         [StringLength(300, ErrorMessage = "Độ dài tối đa trong khoảng 300 kí tự.")]
         public string? Description { get; set; }
         public IFormFile? LogoFile { get; set; }
         public bool? IsActive { get; set; }
+        public bool isDeleteImage { get; set; } = false;
     }
 }

@@ -7,6 +7,7 @@ using HomeDecorAPI.Application.Shared.Models;
 using HomeDecorAPI.Infrastructure.SQLServer.DependencyInjection;
 using HomeDecorAPI.Presentation.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -24,17 +25,34 @@ var _issuer = builder.Configuration["JwtSettings:ValidIssuer"];
 var _audience = builder.Configuration["JwtSettings:ValidAudience"];
 var _expirtyMinutes = builder.Configuration["JwtSettings:TokenExpiryMinutes"];
 
-// Configuration for token
-builder.Services.AddAuthentication(x =>
+
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureIISIntegration();
+
+// Cấu hình để xử lý file upload
+builder.Services.Configure<IISServerOptions>(options =>
 {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
+    options.MaxRequestBodySize = int.MaxValue; // hoặc một giá trị phù hợp
+});
+
+builder.Services.Configure<FormOptions>(options =>
 {
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters
+    options.MultipartBodyLengthLimit = int.MaxValue; // hoặc một giá trị phù hợp
+});
+
+// Cấu hình Authentication và JwtBearer riêng
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key)),
@@ -43,27 +61,49 @@ builder.Services.AddAuthentication(x =>
         ValidateLifetime = true,
         ValidIssuer = _issuer,
         ValidAudience = _audience,
-        ClockSkew = TimeSpan.Zero // Quan trọng: đặt ClockSkew = 0
+        ClockSkew = TimeSpan.Zero
     };
 
-    // Thêm event handlers để debug
-    x.Events = new JwtBearerEvents
+    options.Events = new JwtBearerEvents
     {
-        OnTokenValidated = context =>
+        OnChallenge = async context =>
         {
-            Console.WriteLine("Token was validated successfully");
-            return Task.CompletedTask;
+            context.HandleResponse(); 
+
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                status = 401,
+                message = "Unauthorized. Token is invalid or has expired.",
+                error = "Unauthorized"
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
         },
         OnAuthenticationFailed = context =>
         {
-            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+            {
+                context.Response.Headers.Add("Token-Expired", "true");
+            }
             return Task.CompletedTask;
         }
     };
 });
 
-builder.Services.ConfigureIdentity();
-builder.Services.ConfigureIISIntegration();
+// Thêm cấu hình để tắt redirect cho cookie authentication
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+});
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog();
@@ -95,19 +135,17 @@ builder.Services.AddCors(c =>
 
 var app = builder.Build();
 
-app.ConfigureExceptionHandler();
-
-//app.UseMiddleware<TokenValidationMiddleware>();
-
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
-app.UseAuthentication();
 app.UseMiddleware<TokenValidationMiddleware>();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

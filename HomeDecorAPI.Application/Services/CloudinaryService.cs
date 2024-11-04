@@ -44,7 +44,7 @@ namespace HomeDecorAPI.Application.Services {
             FileHelper.ValidateFile(file);
             _logger.LogInformation("Validated file. FileName: {FileName}, FileSize: {FileSize} bytes", file.FileName, file.Length);
             var uniqueFileName = FileHelper.GenerateUniqueFileName(file.FileName, prefix);
-
+            Console.WriteLine(uniqueFileName);
             using var stream = file.OpenReadStream();
             var uploadParams = new ImageUploadParams
             {
@@ -59,12 +59,26 @@ namespace HomeDecorAPI.Application.Services {
 
         public async Task DeleteImageAsync(string publicId)
         {
-            if (string.IsNullOrEmpty(publicId))
-                return;
-            var deleteParams = new DeletionParams(publicId);
-            await _cloudinary.DestroyAsync(deleteParams);
-        }
+            try
+            {
+                if (string.IsNullOrEmpty(publicId))
+                    throw new ArgumentNullException($"PublicId không được phép NULL!");
+                var deleteParams = new DeletionParams(publicId);
+                var result = await _cloudinary.DestroyAsync(deleteParams);
 
+                if(result.Error != null)
+                {
+                    _logger.LogError($"Có lỗi sảy ra khi xóa hình ảnh với PublicId: {publicId}, Error: {result.Error.Message}");
+                    throw new ArgumentNullException($"Không thể xóa một PublicId không tồn tại!");
+                }
+            }    
+            catch(Exception ex)
+            {
+                _logger.LogError($"Không thể xóa hình ảnh với PUBLIC_ID: {publicId}");
+                throw ex;
+            }
+        }
+        
         public async Task<string> ReplaceImageAsync(IFormFile newFile,string oldPublicId, string folder, string prefix)
         {
             string newImageUrl = await UploadImageAsync(newFile, folder, prefix);
@@ -77,11 +91,28 @@ namespace HomeDecorAPI.Application.Services {
 
         public string GetPublicIdFromUrl(string imageUrl)
         {
-            var uri = new Uri(imageUrl);
-            var pathWithoutUpload = uri.AbsolutePath.Replace("/image/upload/", "");
+            try
+            {
+                var uri = new Uri(imageUrl);
+                
+                var segments = uri.AbsolutePath.Split('/');
+                
+                var uploadIndex = Array.IndexOf(segments, "upload");
+                if (uploadIndex == -1 || uploadIndex + 2 >= segments.Length)
+                    return null;
 
-            var publicId = Path.GetFileNameWithoutExtension(pathWithoutUpload);
-            return publicId; 
+                var startIndex = uploadIndex + 2;
+
+
+                var publicId = string.Join("/", segments.Skip(startIndex)
+                                                .Take(segments.Length - startIndex)).Replace(Path.GetExtension(segments.Last()), "");
+                
+                return publicId;
+            } catch(Exception ex)
+            {
+                _logger.LogError("Có lỗi khi chuyển đổi Image URL sang PUBLIC_ID");
+                return null;
+            }
         }
 
         public async Task<UploadResult> UploadUserAvatarAsync(IFormFile file, string userId) {
