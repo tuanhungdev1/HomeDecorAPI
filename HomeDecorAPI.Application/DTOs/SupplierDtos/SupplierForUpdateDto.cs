@@ -33,6 +33,7 @@ namespace HomeDecorAPI.Application.DTOs.SupplierDtos
         [StringLength(50)]
         public string? Country { get; set; }
         public IFormFile? LogoFile { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
+        public bool IsDeleteImage { get; set; } = false;
     }
 }

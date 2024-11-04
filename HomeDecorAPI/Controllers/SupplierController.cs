@@ -56,7 +56,7 @@ namespace HomeDecorAPI.Presentation.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> CreateSupplier([FromBody] SupplierForCreateDto supplierForCreateDto)
+        public async Task<IActionResult> CreateSupplier([FromForm] SupplierForCreateDto supplierForCreateDto)
         {
             var supplierDto = await _supplierService.CreateSupplierAsync(supplierForCreateDto);
             _loggerService.LogInfo("Tạo một Supplier mới thành công.");
@@ -73,7 +73,7 @@ namespace HomeDecorAPI.Presentation.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateSupplier(int id,[FromBody] SupplierForUpdateDto supplierForUpdateDto)
+        public async Task<IActionResult> UpdateSupplier(int id,[FromForm] SupplierForUpdateDto supplierForUpdateDto)
         {
             var supplierDto = await _supplierService.UpdateSupplierAsync(id ,supplierForUpdateDto);
             _loggerService.LogInfo($"Cập nhật một Supplier với ID: {id} thành công.");
@@ -89,12 +89,10 @@ namespace HomeDecorAPI.Presentation.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
- 
         public async Task<IActionResult> DeleteSupplier(int id)
         {
             await _supplierService.DeleteSupplierAsync(id);
             _loggerService.LogInfo($"Xóa một Supplier với ID: {id} thành công.");
-
             return StatusCode(200, new ApiResponse<SupplierDto>
             {
                 Success = true,

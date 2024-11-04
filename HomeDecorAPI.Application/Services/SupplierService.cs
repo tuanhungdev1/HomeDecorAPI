@@ -60,15 +60,16 @@ namespace HomeDecorAPI.Application.Services
 
                 if(supplierForCreateDto.LogoFile != null)
                 {
-                    string folder = $"HomeDecor/${CloudinaryConstants.Folders.Supplier}/${supplier.Id}";
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Supplier}/{supplier.Id}";
                     string imageUrl = await _cloudinaryService.UploadImageAsync(supplierForCreateDto.LogoFile, folder, CloudinaryConstants.FileTypes.Supplier);
-
+                    
                     supplier.LogoUrl = imageUrl;
-                    _unitOfWork.SupplierRepository.Update(supplier);
-                   await  _unitOfWork.SaveChangesAsync();
+                    _loggerService.LogInfo($"Cập nhật thành công ảnh cho Supplier với ID: {supplier.Id}");
                 }
-                await _unitOfWork.CommitAsync();
 
+                _unitOfWork.SupplierRepository.Update(supplier);
+                await _unitOfWork.CommitAsync();
+                _loggerService.LogInfo($"Tạo thành công một Supplier với ID: {supplier.Id}");
                 return _mapper.Map<SupplierDto>(supplier);
 
             }
@@ -97,9 +98,16 @@ namespace HomeDecorAPI.Application.Services
 
                 if (supplierForUpdateDto.LogoFile != null)
                 {
-                    string folder = $"HomeDecor/${CloudinaryConstants.Folders.Supplier}/${supplier.Id}";
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Supplier}/{supplier.Id}";
                     string oldPublicId =  _cloudinaryService.GetPublicIdFromUrl(supplier.LogoUrl);
                     supplier.LogoUrl = await _cloudinaryService.ReplaceImageAsync(supplierForUpdateDto.LogoFile, oldPublicId, folder, CloudinaryConstants.FileTypes.Supplier);
+                    _loggerService.LogInfo($"Upload thành công ảnh của Supplier với URL: {supplier.LogoUrl}");
+                } else if(supplier.LogoUrl != null && supplierForUpdateDto.IsDeleteImage)
+                {
+                    string publicId = _cloudinaryService.GetPublicIdFromUrl(supplier.LogoUrl);
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+                    _loggerService.LogInfo($"Xóa thành công ảnh của Supplier với ID: {supplier.Id}");
+                    supplier.LogoUrl = null;
                 }
                 _unitOfWork.SupplierRepository.Update(supplier);
                 await _unitOfWork.CommitAsync();
@@ -117,15 +125,30 @@ namespace HomeDecorAPI.Application.Services
         public async Task DeleteSupplierAsync(int id)
         {
 
-            var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(id);
-            if(supplier == null)
+            try
             {
-                _loggerService.LogError($"Không tìm thấy Supplier với ID: {id}");
-                throw new SupplierNotFoundException(id);
+                await _unitOfWork.BeginTransactionAsync();
+                var supplier = await _unitOfWork.SupplierRepository.GetByIdAsync(id);
+                if (supplier == null)
+                {
+                    _loggerService.LogError($"Không tìm thấy Supplier với ID: {id}");
+                    throw new SupplierNotFoundException(id);
+                }
+                if(supplier.LogoUrl != null)
+                {
+                    var publicId = _cloudinaryService.GetPublicIdFromUrl(supplier.LogoUrl);
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+                    _loggerService.LogInfo($"Xóa thành công ảnh của Supplier với ID: {id}");
+                }
+                _unitOfWork.SupplierRepository.Remove(supplier);
+                await _unitOfWork.CommitAsync();
             }
-
-            _unitOfWork.SupplierRepository.Remove(supplier);
-            await _unitOfWork.SaveChangesAsync();
+            catch(Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _loggerService.LogError($"Có lỗi sảy ra, Không thể xóa Supplier với ID: {id}");
+                throw ex;
+            }
         }
     }
 }
