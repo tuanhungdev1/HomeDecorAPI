@@ -12,7 +12,8 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos
     public class ProductImageForCreateDto
     {
         [Required]
-        public IFormFile? FileImage { get; set; }
+        public IFormFile FileImage { get; set; }
         public bool IsMainImage { get; set; } = true;
+        public int ProductVariantId { get; set; }
     }
 }

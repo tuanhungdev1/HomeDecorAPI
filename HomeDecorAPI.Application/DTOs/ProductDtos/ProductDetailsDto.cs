@@ -9,6 +9,8 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos
 {
     public class ProductDetailsDto
     {
+        public int Id { get; set; }
+        public int ProductId { get; set; }
         [Required]
         [StringLength(100)]
         public string? Measurements { get; set; }

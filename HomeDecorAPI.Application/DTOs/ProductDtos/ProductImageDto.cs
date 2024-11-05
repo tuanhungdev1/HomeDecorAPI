@@ -10,6 +10,7 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos
 {
     public class ProductImageDto
     {
+        public int Id { get; set; }
         public int? ProductVariantId { get; set; }
         public string? ImageUrl { get; set; }
         public bool IsMainImage { get; set; } = true;
