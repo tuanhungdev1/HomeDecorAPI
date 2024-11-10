@@ -28,10 +28,10 @@ namespace HomeDecorAPI.Domain.Entities {
 
         [Required]
         public bool IsPublished { get; set; } = false;
-        public int CategoryId { get; set; }
-        public int BrandId { get; set; }
+        public int? CategoryId { get; set; }
+        public int? BrandId { get; set; }
         public Brand? Brand { get; set; }
-        public int SupplierId { get; set; }
+        public int? SupplierId { get; set; }
         public Supplier? Supplier { get; set; }
         public ProductDetails? ProductDetails { get; set; }
         public ICollection<ProductVariant>? ProductVariants { get; set; }

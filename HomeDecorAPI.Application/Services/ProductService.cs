@@ -47,83 +47,140 @@ namespace HomeDecorAPI.Application.Services {
             return _mapper.Map<ProductDto>(product);
         }
 
-        public async Task<ProductDto> CreateProductAsync(ProductForCreateDto productForCreateDto) {
+        public async Task<ProductDto> CreateProductAsync(ProductForCreateDto productForCreateDto)
+        {
+            await ValidateProductData(productForCreateDto);
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                var isMainVariant = false;
-                var isMainImageForMainVariant = false;
+
                 var product = _mapper.Map<Product>(productForCreateDto);
                 await _productRepository.AddAsync(product);
                 await _productRepository.SaveChangesAsync();
-                var productVariant = new List<ProductVariant>();
-                if(productForCreateDto.Variants == null)
-                {
-                    _logger.LogError("Cần ít nhất 1 Variant cho sản phẩm");
-                    throw new ProductBadRequestException("Cần ít nhất 1 Variant cho sản phẩm. Vui lòng nhập lại đầy đủ thông tin.");
-                }
-                foreach(var variant in productForCreateDto.Variants)
-                {
-                    if(variant.IsMainVariant)
-                    {
-                        isMainVariant = true;
-                    }
-                    if(variant.Images.Count <= 0 || variant.Images == null)
-                    {
-                        _logger.LogError("Cần ít nhất 1 Hình ảnh cho một Variant để hiển thị cho sản phẩm");
-                        throw new ProductBadRequestException("Cần ít nhất 1 hình ảnh của sản phẩm cho Variant để hiển thị. Vui lòng nhập lại đầy đủ thông tin.");
-                    }
-                    var productVariantImages = new List<ProductImage>();
-                    foreach (var image in variant.Images)
-                    {
-                        if (image.FileImage == null)
-                        {
-                            _logger.LogError($"Chưa cập nhật hình ảnh cho Variant là {variant.Color}");
-                            throw new ProductBadRequestException($"Chưa cập nhật hình ảnh cho Variant là {variant.Color}");
-                        }
-                        if (image.IsMainImage)
-                        {
-                            isMainImageForMainVariant = true;
-                        }
 
-                        FileHelper.ValidateFile(image.FileImage);
-                        string folder = $"HomeDecor/{CloudinaryConstants.Folders.Products}/{product.Id}/{variant.Color}";
-                        string imageUrl = await _cloudinaryService.UploadImageAsync(image.FileImage, folder, CloudinaryConstants.FileTypes.ProductImage);
-                        var imageUpload = new ProductImage { ImageUrl = imageUrl, IsMainImage = image.IsMainImage };
-                        productVariantImages.Add(imageUpload);
-                    }
+                var productVariants = await ProcessProductVariants(productForCreateDto.Variants, product.Id);
+                product.ProductVariants = productVariants;
 
-                    if(!isMainImageForMainVariant)
-                    {
-                        productVariantImages[0].IsMainImage = true;
-                    }
-
-                    var productVariantTemp = _mapper.Map<ProductVariant>(variant);
-                    productVariantTemp.Images = productVariantImages;
-                    productVariant.Add(productVariantTemp);
-                }
-
-                if(!isMainVariant)
-                {
-                    productVariant[0].IsMainVariant = true;
-                }
-
-                product.ProductVariants = productVariant;
-                await _productRepository.AddAsync(product);
+                _productRepository.Update(product);
                 await _unitOfWork.CommitAsync();
+
                 return _mapper.Map<ProductDto>(product);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 await _unitOfWork.RollbackAsync();
-                _logger.LogError("Có lỗi sảy ra trong quá trình tạo một sản phẩm mới. Vui lòng thử lại");
-                throw;
+                _logger.LogError($"Error creating product: {ex.Message}");
+                throw new ProductBadRequestException("Failed to create product. Please try again.");
+            }
+        }
+        private async Task ValidateProductData(ProductForCreateDto productForCreateDto)
+        {
+            if(productForCreateDto.Variants == null || !productForCreateDto.Variants.Any())
+            {
+                throw new ProductBadRequestException("Sản phẩm cần ít nhất 1 loại sản phẩm theo màu sắc.");
+            } 
+
+            foreach(var variant in productForCreateDto.Variants)
+            {
+                if(variant.Images == null || !variant.Images.Any())
+                {
+                    throw new ProductBadRequestException("Loại Sản phẩm cần ít nhất 1 hình ảnh sản phẩm theo màu sắc.");
+                }
+            }
+
+        }
+
+        private async Task<List<ProductVariant>> ProcessProductVariants(
+        IEnumerable<ProductVariantForCreateDto> variantDtos, int productId)
+        {
+            var productVariants = new List<ProductVariant>();
+            
+
+            foreach (var variantDto in variantDtos)
+            {
+                await ValidateVariant(variantDto);
+
+                var variant = await CreateProductVariant(variantDto, productId);
+
+                productVariants.Add(variant);
+            }
+
+            productVariants[0].IsMainVariant = true;
+
+            return productVariants;
+        }
+
+        private async Task ValidateVariant(ProductVariantForCreateDto variant)
+        {
+            if (variant.Images == null || !variant.Images.Any())
+            {
+                throw new ProductBadRequestException($"At least one image is required for variant {variant.Color}");
+            }
+
+            if (string.IsNullOrEmpty(variant.Color))
+            {
+                throw new ProductBadRequestException("Variant color is required.");
+            }
+
+            // Validate stock quantity
+            if (variant.StockQuantity < 0)
+            {
+                throw new ProductBadRequestException("Stock quantity cannot be negative.");
+            }
+
+            // Validate discount dates
+            if (variant.DiscountStartDate.HasValue && variant.DiscountEndDate.HasValue)
+            {
+                if (variant.DiscountStartDate > variant.DiscountEndDate)
+                {
+                    throw new ProductBadRequestException("Discount start date must be before end date.");
+                }
             }
         }
 
-        public async Task<ProductDto> UpdateProductAsync(int productId, ProductForUpdateDto productForUpdateDto) {
+        private async Task<ProductVariant> CreateProductVariant(
+    ProductVariantForCreateDto variantDto, int productId)
+        {
+            var variant = _mapper.Map<ProductVariant>(variantDto);
+            variant.Images = await ProcessVariantImages(variantDto.Images, productId, variantDto.Color);
+            return variant;
+        }
+
+        private async Task<List<ProductImage>> ProcessVariantImages(
+    IEnumerable<ProductImageForCreateDto> imageDtos, int productId, string variantColor)
+        {
+            var images = new List<ProductImage>();
+
+            foreach (var imageDto in imageDtos)
+            {
+                if (imageDto.FileImage == null)
+                {
+                    throw new ProductBadRequestException($"Invalid image file for variant {variantColor}");
+                }
+
+                FileHelper.ValidateFile(imageDto.FileImage);
+
+                string folder = $"HomeDecor/{CloudinaryConstants.Folders.Products}/PRODUCT_ID_{productId}/COLOR_{variantColor}/";
+                string imageUrl = await _cloudinaryService.UploadImageAsync(
+                    imageDto.FileImage, folder, CloudinaryConstants.FileTypes.ProductImage);
+
+                var image = new ProductImage
+                {
+                    ImageUrl = imageUrl,
+                    IsMainImage = imageDto.IsMainImage
+                };
+                images.Add(image);
+            }
+            return images;
+        }
+
+        public async Task<ProductDto> UpdateProductAsync(int productId, ProductForUpdateDto productForUpdateDto)
+        {
             var product = await _productRepository.GetByIdAsync(productId);
 
-            if (product == null) {
+            if (product == null)
+            {
                 throw new ProductNotFoundException($"Product with ID {productId} was not found.");
             }
 
@@ -133,9 +190,11 @@ namespace HomeDecorAPI.Application.Services {
             return _mapper.Map<ProductDto>(productForUpdate);
         }
 
-        public async Task DeleteProductAsync(int productId) {
+        public async Task DeleteProductAsync(int productId)
+        {
             var product = await _productRepository.GetByIdAsync(productId);
-            if (product == null) {
+            if (product == null)
+            {
                 throw new ProductNotFoundException($"Product with ID {productId} was not found.");
             }
 
@@ -144,3 +203,4 @@ namespace HomeDecorAPI.Application.Services {
         }
     }
 }
+

@@ -39,7 +39,7 @@ namespace HomeDecorAPI.Domain.Entities
                 {
                     return OriginalPrice - (OriginalPrice * (DiscountPercentage.Value / 100));
                 }
-                return OriginalPrice; // Trả về giá gốc nếu không có giảm giá
+                return OriginalPrice; 
             }
         }
 
@@ -51,20 +51,6 @@ namespace HomeDecorAPI.Domain.Entities
         [Required]
         [Range(0, int.MaxValue)]
         public int StockQuantity { get; set; }
-        public DateTime? IsNewStartDate { get; set; }
-        public DateTime? IsNewEndDate { get; set; }
-        [NotMapped]
-        public bool IsCurrentlyNew
-        {
-            get
-            {
-                if (IsNewStartDate.HasValue && IsNewEndDate.HasValue)
-                {
-                    return DateTime.UtcNow >= IsNewStartDate.Value && DateTime.UtcNow <= IsNewEndDate.Value;
-                }
-                return false;
-            }
-        }
         public bool IsActive { get; set; } = true;
         public StockStatus StockStatus
         {
@@ -76,8 +62,6 @@ namespace HomeDecorAPI.Domain.Entities
                 return StockStatus.InStock;
             }
         }
-
-        // Navigation properties
         public Product? Product { get; set; }
         public ICollection<ProductImage>? Images { get; set; }
     }
