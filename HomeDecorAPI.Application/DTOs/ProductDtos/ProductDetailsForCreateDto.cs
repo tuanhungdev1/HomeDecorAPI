@@ -10,7 +10,7 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos
     public class ProductDetailsForCreateDto
     {
         
-        [StringLength(100)]
+        [StringLength(500)]
         public string? Measurements { get; set; }
         [StringLength(100)]
         public string? RoomType { get; set; }

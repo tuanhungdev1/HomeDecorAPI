@@ -25,39 +25,50 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos
             {
                 if (DiscountPercentage.HasValue && DiscountPercentage > 0)
                 {
-                    return OriginalPrice - (OriginalPrice * (DiscountPercentage.Value / 100));
+                    return OriginalPrice - (OriginalPrice * (DiscountPercentage.Value / 100m));
                 }
-                return OriginalPrice; // Trả về giá gốc nếu không có giảm giá
+                return OriginalPrice; 
             }
         }
 
         public DateTime? DiscountStartDate { get; set; }
         public DateTime? DiscountEndDate { get; set; }
         public int StockQuantity { get; set; }
-        public DateTime? IsNewStartDate { get; set; }
-        public DateTime? IsNewEndDate { get; set; }
-        public bool IsCurrentlyNew
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+
+        public bool IsNew
         {
             get
             {
-                if (IsNewStartDate.HasValue && IsNewEndDate.HasValue)
+                if (CreatedAt.HasValue)
                 {
-                    return DateTime.UtcNow >= IsNewStartDate.Value && DateTime.UtcNow <= IsNewEndDate.Value;
+                    return (DateTime.UtcNow - CreatedAt.Value).TotalDays <= 7;
                 }
                 return false;
             }
         }
+
         public bool IsActive { get; set; } = true;
-        public StockStatus StockStatus
+        public string StockStatusProduct
         {
             get
             {
-                if (!IsActive) return StockStatus.Discontinued;
-                if (StockQuantity <= 0) return StockStatus.OutOfStock;
-                if (StockQuantity <= 10) return StockStatus.LowStock;
-                return StockStatus.InStock;
+                StockStatus status;
+
+                if (!IsActive)
+                    status = StockStatus.Discontinued;
+                else if (StockQuantity <= 0)
+                    status = StockStatus.OutOfStock;
+                else if (StockQuantity <= 10)
+                    status = StockStatus.LowStock;
+                else
+                    status = StockStatus.InStock;
+
+                return status.ToString(); 
             }
         }
-        public ICollection<ProductImageDto>? ProductImages { get; set; }
+
+        public ICollection<ProductImageDto>? Images { get; set; }
     }
 }

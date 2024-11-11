@@ -8,6 +8,7 @@ using HomeDecorAPI.Application.Shared.Utilities;
 using HomeDecorAPI.Domain.Entities;
 using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,10 +40,16 @@ namespace HomeDecorAPI.Application.Services {
         }
 
         public async Task<ProductDto> GetProductByIdAsync(int productId) {
-            var product = await _productRepository.GetByIdAsync(productId);
+            var product = await _productRepository.FindByCondition(p => p.Id == productId, false)
+                                                    .Include(p => p.ProductVariants)
+                                                        .ThenInclude(pv => pv.Images)
+                                                    .Include(p => p.ProductDetails)
+                                                    .SingleOrDefaultAsync()
+                                                    ;
 
             if (product == null) {
-                throw new ProductNotFoundException($"Product with ID {productId} was not found.");
+                _logger.LogError($"Không tìm thấy Product với ID: {productId}");
+                throw new ProductNotFoundException($"{productId}");
             }
             return _mapper.Map<ProductDto>(product);
         }
@@ -58,6 +65,10 @@ namespace HomeDecorAPI.Application.Services {
                 var product = _mapper.Map<Product>(productForCreateDto);
                 await _productRepository.AddAsync(product);
                 await _productRepository.SaveChangesAsync();
+               
+                var productDetails = _mapper.Map<ProductDetails>(productForCreateDto.Details);
+                product.ProductDetails = productDetails;
+                _productRepository.Update(product);
 
                 var productVariants = await ProcessProductVariants(productForCreateDto.Variants, product.Id);
                 product.ProductVariants = productVariants;
@@ -181,7 +192,7 @@ namespace HomeDecorAPI.Application.Services {
 
             if (product == null)
             {
-                throw new ProductNotFoundException($"Product with ID {productId} was not found.");
+                throw new ProductNotFoundException($"{productId}");
             }
 
             var productForUpdate = _mapper.Map(productForUpdateDto, product);
@@ -192,14 +203,23 @@ namespace HomeDecorAPI.Application.Services {
 
         public async Task DeleteProductAsync(int productId)
         {
-            var product = await _productRepository.GetByIdAsync(productId);
-            if (product == null)
+            try
             {
-                throw new ProductNotFoundException($"Product with ID {productId} was not found.");
-            }
+                await _unitOfWork.BeginTransactionAsync();
+                var product = await _productRepository.GetByIdAsync(productId);
+                if (product == null)
+                {
+                    throw new ProductNotFoundException($"{productId}");
+                }
 
-            _productRepository.Remove(product);
-            await _productRepository.SaveChangesAsync();
+                _productRepository.Remove(product);
+                await _productRepository.SaveChangesAsync();
+            } catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _logger.LogError($"Có lỗi sảy ra không thể xóa sản phẩm với ID: {productId}");
+                throw ex;
+            }
         }
     }
 }

@@ -9,11 +9,9 @@ namespace HomeDecorAPI.Domain.Entities
 {
     public class ProductDetails : BaseEntity
     {
-        public int ProductId { get; set; }
-
-        [Required]
-        [StringLength(100)]
-        public string Measurements { get; set; }
+        public int? ProductId { get; set; }
+        [StringLength(500)]
+        public string? Measurements { get; set; }
         [StringLength(100)]
         public string? RoomType { get; set; }
         public double? Weight { get; set; }

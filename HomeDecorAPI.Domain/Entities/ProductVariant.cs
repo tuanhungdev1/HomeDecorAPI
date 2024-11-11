@@ -29,22 +29,7 @@ namespace HomeDecorAPI.Domain.Entities
 
         [Range(0, 100)]
         public int? DiscountPercentage { get; set; }
-        [NotMapped]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal DiscountPrice
-        {
-            get
-            {
-                if (DiscountPercentage.HasValue && DiscountPercentage > 0)
-                {
-                    return OriginalPrice - (OriginalPrice * (DiscountPercentage.Value / 100));
-                }
-                return OriginalPrice; 
-            }
-        }
-
         public DateTime? DiscountStartDate { get; set; }
-
         public DateTime? DiscountEndDate { get; set; }
 
         // Kho hàng
