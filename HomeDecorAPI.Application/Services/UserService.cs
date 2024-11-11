@@ -6,7 +6,9 @@ using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Application.Shared.Constants;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Domain.Entities;
+using HomeDecorAPI.Domain.Exceptions.BadRequestException;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +41,94 @@ namespace HomeDecorAPI.Application.Services {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _cloudinaryService = cloudinaryService;
+        }
+
+        public async Task<(IEnumerable<UserDto> userDtos, MetaData metaData)> GetAllUserAsync(UserRequestParameters userRequestParameters)
+        {
+
+        }
+
+        public async Task<UserDto> CreateUserAsync(UserForCreateDto userForCreateDto)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                var userTemp = await _userManager.FindByEmailAsync(userForCreateDto.Email)
+                            ?? await _userManager.FindByNameAsync(userForCreateDto.UserName);
+
+                if (userTemp != null)
+                {
+                    _logger.LogError("Đã tồn tại Username hoặc Email trong hệ thống.");
+                    throw new UserBadRequestException("Đã tồn tại Username hoặc Email trong hệ thống!");
+                }
+                
+                var user = _mapper.Map<User>(userForCreateDto);
+                await _unitOfWork.UserRepository.AddAsync(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                if(userForCreateDto.FileImage != null)
+                {
+                    string folder = $"HomeDecor/{CloudinaryConstants.Folders.Users}/ID_{user.Id}/";
+                    string imageUrl = await _cloudinaryService.UploadImageAsync(userForCreateDto.FileImage, folder, CloudinaryConstants.FileTypes.UserAvatar);
+                    user.ImageUrl = imageUrl;
+                    _unitOfWork.UserRepository.Update(user);
+                    _logger.LogInfo($"Upload Image thành công với URL: {imageUrl}");
+                }
+
+
+                var newRoles = userForCreateDto.Roles;
+                var result = await _userManager.AddToRolesAsync(user, newRoles);
+
+                if(!result.Succeeded)
+                {
+                    _logger.LogError("Không thể thêm Roles cho người dùng.");
+                    throw new UserBadRequestException("Không thể thêm Roles cho người dùng.");
+                }
+                await _unitOfWork.SaveChangesAsync();
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var userDto = _mapper.Map<UserDto>(user);
+                userDto.Roles = newRoles;
+                await _unitOfWork.CommitAsync();
+                return userDto;
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _logger.LogError("Có lỗi khi tạo một User mới.");
+                throw ex;
+            }
+        }
+
+        public async Task DeleteUserAsync(string userId)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    _logger.LogError($"Không tìm thấy User với Id: {userId}");
+                    throw new UserNotFoundException($"Không tìm thấy User với Id: {userId}");
+                }
+
+                if(user.ImageUrl != null)
+                {
+                    string publicId = _cloudinaryService.GetPublicIdFromUrl(user.ImageUrl);
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+                    _logger.LogInfo($"Xóa thành công Image User với PublicId: {publicId}");
+                }
+
+                _unitOfWork.UserRepository.Remove(user);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _logger.LogError($"Có lỗi sảy ra không thể xóa người dùng.");
+                throw ex;
+            }
+
         }
 
         public async Task<UserDto> GetUserInfoAsync(string userId) {

@@ -30,6 +30,8 @@ namespace HomeDecorAPI.Domain.Entities {
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
         public string Status { get; set; } = "Active";
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
