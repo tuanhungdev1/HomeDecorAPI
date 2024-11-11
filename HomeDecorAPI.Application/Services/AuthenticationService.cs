@@ -48,7 +48,17 @@ namespace HomeDecorAPI.Application.Services {
             _userRepository = userRepository;
             _logger = logger;
         }
+        public async Task<bool> IsUsernameAvailable(string username)
+        {
+            var user = await _userManager.FindByNameAsync( username );
+            return user == null ? true: false;
+        }
 
+        public async Task<bool> IsEmailAvailable(string email)
+        {
+            var user = await _userManager.FindByEmailAsync( email );
+            return user == null ? true : false;
+        }
         public async Task<IdentityResult> RegisterUserAsync(UserForRegistrationDto userForRegistration) {
 
             _logger.LogInformation("Bắt đầu sử lý thông tin đăng kí người dùng mới trong hệ thống.");

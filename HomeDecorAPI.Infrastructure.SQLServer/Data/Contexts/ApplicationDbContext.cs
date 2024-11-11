@@ -23,7 +23,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<ProductDetails> ProductDetails { get; set; }
 

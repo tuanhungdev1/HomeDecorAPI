@@ -10,10 +10,7 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
     public class UserConfiguration : IEntityTypeConfiguration<User> {
         public void Configure(EntityTypeBuilder<User> builder) {
-            builder.HasOne(u => u.UserImage)
-                .WithOne(ui => ui.User)
-                .HasForeignKey<UserImage>(ui => ui.UserId);
-                
+            
         }
     }
 }

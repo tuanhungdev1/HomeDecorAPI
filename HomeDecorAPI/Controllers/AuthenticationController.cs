@@ -24,6 +24,20 @@ namespace HomeDecorAPI.Presentation.Controllers
             _logger = logger;
         }
 
+        [HttpPost("validate-username")]
+        public async Task<ActionResult<bool>>  ValidateUsername(string username)
+        {
+            bool isUsernameAvailable = await _authenticationService.IsUsernameAvailable(username);
+            return isUsernameAvailable;
+        }
+
+        [HttpPost("validate-email")]
+        public async Task<ActionResult<bool>> ValidateEmail(string email)
+        {
+            bool isEmailAvailable = await _authenticationService.IsEmailAvailable(email);
+            return isEmailAvailable;
+        }
+
         [HttpPost("register")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistrationDto) {
