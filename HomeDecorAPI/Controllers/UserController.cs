@@ -5,6 +5,7 @@ using HomeDecorAPI.Application.DTOs.AddressDtos;
 using HomeDecorAPI.Application.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
+using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,22 @@ namespace HomeDecorAPI.Presentation.Controllers {
         public UserController(IUserService userService, IMapper mapper,  ILoggerService logger) {
             _userService = userService;
             _logger = logger;
+        
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllUserAsync(UserRequestParameters userRequestParameters)
+        {
+            var (userDtos, metaData) = await _userService.GetAllUserAsync(userRequestParameters);
+            _logger.LogInfo("Lấy thành công danh sách User.");
+            return Ok(new ApiResponse<IEnumerable<UserDto>>
+            {
+                Success = true,
+                StatusCode = 200,
+                Data = userDtos,
+                Message = "Lấy danh sách dữ liệu User thành công."
+            });
         }
 
         [HttpGet("{userId}")]

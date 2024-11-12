@@ -1,6 +1,7 @@
 ﻿using HomeDecorAPI.Application.Interfaces;
 using HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts;
 using HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HomeDecorAPI.Domain.Entities;
 
 namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
     public class UnitOfWork : IUnitOfWork, IAsyncDisposable {
@@ -22,10 +24,10 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
         private readonly Lazy<ICartRepository> _cartRepository;
         private readonly Lazy<IBrandRepository> _brandRepository;
         private readonly Lazy<ISupplierRepository> _supplierRepository;
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
-            _userRepository = new Lazy<IUserRepository>(() => new UserRepository(_context));
+            _userRepository = new Lazy<IUserRepository>(() => new UserRepository(_context, userManager));
             _addressRepository = new Lazy<IAddressRepository>(() => new AddressRepository(_context));
             _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(_context));
             _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(_context));

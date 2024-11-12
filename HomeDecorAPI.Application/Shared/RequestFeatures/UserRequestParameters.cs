@@ -8,6 +8,7 @@ namespace HomeDecorAPI.Application.Shared.RequestFeatures
 {
     public class UserRequestParameters : RequestParameters
     {
+        public string? SortKey { get; set; }
         public string? Status { get; set; } 
         public int? StartAge { get; set; } 
         public int? EndAge { get; set; } 

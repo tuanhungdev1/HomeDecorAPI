@@ -77,6 +77,47 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories {
                 }
                 query = usersWithRoles.AsQueryable();
             }
+
+            query = ApplySorting(query, userRequestParameters.SortKey, userRequestParameters.OrderBy);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+               .Skip((userRequestParameters.PageNumber - 1) * userRequestParameters.PageSize)
+               .Take(userRequestParameters.PageSize)
+               .ToListAsync();
+
+
+            return new PagedList<User>(items, totalCount, userRequestParameters.PageNumber, userRequestParameters.PageSize);
+
+        }
+
+        private IQueryable<User> ApplySorting(IQueryable<User> query, string? sortKey, string? orderBy)
+        {
+            if (string.IsNullOrEmpty(sortKey))
+            {
+                return query.OrderBy(b => b.Id);
+            }
+
+            var isDesending = orderBy?.ToLower() == "desc";
+
+            query = sortKey.ToLower() switch
+            {
+                "id" => isDesending ? query.OrderByDescending(b => b.Id) : query.OrderBy(b => b.Id),
+                "username" => isDesending ? query.OrderByDescending(b => b.UserName) : query.OrderBy(b => b.UserName),
+                "createdat" => isDesending ? query.OrderByDescending(b => b.CreatedAt) : query.OrderBy(b => b.CreatedAt),
+                "city" => isDesending ? query.OrderByDescending(b => b.City) : query.OrderBy(b => b.City),
+                "age" => isDesending ? query.OrderByDescending(b => b.Age) : query.OrderBy(b => b.Age),
+                "address" => isDesending ? query.OrderByDescending(b => b.Address) : query.OrderBy(b => b.Address),
+                "email" => isDesending ? query.OrderByDescending(b => b.Email) : query.OrderBy(b => b.Email),
+                "firstname" => isDesending ? query.OrderByDescending(b => b.Firstname) : query.OrderBy(b => b.Firstname),
+                "lastname" => isDesending ? query.OrderByDescending(b => b.Lastname) : query.OrderBy(b => b.Lastname),
+                "displayname" => isDesending ? query.OrderByDescending(b => b.Displayname) : query.OrderBy(b => b.Displayname),
+                "dateofbirth" => isDesending ? query.OrderByDescending(b => b.DateOfBirth) : query.OrderBy(b => b.DateOfBirth),
+                _ => query.OrderBy(b => b.Id),
+            };
+
+            return query;
         }
     }
 }

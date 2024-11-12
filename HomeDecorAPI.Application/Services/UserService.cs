@@ -45,7 +45,11 @@ namespace HomeDecorAPI.Application.Services {
 
         public async Task<(IEnumerable<UserDto> userDtos, MetaData metaData)> GetAllUserAsync(UserRequestParameters userRequestParameters)
         {
+               var pagedListResult = await _userRepository.GetAllUserAsync(userRequestParameters);
 
+                var userDtos = _mapper.Map<IEnumerable<UserDto>>(pagedListResult);
+
+                return (userDtos, pagedListResult.MetaData);
         }
 
         public async Task<UserDto> CreateUserAsync(UserForCreateDto userForCreateDto)
