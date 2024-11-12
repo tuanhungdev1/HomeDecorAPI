@@ -66,16 +66,27 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories {
             }
             if (userRequestParameters.Roles != null && userRequestParameters.Roles.Any())
             {
-                var usersWithRoles = new List<User>();
-                foreach (var user in query.ToList())
-                {
-                    var roles = await _userManager.GetRolesAsync(user);
-                    if (roles.Any(role => userRequestParameters.Roles.Contains(role)))
-                    {
-                        usersWithRoles.Add(user);
-                    }
-                }
-                query = usersWithRoles.AsQueryable();
+                var userRoles = await (from user in query
+                                       join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                       join role in _context.Roles on userRole.RoleId equals role.Id
+                                       select new
+                                       {
+                                           UserId = user.Id,
+                                           RoleName = role.Name,
+                                       }).ToListAsync();
+
+                var userRoleGroups = userRoles.GroupBy(ur => ur.UserId)
+                                                .Select(g => new
+                                                {
+                                                    UserId = g.Key,
+                                                    Roles = g.Select(x => x.RoleName).ToList(),
+                                                });
+
+                var userIdsWithAllRoles = userRoleGroups
+                    .Where(ug => userRequestParameters.Roles.All(requestedRole => ug.Roles.Contains(requestedRole)))
+                    .Select(ug => ug.UserId)
+                    .ToList();
+                query = query.Where(u => userIdsWithAllRoles.Contains(u.Id));
             }
 
             query = ApplySorting(query, userRequestParameters.SortKey, userRequestParameters.OrderBy);

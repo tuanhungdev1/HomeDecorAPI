@@ -7,6 +7,7 @@ using HomeDecorAPI.Application.Shared.ActionFilters;
 using HomeDecorAPI.Application.Shared.DTOs.UserDtos.HomeDecorAPI.Application.Shared.DTOs.UserDtos;
 using HomeDecorAPI.Application.Shared.RequestFeatures;
 using HomeDecorAPI.Application.Shared.ResponseFeatures;
+using HomeDecorAPI.Application.Shared.Utilities;
 using HomeDecorAPI.Domain.Exceptions.NotFoundException;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +27,11 @@ namespace HomeDecorAPI.Presentation.Controllers {
 
 
         [HttpGet]
-        public async Task<ActionResult> GetAllUserAsync(UserRequestParameters userRequestParameters)
+        public async Task<ActionResult> GetAllUserAsync([FromQuery] UserRequestParameters userRequestParameters)
         {
             var (userDtos, metaData) = await _userService.GetAllUserAsync(userRequestParameters);
             _logger.LogInfo("Lấy thành công danh sách User.");
+            Response.AddPaginationHeader(metaData);
             return Ok(new ApiResponse<IEnumerable<UserDto>>
             {
                 Success = true,
@@ -52,6 +54,21 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 });
         }
 
+        [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> CreateUserAsync([FromBody] UserForCreateDto userForCreateDto)
+        {
+            var userDto = await _userService.CreateUserAsync(userForCreateDto);
+            _logger.LogInfo("Tạo thành công một người dùng mới.");
+            return Ok(new ApiResponse<UserDto>
+            {
+                Success = true,
+                StatusCode = 201,
+                Data = userDto,
+                Message = "Tạo mới một người dùng thành công."
+            });
+        }
+
         [HttpPut("{userId}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateUserAsync(string userId, [FromBody] UserForUpdateDto userForUpdateProfile) {
@@ -63,6 +80,19 @@ namespace HomeDecorAPI.Presentation.Controllers {
                     Data = userDto,
                     StatusCode = StatusCodes.Status200OK,
                 });
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUserAsync(string userId)
+        {
+            await _userService.DeleteUserAsync(userId);
+            _logger.LogInfo($"Xóa thành công User với ID:{userId}");
+            return Ok(new ApiResponse<string>
+            {
+                Success= true,
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"Xóa thành công User với ID:{userId}",
+            });
         }
         
     }
