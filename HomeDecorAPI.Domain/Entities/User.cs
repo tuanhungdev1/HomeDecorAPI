@@ -34,9 +34,11 @@ namespace HomeDecorAPI.Domain.Entities {
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
-        public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
-        public virtual ICollection<WishlistItem>? Wishlist { get; set; } = new List<WishlistItem>();
-        public ICollection<Cart>? Carts { get; set; } = new List<Cart>();
-		public ICollection<Review>? Reviews { get; set; } = new List<Review>();
+		public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
+		public virtual ICollection<WishlistItem>? Wishlist { get; set; } = new List<WishlistItem>();
+		public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
+		public virtual ICollection<Payment>? Payments { get; set; } = new List<Payment>();
+		public virtual ICollection<Cart>? Carts { get; set; } = new List<Cart>();
+		public virtual ICollection<Review>? Reviews { get; set; } = new List<Review>();
 	}
 }

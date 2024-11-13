@@ -14,5 +14,4 @@ namespace HomeDecorAPI.Application.Shared.Constants {
         Temporary,  
         Alternate  
     }
-
 }

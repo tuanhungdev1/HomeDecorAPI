@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
     public class UserConfiguration : IEntityTypeConfiguration<User> {
         public void Configure(EntityTypeBuilder<User> builder) {
-			builder.HasKey(u => u.Id);
+			
 
 			builder.HasMany(u => u.Carts)
 				.WithOne(c => c.User)
@@ -21,6 +21,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
 				.WithOne(r => r.User)
 				.HasForeignKey(r => r.UserId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+
+			builder.HasMany(u => u.Addresses)
+				.WithOne(a => a.User)
+				.HasForeignKey(a => a.UserId);
 		}
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241110133442_update-table-product-variant-2")]
-    partial class updatetableproductvariant2
+    [Migration("20241113183838_initalCreate 2")]
+    partial class initalCreate2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,33 +25,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FavoriteProduct", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("FavoriteProducts");
-                });
-
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Address", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("AddressId");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AddressLine")
                         .IsRequired()
@@ -67,6 +47,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -93,6 +76,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -101,7 +87,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Brand", b =>
@@ -141,182 +127,182 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3625),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(47),
                             Description = "Comfortable and modern home decor",
                             IsActive = true,
                             Name = "CozyNest",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3625)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(47)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3629),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(54),
                             Description = "High-end decoration products for home",
                             IsActive = true,
                             Name = "Luxurious Living",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3629)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(54)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3631),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(55),
                             Description = "Natural and eco-friendly decor",
                             IsActive = true,
                             Name = "Nature Harmony",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3631)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(56)
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3632),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(57),
                             Description = "Rustic-themed decor for cozy homes",
                             IsActive = false,
                             Name = "Rustic Charm",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3632)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(57)
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3633),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(58),
                             Description = "Modern and sleek decor solutions",
                             IsActive = true,
                             Name = "Urban Modern",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3633)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(58)
                         },
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3634),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(59),
                             Description = "Vintage-inspired decor pieces",
                             IsActive = true,
                             Name = "Vintage Vibes",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3634)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(59)
                         },
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3635),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(60),
                             Description = "Minimalist, clutter-free designs",
                             IsActive = true,
                             Name = "Minimalist Space",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3635)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(60)
                         },
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3636),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(61),
                             Description = "Scandinavian-style simplicity",
                             IsActive = true,
                             Name = "Scandinavian Simplicity",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3637)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(62)
                         },
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3672),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(62),
                             Description = "Industrial-themed home decor",
                             IsActive = false,
                             Name = "Industrial Touch",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3672)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(63)
                         },
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3674),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(63),
                             Description = "Classic style for a sophisticated look",
                             IsActive = true,
                             Name = "Classic Elegance",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3674)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(64)
                         },
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3675),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(65),
                             Description = "Boho-inspired vibrant decor",
                             IsActive = true,
                             Name = "Bohemian Bliss",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3675)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(65)
                         },
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3676),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(66),
                             Description = "Eco-friendly decor products",
                             IsActive = true,
                             Name = "Eco Essentials",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3676)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(66)
                         },
                         new
                         {
                             Id = 13,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3677),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(67),
                             Description = "Handmade artisan decor",
                             IsActive = false,
                             Name = "Artisan Crafted",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3677)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(67)
                         },
                         new
                         {
                             Id = 14,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3678),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(68),
                             Description = "Modern farmhouse style decor",
                             IsActive = true,
                             Name = "Modern Farmhouse",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3679)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(68)
                         },
                         new
                         {
                             Id = 15,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3679),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(69),
                             Description = "Contemporary decor for urban homes",
                             IsActive = true,
                             Name = "Contemporary Chic",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3680)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(69)
                         },
                         new
                         {
                             Id = 16,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3681),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(70),
                             Description = "Soft, vintage-style decor",
                             IsActive = false,
                             Name = "Shabby Chic",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3681)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(71)
                         },
                         new
                         {
                             Id = 17,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3682),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(71),
                             Description = "Elegant essentials for the home",
                             IsActive = true,
                             Name = "Elegant Essentials",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3682)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(72)
                         },
                         new
                         {
                             Id = 18,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3683),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(72),
                             Description = "Beach-inspired comfortable decor",
                             IsActive = true,
                             Name = "Coastal Comfort",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3683)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(73)
                         },
                         new
                         {
                             Id = 19,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3684),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(74),
                             Description = "Urban loft-style decor pieces",
                             IsActive = true,
                             Name = "Urban Loft",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3684)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(74)
                         },
                         new
                         {
                             Id = 20,
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3685),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(75),
                             Description = "Timeless, classic decor pieces",
                             IsActive = true,
                             Name = "Timeless Heritage",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3685)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 142, DateTimeKind.Utc).AddTicks(75)
                         });
                 });
 
@@ -328,31 +314,47 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<int?>("AppliedCouponId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AppliedDiscountId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CouponCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("LastModifiedDate")
+                    b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("ShippingCost")
+                    b.Property<decimal>("ShippingFee")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Subtotal")
+                    b.Property<decimal>("Tax")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppliedCouponId");
+
+                    b.HasIndex("AppliedDiscountId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -365,17 +367,26 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AddedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("DiscountedUnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsSelected")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductVariantId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -384,7 +395,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("CartItems");
                 });
@@ -426,6 +437,229 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Coupon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsageCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsageLimit")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Coupons");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Discount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Discounts");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BillingAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeliveredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ShippedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShippingAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
@@ -519,11 +753,10 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Measurements")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("RecommendedCleaningProducts")
@@ -547,7 +780,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ProductId] IS NOT NULL");
 
                     b.ToTable("ProductDetails");
                 });
@@ -580,7 +814,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
                     b.HasIndex("ProductVariantId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImage");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductVariant", b =>
@@ -751,13 +985,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "New York",
                             ContactPerson = "John Doe",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3075),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9580),
                             Description = "Contemporary furniture and decor",
                             Email = "johndoe@moderndesigns.com",
                             IsActive = true,
                             Name = "Modern Designs",
                             Phone = "1234567890",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3077)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9584)
                         },
                         new
                         {
@@ -766,13 +1000,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Austin",
                             ContactPerson = "Jane Smith",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3084),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9591),
                             Description = "Natural, rustic home goods",
                             Email = "janesmith@rusticroots.com",
                             IsActive = true,
                             Name = "Rustic Roots",
                             Phone = "0987654321",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3084)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9591)
                         },
                         new
                         {
@@ -781,13 +1015,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "San Francisco",
                             ContactPerson = "Emma Johnson",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3086),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9593),
                             Description = "Eco-friendly decor solutions",
                             Email = "emma@ecoessentials.com",
                             IsActive = true,
                             Name = "Eco Essentials",
                             Phone = "5678901234",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3086)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9593)
                         },
                         new
                         {
@@ -796,13 +1030,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Los Angeles",
                             ContactPerson = "James Brown",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3088),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9595),
                             Description = "Trendy decor for modern spaces",
                             Email = "james@urbandecor.com",
                             IsActive = false,
                             Name = "Urban Decor Co.",
                             Phone = "4561237890",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3088)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9595)
                         },
                         new
                         {
@@ -811,13 +1045,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Chicago",
                             ContactPerson = "Sophia Williams",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3090),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9597),
                             Description = "Classic and vintage decor items",
                             Email = "sophia@vintagedecor.com",
                             IsActive = true,
                             Name = "Vintage Decor",
                             Phone = "8901234567",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3090)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9597)
                         },
                         new
                         {
@@ -826,13 +1060,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Seattle",
                             ContactPerson = "Olivia Taylor",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3091),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9598),
                             Description = "Minimalist-inspired decor",
                             Email = "olivia@minimalisttouch.com",
                             IsActive = true,
                             Name = "Minimalist Touch",
                             Phone = "3216549870",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3091)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9599)
                         },
                         new
                         {
@@ -841,13 +1075,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Denver",
                             ContactPerson = "Liam Martinez",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3093),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9600),
                             Description = "Bohemian-style decor",
                             Email = "liam@bohobliss.com",
                             IsActive = false,
                             Name = "Boho Bliss",
                             Phone = "9876543210",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3093)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9600)
                         },
                         new
                         {
@@ -856,13 +1090,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Portland",
                             ContactPerson = "Mason Anderson",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3094),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9602),
                             Description = "Handcrafted decor for home",
                             Email = "mason@artisanhome.com",
                             IsActive = true,
                             Name = "Artisan Home",
                             Phone = "2345678901",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3095)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9602)
                         },
                         new
                         {
@@ -871,13 +1105,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Nashville",
                             ContactPerson = "Ava Thomas",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3096),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9603),
                             Description = "Timeless and classic home decor",
                             Email = "ava@timelessdecor.com",
                             IsActive = true,
                             Name = "Timeless Decor",
                             Phone = "7654321098",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3096)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9603)
                         },
                         new
                         {
@@ -886,13 +1120,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Phoenix",
                             ContactPerson = "Ethan White",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3098),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9605),
                             Description = "Globally inspired decor pieces",
                             Email = "ethan@globalgoods.com",
                             IsActive = true,
                             Name = "Global Goods",
                             Phone = "6547893210",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3098)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9605)
                         },
                         new
                         {
@@ -901,13 +1135,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Miami",
                             ContactPerson = "Amelia Harris",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3099),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9606),
                             Description = "Nature-inspired home goods",
                             Email = "amelia@naturalelements.com",
                             IsActive = true,
                             Name = "Natural Elements",
                             Phone = "1239874560",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3099)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9607)
                         },
                         new
                         {
@@ -916,13 +1150,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Houston",
                             ContactPerson = "Lucas Clark",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3101),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9608),
                             Description = "Modern, urban-style decor",
                             Email = "lucas@urbantrends.com",
                             IsActive = false,
                             Name = "Urban Trends",
                             Phone = "7894561230",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3101)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9608)
                         },
                         new
                         {
@@ -931,13 +1165,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Charlotte",
                             ContactPerson = "Charlotte Robinson",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3102),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9609),
                             Description = "Rustic and cozy home decor",
                             Email = "charlotte@countrycottage.com",
                             IsActive = true,
                             Name = "Country Cottage",
                             Phone = "4567890123",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3103)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9610)
                         },
                         new
                         {
@@ -946,13 +1180,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "San Diego",
                             ContactPerson = "Jackson Lewis",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3104),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9611),
                             Description = "Beach-inspired decor items",
                             Email = "jackson@coastalliving.com",
                             IsActive = true,
                             Name = "Coastal Living",
                             Phone = "0987123456",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3104)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9611)
                         },
                         new
                         {
@@ -961,13 +1195,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Dallas",
                             ContactPerson = "Harper Lee",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3106),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9613),
                             Description = "Farmhouse-style decor for modern homes",
                             Email = "harper@modernfarmhouse.com",
                             IsActive = true,
                             Name = "Modern Farmhouse",
                             Phone = "2345678909",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3106)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9613)
                         },
                         new
                         {
@@ -976,13 +1210,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Boston",
                             ContactPerson = "Sebastian Wilson",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3107),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9614),
                             Description = "Scandinavian-inspired decor",
                             Email = "sebastian@scandihome.com",
                             IsActive = false,
                             Name = "Scandi Home",
                             Phone = "6789012345",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3108)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9614)
                         },
                         new
                         {
@@ -991,13 +1225,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Las Vegas",
                             ContactPerson = "Isabella King",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3109),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9616),
                             Description = "Luxury decor for upscale homes",
                             Email = "isabella@luxuryinteriors.com",
                             IsActive = true,
                             Name = "Luxury Interiors",
                             Phone = "5432109876",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3109)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9616)
                         },
                         new
                         {
@@ -1006,13 +1240,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Orlando",
                             ContactPerson = "Henry Scott",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3111),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9617),
                             Description = "Eco-conscious home decor solutions",
                             Email = "henry@ecohomedecor.com",
                             IsActive = true,
                             Name = "Eco Home Decor",
                             Phone = "3456789012",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3111)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9618)
                         },
                         new
                         {
@@ -1021,13 +1255,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Atlanta",
                             ContactPerson = "Grace Adams",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3112),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9619),
                             Description = "Elegant decor for classic homes",
                             Email = "grace@classicelegance.com",
                             IsActive = true,
                             Name = "Classic Elegance",
                             Phone = "2109876543",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3113)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9619)
                         },
                         new
                         {
@@ -1036,13 +1270,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                             City = "Los Angeles",
                             ContactPerson = "Sophia Young",
                             Country = "USA",
-                            CreatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3114),
+                            CreatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9621),
                             Description = "Art-inspired decor",
                             Email = "sophia@artisticspaces.com",
                             IsActive = true,
                             Name = "Artistic Spaces",
                             Phone = "6785432109",
-                            UpdatedAt = new DateTime(2024, 11, 10, 13, 34, 42, 134, DateTimeKind.Utc).AddTicks(3114)
+                            UpdatedAt = new DateTime(2024, 11, 13, 18, 38, 38, 141, DateTimeKind.Utc).AddTicks(9621)
                         });
                 });
 
@@ -1061,12 +1295,27 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<int?>("Age")
                         .HasColumnType("int");
 
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Displayname")
                         .HasMaxLength(100)
@@ -1082,6 +1331,9 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<string>("Firstname")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Lastname")
                         .HasMaxLength(100)
@@ -1119,8 +1371,15 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -1137,40 +1396,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.UserImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PublicId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserImage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1320,32 +1545,68 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FavoriteProduct", b =>
+            modelBuilder.Entity("WishlistItem", b =>
                 {
-                    b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
-                        .WithMany("FavoriteProducts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("ProductVariantId")
+                        .HasColumnType("int");
 
-                    b.Navigation("Product");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Navigation("User");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "ProductVariantId", "Id");
+
+                    b.HasIndex("ProductVariantId");
+
+                    b.ToTable("WishlistItems");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Address", b =>
                 {
                     b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
-                        .WithMany("Addresses")
+                        .WithMany("AddressList")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Cart", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Coupon", "AppliedCoupon")
+                        .WithMany()
+                        .HasForeignKey("AppliedCouponId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Discount", "AppliedDiscount")
+                        .WithMany()
+                        .HasForeignKey("AppliedDiscountId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppliedCoupon");
+
+                    b.Navigation("AppliedDiscount");
 
                     b.Navigation("User");
                 });
@@ -1353,20 +1614,20 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.CartItem", b =>
                 {
                     b.HasOne("HomeDecorAPI.Domain.Entities.Cart", "Cart")
-                        .WithMany("Items")
+                        .WithMany("CartItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
+                    b.HasOne("HomeDecorAPI.Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductVariantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Category", b =>
@@ -1376,6 +1637,55 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .HasForeignKey("ParentCategoryId");
 
                     b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.OrderItem", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Payment", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("HomeDecorAPI.Domain.Entities.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
@@ -1403,9 +1713,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                 {
                     b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
                         .WithOne("ProductDetails")
-                        .HasForeignKey("HomeDecorAPI.Domain.Entities.ProductDetails", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HomeDecorAPI.Domain.Entities.ProductDetails", "ProductId");
 
                     b.Navigation("Product");
                 });
@@ -1435,29 +1743,18 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Review", b =>
                 {
                     b.HasOne("HomeDecorAPI.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.UserImage", b =>
-                {
-                    b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
-                        .WithOne("UserImage")
-                        .HasForeignKey("HomeDecorAPI.Domain.Entities.UserImage", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1513,6 +1810,25 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WishlistItem", b =>
+                {
+                    b.HasOne("HomeDecorAPI.Domain.Entities.ProductVariant", "ProductVariant")
+                        .WithMany()
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HomeDecorAPI.Domain.Entities.User", "User")
+                        .WithMany("Wishlist")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductVariant");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Brand", b =>
                 {
                     b.Navigation("Products");
@@ -1520,7 +1836,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Cart", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Category", b =>
@@ -1530,11 +1846,21 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
                     b.Navigation("SubCategories");
                 });
 
+            modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+
+                    b.Navigation("Payment")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductDetails");
 
                     b.Navigation("ProductVariants");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.ProductVariant", b =>
@@ -1549,11 +1875,17 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Migrations
 
             modelBuilder.Entity("HomeDecorAPI.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Addresses");
+                    b.Navigation("AddressList");
 
-                    b.Navigation("FavoriteProducts");
+                    b.Navigation("Carts");
 
-                    b.Navigation("UserImage");
+                    b.Navigation("Orders");
+
+                    b.Navigation("Payments");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Wishlist");
                 });
 #pragma warning restore 612, 618
         }

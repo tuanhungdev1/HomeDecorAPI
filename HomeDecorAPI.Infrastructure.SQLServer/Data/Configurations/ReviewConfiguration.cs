@@ -13,7 +13,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Review> builder)
 		{
-			builder.HasKey(r => r.Id);
+			
 
 			builder.HasOne(r => r.Product)
 				.WithMany(p => p.Reviews)

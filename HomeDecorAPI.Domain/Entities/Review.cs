@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HomeDecorAPI.Domain.Entities {
-    public class Review {
-        public int Id { get; set; }
+    public class Review : BaseEntity {
         public int ProductId { get; set; }
         public Product Product { get; set; }
         public string UserId { get; set; }

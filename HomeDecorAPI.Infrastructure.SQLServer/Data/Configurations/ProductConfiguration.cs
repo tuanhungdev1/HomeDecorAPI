@@ -36,6 +36,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
 			    .WithOne(r => r.Product)
 			    .HasForeignKey(r => r.ProductId)
 			    .OnDelete(DeleteBehavior.Cascade);
+
+            
 		}
     }
 }
