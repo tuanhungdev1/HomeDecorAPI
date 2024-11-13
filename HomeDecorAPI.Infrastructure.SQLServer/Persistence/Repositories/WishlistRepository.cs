@@ -24,29 +24,27 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
         {
             var query = _context.WishlistItems
                                             .AsNoTracking()
-                                            .Include(w => w.Product)
-                                            .ThenInclude(p => p.ProductVariants)
+                                            .Include(w => w.ProductVariant)
                                             .ThenInclude(pv => pv.Images)
-                                            .Include(w => w.Product.ProductDetails)
                                             .Where(w => w.UserId == userId)
                                             .AsQueryable();
 
             if(!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                query = query.Where(w => w.Product.Name.Contains(parameters.SearchTerm));
+                query = query.Where(w => w.ProductVariant.Product.Name.Contains(parameters.SearchTerm));
             }
 
 			if (parameters.MinPrice.HasValue)
-				query = query.Where(w => w.Product.ProductVariants.Any(pv => pv.OriginalPrice >= parameters.MinPrice.Value));
+				query = query.Where(w => w.ProductVariant.Product.ProductVariants.Any(pv => pv.OriginalPrice >= parameters.MinPrice.Value));
 
 			if (parameters.MaxPrice.HasValue)
-				query = query.Where(w => w.Product.ProductVariants.Any(pv => pv.OriginalPrice <= parameters.MaxPrice.Value));
+				query = query.Where(w => w.ProductVariant.Product.ProductVariants.Any(pv => pv.OriginalPrice <= parameters.MaxPrice.Value));
 
             if(parameters.CategoryId.HasValue)
-                query = query.Where(w => w.Product.CategoryId.Value == parameters.CategoryId.Value);
+                query = query.Where(w => w.ProductVariant.Product.CategoryId.Value == parameters.CategoryId.Value);
             
 			if (parameters.BrandId.HasValue)
-				query = query.Where(w => w.Product.BrandId.Value == parameters.BrandId.Value);
+				query = query.Where(w => w.ProductVariant.Product.BrandId.Value == parameters.BrandId.Value);
 
             if(parameters.DateAddedFrom.HasValue)
                 query = query.Where(w => w.DateAdded >=  parameters.DateAddedFrom.Value);
@@ -79,34 +77,32 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories
 			query = sortKey.ToLower() switch
 			{
 				"dateadded" => isDesending ? query.OrderByDescending(b => b.DateAdded) : query.OrderBy(b => b.DateAdded),
-				"name" => isDesending ? query.OrderByDescending(b => b.Product.Name) : query.OrderBy(b => b.Product.Name),
-				"price" => isDesending ? query.OrderByDescending(b => b.Product.ProductVariants.Min(pv => pv.OriginalPrice)) : query.OrderBy(b => b.Product.ProductVariants.Min(pv => pv.OriginalPrice)),
+				"name" => isDesending ? query.OrderByDescending(b => b.ProductVariant.Product.Name) : query.OrderBy(b => b.ProductVariant.Product.Name),
+				"price" => isDesending ? query.OrderByDescending(b => b.ProductVariant.OriginalPrice) : query.OrderBy(b => b.ProductVariant.OriginalPrice),
 				_ => query.OrderBy(b => b.DateAdded),
 			};
 
 			return query;
 		}
 
-        public async Task<WishlistItem> GetAsync(string userId, int productId)
+        public async Task<WishlistItem> GetAsync(string userId, int productVariantId)
         {
             return await _context.WishlistItems
-                .FirstOrDefaultAsync(w => w.UserId == userId && w.ProductId == productId);
+                .FirstOrDefaultAsync(w => w.UserId == userId && w.ProductVariantId == productVariantId);
         }
 
         public async Task<IEnumerable<WishlistItem>> GetAllAsync(string userId)
         {
             return await _context.WishlistItems
-                .Include(w => w.Product)
-                .ThenInclude(p => p.ProductVariants)
+                .Include(w => w.ProductVariant)
                 .ThenInclude(pv => pv.Images)
-                .Include(w => w.Product.ProductDetails)
                 .Where(w => w.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<bool> ExistsAsync(string userId, int productId)
+        public async Task<bool> ExistsAsync(string userId, int productVariantId)
         {
-            return await _context.WishlistItems.AnyAsync(w => w.UserId == userId && w.ProductId == productId);
+            return await _context.WishlistItems.AnyAsync(w => w.UserId == userId && w.ProductVariantId == productVariantId);
         }
 
 		public async Task AddAsync(WishlistItem wishlistItem)

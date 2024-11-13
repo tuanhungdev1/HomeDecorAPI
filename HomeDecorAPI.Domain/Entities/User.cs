@@ -36,5 +36,7 @@ namespace HomeDecorAPI.Domain.Entities {
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
         public virtual ICollection<WishlistItem>? Wishlist { get; set; } = new List<WishlistItem>();
-    }
+        public ICollection<Cart>? Carts { get; set; } = new List<Cart>();
+		public ICollection<Review>? Reviews { get; set; } = new List<Review>();
+	}
 }

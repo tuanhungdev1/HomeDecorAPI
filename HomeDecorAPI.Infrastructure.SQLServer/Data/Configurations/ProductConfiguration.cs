@@ -31,6 +31,11 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
             builder.HasOne(p => p.Brand)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.BrandId);
-        }
+
+			builder.HasMany(p => p.Reviews)
+			    .WithOne(r => r.Product)
+			    .HasForeignKey(r => r.ProductId)
+			    .OnDelete(DeleteBehavior.Cascade);
+		}
     }
 }

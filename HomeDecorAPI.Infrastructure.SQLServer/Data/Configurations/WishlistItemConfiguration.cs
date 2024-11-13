@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Configurations {
     public class WishlistItemConfiguration : IEntityTypeConfiguration<WishlistItem> {
         public void Configure(EntityTypeBuilder<WishlistItem> builder) { 
-            builder.HasKey(wli => new {wli.WishlistId, wli.ProductVariantId});
+            builder.HasKey(wli => new {wli.UserId, wli.ProductVariantId, wli.Id});
 
-            builder.HasOne(wli => wli.Wishlish)
-                .WithMany(wl => wl.WishlistItems)
-                .HasForeignKey(wl => wl.WishlistId);
+            builder.HasOne(wli => wli.User)
+                .WithMany(u => u.Wishlist)
+                .HasForeignKey(wli => wli.UserId);
 
             builder.HasOne(wli => wli.ProductVariant)
                 .WithMany()

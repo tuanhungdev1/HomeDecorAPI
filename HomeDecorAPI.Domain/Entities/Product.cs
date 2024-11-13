@@ -34,7 +34,8 @@ namespace HomeDecorAPI.Domain.Entities {
         public int? SupplierId { get; set; }
         public Supplier? Supplier { get; set; }
         public ProductDetails? ProductDetails { get; set; }
-        public ICollection<ProductVariant>? ProductVariants { get; set; }
-        public Category? Categories { get; set; }
+        public ICollection<ProductVariant>? ProductVariants { get; set; } = new List<ProductVariant>();
+		public ICollection<Review>? Reviews { get; set; } = new List<Review>();
+		public Category? Categories { get; set; }
     }
 }

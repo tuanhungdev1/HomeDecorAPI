@@ -74,7 +74,7 @@ namespace HomeDecorAPI.Presentation.Controllers {
 		[ServiceFilter(typeof(ValidationFilterAttribute))]
 		public async Task<IActionResult> UpdateUserRolesAsync(string userId, [FromBody] UserUpdateRolesDto userUpdateRolesDto)
 		{
-			var userDto = await _userService.UpdateUserRolesAsync(userId, userForUpdateDto);
+			var userDto = await _userService.UpdateUserRolesAsync(userId, userUpdateRolesDto);
 			_logger.LogInfo($"Cập nhật Roles User thành công với UserId: {userId}");
 			return Ok(new ApiResponse<UserDto>
 			{

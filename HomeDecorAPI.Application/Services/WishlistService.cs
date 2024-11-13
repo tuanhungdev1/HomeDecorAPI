@@ -60,18 +60,18 @@ namespace HomeDecorAPI.Application.Services {
 			return (wishlistItemDtos, wishlistItems.MetaData);
 		}
 
-		public async Task<WishlistItemDto> AddToWishlistAsync(string userId, int productId)
+		public async Task<WishlistItemDto> AddToWishlistAsync(string userId, int productVariantId)
 		{
-			var product = await _productRepository.GetByIdAsync(productId)
-				?? throw new ProductBadRequestException($"Product with id {productId} not found");
+			var product = await _wishlistRepository.GetByIdAsync(productVariantId)
+				?? throw new ProductBadRequestException($"Product Variant with id {productVariantId} not found");
 
-			if (await _wishlistRepository.ExistsAsync(userId, productId))
-				throw new ProductBadRequestException("Product already in wishlist");
+			if (await _wishlistRepository.ExistsAsync(userId, productVariantId))
+				throw new ProductBadRequestException("Product Variant already in wishlist");
 
 			var wishlistItem = new WishlistItem
 			{
 				UserId = userId,
-				ProductId = productId,
+				ProductVariantId = productVariantId,
 				DateAdded = DateTime.UtcNow
 			};
 
@@ -91,10 +91,10 @@ namespace HomeDecorAPI.Application.Services {
 			}
 		}
 
-		public async Task RemoveFromWishlistAsync(string userId, int productId)
+		public async Task RemoveFromWishlistAsync(string userId, int productVariantId)
 		{
-			var wishlistItem = await _wishlistRepository.GetAsync(userId, productId)
-				?? throw new ProductBadRequestException("Product not found in wishlist");
+			var wishlistItem = await _wishlistRepository.GetAsync(userId, productVariantId)
+				?? throw new ProductBadRequestException("Product Variant not found in wishlist");
 
 			try
 			{
@@ -111,42 +111,42 @@ namespace HomeDecorAPI.Application.Services {
 		}
 
 
-		public async Task<bool> CheckInWishlistAsync(string userId, int productId)
+		public async Task<bool> CheckInWishlistAsync(string userId, int productVariantId)
 		{
-			return await _wishlistRepository.ExistsAsync(userId, productId);
+			return await _wishlistRepository.ExistsAsync(userId, productVariantId);
 		}
 
-		public async Task MoveAllToCartAsync(string userId)
-		{
-			var wishlistItems = await _wishlistRepository.GetAllAsync(userId);
+		//public async Task MoveAllToCartAsync(string userId)
+		//{
+		//	var wishlistItems = await _wishlistRepository.GetAllAsync(userId);
 
-			try
-			{
-				await _unitOfWork.BeginTransactionAsync();
+		//	try
+		//	{
+		//		await _unitOfWork.BeginTransactionAsync();
 
-				foreach (var item in wishlistItems)
-				{
-					var product = await _productRepository.GetByIdAsync(item.ProductId);
-					if (product != null)
-					{
-						await _cartService.AddToCartAsync(userId, new AddToCartDto
-						{
-							ProductId = item.ProductId,
-							Quantity = 1
-						});
-						await _wishlistRepository.RemoveAsync(item);
-					}
-				}
+		//		foreach (var item in wishlistItems)
+		//		{
+		//			var product = await _wishlistRepository.GetByIdAsync(item.ProductVariantId);
+		//			if (product != null)
+		//			{
+		//				await _cartService.AddToCartAsync(userId, new AddToCartDto
+		//				{
+		//					ProductId = item.ProductId,
+		//					Quantity = 1
+		//				});
+		//				await _wishlistRepository.RemoveAsync(item);
+		//			}
+		//		}
 
-				await _unitOfWork.CommitAsync();
-			}
-			catch (Exception ex)
-			{
-				await _unitOfWork.RollbackAsync();
-				_logger.LogError($"Error moving items to cart: {ex.Message}");
-				throw;
-			}
-		}
+		//		await _unitOfWork.CommitAsync();
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		await _unitOfWork.RollbackAsync();
+		//		_logger.LogError($"Error moving items to cart: {ex.Message}");
+		//		throw;
+		//	}
+		//}
 
 		public async Task ClearWishlistAsync(string userId)
 		{

@@ -18,7 +18,6 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }
-        public DbSet<Wishlist> Wishlists { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
@@ -26,6 +25,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<ProductDetails> ProductDetails { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -44,6 +45,13 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Data.Contexts {
 
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
 
-        }
+			modelBuilder.ApplyConfiguration(new DiscountConfiguration());
+
+			modelBuilder.ApplyConfiguration(new CouponConfiguration());
+
+			modelBuilder.ApplyConfiguration(new CartConfiguration());
+
+			modelBuilder.ApplyConfiguration(new ReviewConfiguration());
+		}
     }
 }

@@ -14,7 +14,7 @@ namespace HomeDecorAPI.Application.Contracts {
 		Task<WishlistItemDto> AddToWishlistAsync(string userId, int productId);
 		Task RemoveFromWishlistAsync(string userId, int productId);
 		Task<bool> CheckInWishlistAsync(string userId, int productId);
-		Task MoveAllToCartAsync(string userId);
+		//Task MoveAllToCartAsync(string userId);
 		Task ClearWishlistAsync(string userId);
 	}
 }
