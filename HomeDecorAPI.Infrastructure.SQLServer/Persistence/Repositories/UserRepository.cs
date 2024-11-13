@@ -86,7 +86,8 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence.Repositories {
                     .Where(ug => userRequestParameters.Roles.All(requestedRole => ug.Roles.Contains(requestedRole)))
                     .Select(ug => ug.UserId)
                     .ToList();
-                query = query.Where(u => userIdsWithAllRoles.Contains(u.Id));
+                query = query.Where(u => userIdsWithAllRoles.Contains(u.Id))
+                    ;
             }
 
             query = ApplySorting(query, userRequestParameters.SortKey, userRequestParameters.OrderBy);

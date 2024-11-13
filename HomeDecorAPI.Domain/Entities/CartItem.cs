@@ -1,24 +1,23 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HomeDecorAPI.Domain.Entities {
-    public class CartItem {
-        public int Id { get; set; }
+	public class CartItem : BaseEntity
+	{
+		public int CartId { get; set; }
+		public int ProductVariantId { get; set; }
+		[Required]
+		[Range(1, int.MaxValue)]
+		public int Quantity { get; set; }
 
-        [Required(ErrorMessage = "CartId is required.")]
-        public int CartId { get; set; }
+		[Column(TypeName = "decimal(18,2)")]
+		public decimal UnitPrice { get; set; }
 
-        public virtual Cart? Cart { get; set; }
+		[Column(TypeName = "decimal(18,2)")]
+		public decimal? DiscountedPrice { get; set; }
 
-        [Required(ErrorMessage = "ProductId is required.")]
-        public int ProductId { get; set; }
-
-        public virtual Product? Product { get; set; }
-
-        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
-        public int Quantity { get; set; } = 1;
-        public DateTime AddedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    }
+		public Cart Cart { get; set; }
+		public ProductVariant ProductVariant { get; set; }
+	}
 }

@@ -18,6 +18,11 @@ namespace HomeDecorAPI.Application.DTOs.UserDtos
         [DataType(DataType.EmailAddress)]
         public required string Email { get; set; }
         [Required]
+		[Compare("Password", ErrorMessage = "Password and Confirm Password must match.")]
+		public string ConfirmPassword { get; set; }
+        [Required]
+        public string Password { get; set; }
+        [Required]
         [StringLength(100)]
         public string FirstName { get; set; }
         [Required]

@@ -17,6 +17,7 @@ using HomeDecorAPI.Application.DTOs.CategoryDtos;
 using HomeDecorAPI.Application.DTOs.CartDtos;
 using HomeDecorAPI.Application.DTOs.SupplierDtos;
 using HomeDecorAPI.Application.DTOs.BrandDtos;
+using HomeDecorAPI.Application.DTOs.WishlistDtos;
 
 namespace HomeDecorAPI.Application.MappingProfile
 {
@@ -26,6 +27,7 @@ namespace HomeDecorAPI.Application.MappingProfile
             CreateMap<User, UserDto>();
             CreateMap<UserForRegistrationDto, User>().ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<UserForUpdateDto, User>().ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<UserForCreateDto, User>();
             CreateMap<UserForLoginDto, User>().ForMember(dest => dest.Id, opt => opt.Ignore());
             // USER
 
@@ -43,7 +45,8 @@ namespace HomeDecorAPI.Application.MappingProfile
             CreateMap<ProductForUpdateDto, Product>()
                 .ForMember(dest => dest.Id, act => act.Ignore());
 
-            CreateMap<ProductVariant, ProductVariantDto>();
+            CreateMap<ProductVariant, ProductVariantDto>()
+                .ForMember(dest => dest.ProductName, act => act.MapFrom(p => p.Product.Name));
             CreateMap<ProductVariantForCreateDto, ProductVariant>();
             CreateMap<ProductVariantForUpdateDto, ProductVariant>();
 
@@ -87,6 +90,10 @@ namespace HomeDecorAPI.Application.MappingProfile
             CreateMap<BrandForUpdateDto, Brand>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             // BRAND
+
+            // WISHLISTITEM
+            CreateMap<WishlistItem, WishlistItemDto>();
+            // WISHLISTITEM
         }
     }
 }

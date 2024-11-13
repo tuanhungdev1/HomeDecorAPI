@@ -17,6 +17,7 @@ namespace HomeDecorAPI.Application.Contracts
         Task<UserDto> GetUserInfoAsync(string userId);
         Task<UserDto> UpdateUserInforAsync(string userId, UserForUpdateDto userForUpdateDto);
         Task<UserDto> CreateUserAsync(UserForCreateDto userForCreateDto);
-        Task DeleteUserAsync(string userId);
+        Task<UserDto> UpdateUserRolesAsync(string userId, UserUpdateRolesDto userUpdateRolesDto);
+		Task DeleteUserAsync(string userId);
     }
 }

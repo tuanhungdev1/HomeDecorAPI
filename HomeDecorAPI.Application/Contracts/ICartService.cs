@@ -6,13 +6,13 @@ namespace HomeDecorAPI.Application.Contracts
 {
     public interface ICartService
     {
-        Task<CartDto> GetCartByUserIdAsync(string userId);
-        Task<IEnumerable<CartItemDto>> GetAllCartItemsForUserAsync(string userId);
-        Task AddProductToCartAsync(string userId, AddToCartDto addToCartDto);
-        Task RemoveProductFromCartAsync(string userId, int cartItemId);
-        Task ClearCartAsync(string userId);
-        Task UpdateCartItemQuantityAsync(string userId, int cartItemId, int newQuantity);
-        Task UpdateCartShippingCostAsync(string userId, decimal shippingCost);
-        Task ApplyDiscountAsync(string userId, decimal discountAmount);
-    }
+		Task<CartDto> GetUserCartAsync(int userId);
+		Task<bool> AddToCartAsync(int userId, int productVariantId, int quantity);
+		Task<bool> UpdateCartItemQuantityAsync(int userId, int cartItemId, int quantity);
+		Task<bool> RemoveFromCartAsync(int userId, int cartItemId);
+		Task<bool> ClearCartAsync(int userId);
+		Task<bool> MoveToWishlistAsync(int userId, int cartItemId);
+		Task<CartDto> ApplyDiscountCodeAsync(int userId, string discountCode);
+		Task<bool> ValidateCartAsync(int userId);
+	}
 }

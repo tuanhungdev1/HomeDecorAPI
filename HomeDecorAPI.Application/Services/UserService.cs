@@ -46,10 +46,15 @@ namespace HomeDecorAPI.Application.Services {
         public async Task<(IEnumerable<UserDto> userDtos, MetaData metaData)> GetAllUserAsync(UserRequestParameters userRequestParameters)
         {
                var pagedListResult = await _userRepository.GetAllUserAsync(userRequestParameters);
-
-                var userDtos = _mapper.Map<IEnumerable<UserDto>>(pagedListResult);
-
-                return (userDtos, pagedListResult.MetaData);
+               List<UserDto> userDtos = new List<UserDto>();
+               foreach (var item in pagedListResult)
+                {
+                var roles = await _userManager.GetRolesAsync(item);
+                var userDto = _mapper.Map<UserDto>(item);
+                userDto.Roles = roles;
+                userDtos.Add(userDto);
+                } 
+               return (userDtos, pagedListResult.MetaData);
         }
 
         public async Task<UserDto> CreateUserAsync(UserForCreateDto userForCreateDto)
@@ -67,7 +72,14 @@ namespace HomeDecorAPI.Application.Services {
                 }
                 
                 var user = _mapper.Map<User>(userForCreateDto);
-                await _unitOfWork.UserRepository.AddAsync(user);
+
+                var registerResult = await _userManager.CreateAsync(user, userForCreateDto.Password);
+
+                if(!registerResult.Succeeded)
+                {
+                    _logger.LogError("Không thể đăng kí tài khoản.");
+                    throw new UserBadRequestException("Thông tin đăng kí tài khoản User không hợp lệ.");
+                }
                 await _unitOfWork.SaveChangesAsync();
 
                 if(userForCreateDto.FileImage != null)
@@ -162,8 +174,6 @@ namespace HomeDecorAPI.Application.Services {
                 _mapper.Map(userForUpdateDto, user);
                 await _unitOfWork.SaveChangesAsync();
 
-                await UpdateUserRoles(user, userForUpdateDto.Roles);
-
                 if(userForUpdateDto.FileImage != null)
                 {
                     string folder = $"HomeDecor/{CloudinaryConstants.Folders.Users}/ID_{user.Id}/";
@@ -194,7 +204,34 @@ namespace HomeDecorAPI.Application.Services {
             }
         }
 
-        private async Task UpdateUserRoles(User user, IEnumerable<string> newRoles)
+		public async Task<UserDto> UpdateUserRolesAsync(string userId, UserUpdateRolesDto userUpdateRolesDto)
+		{
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user == null)
+			{
+				_logger.LogError($"User not found with userId: {userId}");
+				throw new UserNotFoundException(userId);
+			}
+			try
+			{
+				await _unitOfWork.BeginTransactionAsync();
+				await UpdateUserRoles(user, userUpdateRolesDto.Roles);
+				await _unitOfWork.SaveChangesAsync();
+				var userDto = _mapper.Map<UserDto>(user);
+				var userRoles = await _userManager.GetRolesAsync(user);
+				userDto.Roles = userRoles;
+				await _unitOfWork.CommitAsync();
+				return userDto;
+			}
+			catch (Exception ex)
+			{
+				await _unitOfWork.RollbackAsync();
+				_logger.LogError($"Có lỗi sảy ra khi Update User Roles với ID: {userId}");
+				throw;
+			}
+		}
+
+		private async Task UpdateUserRoles(User user, IEnumerable<string> newRoles)
         {
             var currentRoles = await _userManager.GetRolesAsync(user);
             var rolesAreDifferent = !currentRoles.OrderBy(r => r).SequenceEqual(newRoles.OrderBy(nr => nr));

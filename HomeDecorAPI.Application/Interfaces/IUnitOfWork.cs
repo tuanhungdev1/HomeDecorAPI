@@ -10,7 +10,7 @@ namespace HomeDecorAPI.Application.Interfaces {
         public IAddressRepository AddressRepository { get; }
         public IProductRepository ProductRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
-        public IFavoriteProductRepository FavoriteProductRepository { get; }
+        public IWishlistRepository FavoriteProductRepository { get; }
         public ICartRepository CartRepository { get; }
         public IBrandRepository BrandRepository { get; }
         public ISupplierRepository SupplierRepository { get; }

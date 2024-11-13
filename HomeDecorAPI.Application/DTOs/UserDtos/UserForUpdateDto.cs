@@ -24,12 +24,13 @@ namespace HomeDecorAPI.Application.DTOs.UserDtos
         public string? Address { get; set; }
         [StringLength(50)]
         public string? Country { get; set; }
+        public string? PhoneNumber { get; set; }
         [StringLength(50)]
         public string? City { get; set; }
         public IList<string>? Roles { get; set; }
         public IFormFile? FileImage { get; set; }
-        public string Status { get; set; }
-        public bool isDeleteImage { get; set; }
+        public string Status { get; set; } = "Active";
+        public bool isDeleteImage { get; set; } = false;
         public DateTime? DateOfBirth { get; set; }
     }
 }

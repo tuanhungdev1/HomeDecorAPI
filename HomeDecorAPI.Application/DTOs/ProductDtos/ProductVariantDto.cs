@@ -14,7 +14,8 @@ namespace HomeDecorAPI.Application.DTOs.ProductDtos
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
-        public required string Color { get; set; }
+		public string ProductName { get; set; }
+		public required string Color { get; set; }
         public required string SKU { get; set; }
         public bool IsMainVariant { get; set; } = false;
         public decimal OriginalPrice { get; set; }

@@ -20,7 +20,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
         private readonly Lazy<IAddressRepository> _addressRepository;
         private readonly Lazy<IProductRepository> _productRepository;
         private readonly Lazy<ICategoryRepository> _categoryRepository;
-        private readonly Lazy<IFavoriteProductRepository> _favoriteProductRepository;
+        private readonly Lazy<IWishlistRepository> _wishlistRepository;
         private readonly Lazy<ICartRepository> _cartRepository;
         private readonly Lazy<IBrandRepository> _brandRepository;
         private readonly Lazy<ISupplierRepository> _supplierRepository;
@@ -31,7 +31,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
             _addressRepository = new Lazy<IAddressRepository>(() => new AddressRepository(_context));
             _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(_context));
             _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(_context));
-            _favoriteProductRepository = new Lazy<IFavoriteProductRepository>(() => new FavoriteProductRepository(_context));
+			_wishlistRepository = new Lazy<IWishlistRepository>(() => new WishlistRepository(_context));
             _cartRepository = new Lazy<ICartRepository>(() => new CartRepository(_context));
             _brandRepository = new Lazy<IBrandRepository>(() => new BrandRepository(_context));
             _supplierRepository = new Lazy<ISupplierRepository>(() => new SupplierRepository(_context));
@@ -42,7 +42,7 @@ namespace HomeDecorAPI.Infrastructure.SQLServer.Persistence {
         public IAddressRepository AddressRepository => _addressRepository.Value;
         public IProductRepository ProductRepository => _productRepository.Value;
         public ICategoryRepository CategoryRepository => _categoryRepository.Value;
-        public IFavoriteProductRepository FavoriteProductRepository => _favoriteProductRepository.Value;
+        public IWishlistRepository FavoriteProductRepository => _wishlistRepository.Value;
         public ICartRepository CartRepository => _cartRepository.Value;
         public ISupplierRepository SupplierRepository => _supplierRepository.Value;
         public async Task BeginTransactionAsync()

@@ -21,10 +21,11 @@ namespace HomeDecorAPI.Application.DependencyInjection {
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<ISupplierService, SupplierService>();
-            
+			services.AddScoped<IWishlistService, WishlistService>();
 
-            // Đăng ký AutoMapper
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+			// Đăng ký AutoMapper
+			services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             // Đăng ký Validators
 

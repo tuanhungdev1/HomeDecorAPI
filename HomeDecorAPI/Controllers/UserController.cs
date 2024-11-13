@@ -69,7 +69,23 @@ namespace HomeDecorAPI.Presentation.Controllers {
             });
         }
 
-        [HttpPut("{userId}")]
+		[HttpPut("{userId}/roles")]
+		[Authorize(Roles = "Admin")]
+		[ServiceFilter(typeof(ValidationFilterAttribute))]
+		public async Task<IActionResult> UpdateUserRolesAsync(string userId, [FromBody] UserUpdateRolesDto userUpdateRolesDto)
+		{
+			var userDto = await _userService.UpdateUserRolesAsync(userId, userForUpdateDto);
+			_logger.LogInfo($"Cập nhật Roles User thành công với UserId: {userId}");
+			return Ok(new ApiResponse<UserDto>
+			{
+				Success = true,
+				Message = $"Cập nhật Roles User thành công với UserId: {userId}",
+				Data = userDto,
+				StatusCode = StatusCodes.Status200OK,
+			});
+		}
+
+		[HttpPut("{userId}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateUserAsync(string userId, [FromBody] UserForUpdateDto userForUpdateProfile) {
                var userDto = await _userService.UpdateUserInforAsync(userId, userForUpdateProfile);
