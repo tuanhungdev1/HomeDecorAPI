@@ -48,7 +48,7 @@ namespace HomeDecorAPI.Presentation.Controllers {
                 Data = category
             });
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCategoryAsync([FromBody] CategoryForCreateDto categoryForCreateDto) {
