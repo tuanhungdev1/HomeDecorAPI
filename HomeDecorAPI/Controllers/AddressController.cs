@@ -73,6 +73,7 @@ namespace HomeDecorAPI.Presentation.Controllers {
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateAddress([FromBody] AddressForCreateDto addressForCreateDto) {
             var userId = GetCurrentUserId();
+            
             await _addressService.CreateAddressAsync(userId, addressForCreateDto);
             return StatusCode(StatusCodes.Status201Created, new ApiResponse<object> {
                 Success = true,
